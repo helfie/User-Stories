@@ -9,9 +9,9 @@ export class Obligation extends Model<Obligation> {
     @ApiProperty({type: Number, example: 0})
     id: number;
     @ForeignKey(() => Asset)
-    @Column({type: DataType.INTEGER, allowNull: true})
-    @ApiProperty({type: Number, example: 0})
-    assetId: number;
+    @Column({type: DataType.STRING, allowNull: true})
+    @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
+    tokenAddress: string;
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
     userAddress: string;

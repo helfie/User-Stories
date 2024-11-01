@@ -27,12 +27,12 @@ export class ObligationController {
         return await this.apiService.findAllObligations({withAssets: withAssets === 'true', isNotExecuted: isNotExec});
     }
 
-    @Get('/:assetId')
+    @Get('/:tokenAddress')
     @ApiResponse({status: 200, description: 'asset obligations', type: Obligation})
     @ApiOperation({summary: "retrieve all asset obligations"})
-    @ApiParam({name: 'assetId', required: true, description: 'asset id', type: Number, example: 0})
-    async getObligationByAsset(@Param('assetId') assetId: string) {
-        return await this.apiService.findObligationByAsset({assetId: Number(assetId)});
+    @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    async getObligationByAsset(@Param('tokenAddress') tokenAddress: string) {
+        return await this.apiService.findObligationByAsset({tokenAddress: tokenAddress});
     }
 
     @Get('obligation/:obligationId')
@@ -65,7 +65,7 @@ export class ObligationController {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
         }
         return await this.apiService.createObligation({
-            assetId: dto.assetId, 
+            tokenAddress: dto.tokenAddress, 
             userAddress: dto.userAddress, 
             minPurchaseAmount: dto.minPurchaseAmount,
             lockupPeriod: dto.lockupPeriod,
@@ -82,8 +82,8 @@ export class ObligationController {
             throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
         } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
-        } else if(!(await this.apiService.isAssetExists({assetId: dto.assetId}))) {
-            throw new BadRequestException(`Asset [${dto.assetId}] does not exist`)
+        } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
+            throw new BadRequestException(`Asset [${dto.tokenAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
         } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
@@ -122,8 +122,8 @@ export class ObligationController {
             throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
         } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
-        } else if(!(await this.apiService.isAssetExists({assetId: dto.assetId}))) {
-            throw new BadRequestException(`Asset [${dto.assetId}] does not exist`)
+        } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
+            throw new BadRequestException(`Asset [${dto.tokenAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
         } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
@@ -154,8 +154,8 @@ export class ObligationController {
             throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
         } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
-        } else if(!(await this.apiService.isAssetExists({assetId: dto.assetId}))) {
-            throw new BadRequestException(`Asset [${dto.assetId}] does not exist`)
+        } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
+            throw new BadRequestException(`Asset [${dto.tokenAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
         } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
