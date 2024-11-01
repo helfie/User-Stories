@@ -28,5 +28,5 @@ export class User extends Model<User> {
     @HasMany(() => Asset)
     assets: Asset[];
     @BelongsTo(() => Identity)
-    identity: Identity  
+    identity: Identity;
 }

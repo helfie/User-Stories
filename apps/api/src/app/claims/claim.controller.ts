@@ -132,7 +132,7 @@ export class ClaimController {
             throw new BadRequestException(`Claim [${userAddress}-${claimTopic}] does not exist`)
         } else if(!(await this.apiService.isUserAdmin({ userAddress: senderAddress }))) {
             if (!(await this.signatureService.verifySignature('getDocgen', signature, senderAddress))) {
-                throw new UnauthorizedException(`User [${userAddress}] not authorized`)
+                throw new UnauthorizedException(`User [${senderAddress}] not authorized`)
             }
         }
         const docgen = await this.apiService.getClaimDocgen({ userAddress: userAddress, claimTopic: Number(claimTopic) })

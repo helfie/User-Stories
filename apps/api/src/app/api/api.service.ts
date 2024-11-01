@@ -1,10 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ASSET_REPOSITORY, CLAIM_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, USER_REPOSITORY } from "../constants";
+import { ASSET_REPOSITORY, CLAIM_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, TOKEN_CLAIM_REPOSITORY, TOKEN_IDENTITY_REPOSITORY, USER_REPOSITORY } from "../constants";
 import { Claim } from "../claims/claim.entity";
 import { Identity } from "../identities/identity.entity";
 import { Asset } from "../assets/asset.entity";
 import { User } from "../users/user.entity";
 import { Obligation } from "../obligations/obligation.entity";
+import { TokenIdentity } from "../token-identities/token-identity.entity";
+import { TokenClaim } from "../token-claims/token-claim.entity";
 
 /// User Service
 interface CreateUserParams {
@@ -65,6 +67,39 @@ interface VerifyClaimParams {
 }
 ///
 
+/// Token Claim Service
+interface FindAllTokenClaimsWithTokens {
+    withTokens: boolean;
+}
+
+interface FindAllByTokenParams {
+    tokenAddress: string;
+}
+
+interface FindTokenClaimById {
+    tokenAddress: string;
+    claimTopic: number;
+}
+
+interface CreateTokenClaimParams {
+    tokenAddress: string;
+    claimTopic: number;
+    docGen: string;
+}
+
+interface UpdateTokenDocgenParams {
+    tokenAddress: string;
+    claimTopic: number;
+    docGen: string;
+}
+
+interface VerifyTokenClaimParams {
+    tokenAddress: string;
+    claimTopic: number;
+    verify: boolean;
+}
+///
+
 /// Identity Service
 interface CreateIdentityParams {
     identityAddress: string;
@@ -87,7 +122,7 @@ interface FindAllAssetsByUserWithObligations {
 }
 
 interface FindAssetById {
-    assetId: number;
+    tokenAddress: string;
 }
 
 interface CreateAssetParams {
@@ -97,8 +132,13 @@ interface CreateAssetParams {
     type: string;
 }
 
+interface SetTokenIdentityParams {
+    tokenAddress: string;
+    identityAddress: string;
+}
+
 interface UpdateAssetUserParams {
-    assetId: number;
+    tokenAddress: string;
     userAddress: string;
 }
 
@@ -108,12 +148,14 @@ interface isAvailableToCreateObligationParams {
 }
 
 interface UpdateAssetObligationParams {
-    assetId: number;
+    tokenAddress: string;
     obligationId: number;
 }
 
-interface FindAssetParams {
-    assetId: number;
+
+interface VerifyAssetParams {
+    tokenAddress: string;
+    verify: boolean;
 }
 ///
 
@@ -124,7 +166,7 @@ interface FindAllObligationsWithAssets {
 }
 
 interface FindObligationByAssetId {
-    assetId: number;
+    tokenAddress: string;
 }
 
 interface FindObligationById {
@@ -132,7 +174,7 @@ interface FindObligationById {
 }
 
 interface CreateObligationParams {
-    assetId: number;
+    tokenAddress: string;
     userAddress: string;
     minPurchaseAmount: number;
     lockupPeriod: number;
@@ -179,6 +221,8 @@ export class ApiService {
         @Inject(IDENTITY_REPOSITORY) private readonly identityRepository: typeof Identity,
         @Inject(ASSET_REPOSITORY) private readonly assetRepository: typeof Asset,
         @Inject(OBLIGATION_REPOSITORY) private readonly obligationRepository: typeof Obligation,
+        @Inject(TOKEN_IDENTITY_REPOSITORY) private readonly tokenIdentityRepository: typeof TokenIdentity,
+        @Inject(TOKEN_CLAIM_REPOSITORY) private readonly tokenClaimRepository: typeof TokenClaim,
     ) {
     }
 
@@ -312,6 +356,69 @@ export class ApiService {
     }
     ///
 
+    /// TokenClaim Service
+        async findAllTokenClaims({withTokens}:FindAllTokenClaimsWithTokens) {
+            if(withTokens) {
+                return await this.tokenClaimRepository.findAll({include: [Asset], order: [['claimTopic', 'ASC']]})
+            } else {
+                return await this.tokenClaimRepository.findAll({order: [['claimTopic', 'ASC']]})
+            }
+        }
+    
+        async findAllTokenClaimsByToken({tokenAddress}:FindAllByTokenParams) {
+            return await this.tokenClaimRepository.findAll({where: {tokenAddress: tokenAddress.toLowerCase()}, order: [['claimTopic', 'ASC']]})
+        }
+    
+        async findTokenClaimById({tokenAddress, claimTopic}:FindTokenClaimById) {
+            return await this.tokenClaimRepository.findByPk(compositeKey(tokenAddress, claimTopic))
+        }
+    
+        async getTokenClaimDocgen({tokenAddress, claimTopic}:FindTokenClaimById) {
+            return (await this.tokenClaimRepository.findByPk(compositeKey(tokenAddress, claimTopic))).docGen
+        }
+    
+        async createTokenClaim({tokenAddress, claimTopic, docGen}:CreateTokenClaimParams) {
+            return await this.tokenClaimRepository.create({
+                claimTokenKey: compositeKey(tokenAddress, claimTopic),
+                tokenAddress: tokenAddress.toLowerCase(),
+                claimTopic: claimTopic,
+                docGen: docGen,
+                isClaimVerified: false
+            })
+        }
+    
+        async updateTokenDocgen({tokenAddress, claimTopic, docGen}:UpdateTokenDocgenParams) {
+            const [rows, entity] = await this.tokenClaimRepository.update(
+                {docGen: docGen}, 
+                {where : {claimTokenKey: compositeKey(tokenAddress, claimTopic), }, returning: true}
+            )
+            return entity;
+        }
+    
+        async verifyTokenClaim({tokenAddress, claimTopic, verify}:VerifyTokenClaimParams) {
+            const [rows, entity] = await this.tokenClaimRepository.update(
+                {isClaimVerified: verify}, 
+                {where : {claimTokenKey: compositeKey(tokenAddress, claimTopic)}, returning: true})
+            return entity;
+        }
+    
+        async isTokenClaimVerified({tokenAddress, claimTopic}:FindTokenClaimById) {
+            const claim = await this.tokenClaimRepository.findByPk(compositeKey(tokenAddress, claimTopic))
+            if(claim) {
+                return claim.isClaimVerified
+            }
+            return false
+        }
+    
+        async areAllTokenClaimsVerified({tokenAddress}:FindAllByTokenParams) {
+            const claims = await this.tokenClaimRepository.findAll({where: {tokenAddress: tokenAddress.toLowerCase()}})
+            if(claims.find(el => el.isClaimVerified === false)) {
+                return false
+            }
+            return true
+        }
+    ///
+
     /// IdentityService    
     async findAllIdentities() {
         return await this.identityRepository.findAll()
@@ -334,6 +441,28 @@ export class ApiService {
     }
     ///
 
+    /// TokenIdentityService    
+    async findAllTokenIdentities() {
+        return await this.tokenIdentityRepository.findAll()
+    }
+
+    async findTokenIdentity({identityAddress}:FindIdentityParams) {
+        return await this.tokenIdentityRepository.findByPk(identityAddress.toLowerCase())
+    }
+
+    async createTokenIdentity({identityAddress,initialOwnerAddress}:CreateIdentityParams) {
+        return await this.tokenIdentityRepository.create({
+            identityAddress: identityAddress.toLowerCase(), 
+            initialOwnerAddress: initialOwnerAddress.toLowerCase(), 
+        })
+    }
+
+    async isTokenIdentityExist({identityAddress}:FindIdentityParams) {
+        const identity = await this.tokenIdentityRepository.findByPk(identityAddress.toLowerCase())
+        return identity ? true : false
+    }
+    ///
+
     /// AssetService
     async findAllAssets({withObligations}:FindAllAssetsWithObligations) {
         if(withObligations) {
@@ -346,53 +475,80 @@ export class ApiService {
     async findAllAssetsByUser({userAddress, withObligations}:FindAllAssetsByUserWithObligations) {
         if(withObligations) {
             return await this.assetRepository.findAll({
-                where: {userAddress: userAddress.toLowerCase()}, 
+                where: {deployer: userAddress.toLowerCase()}, 
                 include: [Obligation],
                 order: [['id', 'ASC']]
             })
         } else {
-            return await this.assetRepository.findAll({where: {userAddress: userAddress.toLowerCase()}, order: [['id', 'ASC']]})
+            return await this.assetRepository.findAll({where: {deployer: userAddress.toLowerCase()}, order: [['id', 'ASC']]})
         }
     }
 
-    async findAssetById({assetId}:FindAssetById) {
-        return await this.assetRepository.findByPk(assetId)
+    async findAssetById({tokenAddress}:FindAssetById) {
+        return await this.assetRepository.findByPk(tokenAddress.toLowerCase())
     }
-    
-    async isAssetExists({assetId}:FindAssetById) {
-        const asset = await this.assetRepository.findByPk(assetId)
-        return asset ? true : false
-    }
-
 
     async createAsset({userAddress, name, description, type}:CreateAssetParams) {
         return await this.assetRepository.create({
-            userAddress: userAddress.toLowerCase(),
+            deployer: userAddress.toLowerCase(),
             name: name,
             description: description,
-            type: type
+            type: type,
+            isVerified: false
         })
     }
 
-    async updateUserAsset({assetId, userAddress}:UpdateAssetUserParams) {
+    async setAssetIdentity({tokenAddress, identityAddress}:SetTokenIdentityParams) {
         const [rows, entity] = await this.assetRepository.update(
-            {userAddress: userAddress.toLowerCase()}, 
-            {where : {id: assetId, }, returning: true}
+            {identityAddress: identityAddress.toLowerCase()}, 
+            {where : {tokenAddress: tokenAddress.toLowerCase()}, returning: true}
+        )
+        return entity
+    }
+
+    async updateUserAsset({tokenAddress, userAddress}:UpdateAssetUserParams) {
+        const [rows, entity] = await this.assetRepository.update(
+            {deployer: userAddress.toLowerCase()}, 
+            {where : {tokenAddress: tokenAddress.toLowerCase(), }, returning: true}
         )
         return entity;
     }
 
-    async updateAssetObligation({assetId, obligationId}:UpdateAssetObligationParams) {
+    async updateAssetObligation({tokenAddress, obligationId}:UpdateAssetObligationParams) {
         const [rows, entity] = await this.assetRepository.update(
             {obligationId: obligationId}, 
-            {where : {id: assetId, }, returning: true}
+            {where : {tokenAddress: tokenAddress.toLowerCase(), }, returning: true}
         )
         return entity;
     }
 
-    async isAssetExist({assetId}:FindAssetParams) {
-        const asset = await this.assetRepository.findByPk(assetId)
+    async verifyAsset({tokenAddress, verify}:VerifyAssetParams) {
+        const [rows, entity] = await this.assetRepository.update(
+            {isVerified: verify}, 
+            {where : {tokenAddress: tokenAddress.toLowerCase()}, returning: true}
+        )
+        return entity
+    }
+
+    async isAssetExists({tokenAddress}:FindAssetById) {
+        const asset = await this.assetRepository.findByPk(tokenAddress.toLowerCase())
         return asset ? true : false
+    }
+
+    async isAssetIdentity({tokenAddress}:FindAssetById) {
+        const user = await this.assetRepository.findByPk(tokenAddress.toLowerCase())
+        if(user) {
+            return user.identityAddress === null
+        }
+        return false
+    }
+
+    async isAssetVerified({tokenAddress}:FindAssetById) {
+        const asset = await this.assetRepository.findByPk(tokenAddress.toLowerCase())
+        if(asset) {
+            return asset.isVerified
+        }
+        return false
     }
     ///
 
@@ -412,8 +568,8 @@ export class ApiService {
             }
         }
 
-        async findObligationByAsset({assetId}:FindObligationByAssetId) {
-            return await this.obligationRepository.findOne({where: {assetId: assetId}})
+        async findObligationByAsset({tokenAddress}:FindObligationByAssetId) {
+            return await this.obligationRepository.findOne({where: {tokenAddress: tokenAddress.toLowerCase()}})
         }
 
         async findObligationById({obligationId}:FindObligationById) {
@@ -427,9 +583,9 @@ export class ApiService {
             return date;
         }
 
-        async createObligation({assetId, userAddress, lockupPeriod, minPurchaseAmount, transferRestrictionAddress}:CreateObligationParams) {
+        async createObligation({tokenAddress, userAddress, lockupPeriod, minPurchaseAmount, transferRestrictionAddress}:CreateObligationParams) {
             return await this.obligationRepository.create({
-                assetId: assetId,
+                tokenAddress: tokenAddress,
                 userAddress: userAddress.toLowerCase(),
                 lockupPeriod: lockupPeriod,
                 minPurchaseAmount: minPurchaseAmount,
