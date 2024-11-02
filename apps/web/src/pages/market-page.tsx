@@ -2,11 +2,11 @@ import { Button, Checkbox, Input, Stack, Table, Image, TableCaption, TableContai
 import { HeaderComponent } from "../components/header-component"
 import { UserComponent } from "../components/user-component"
 import { useAccount } from "wagmi"
-import { useGetUser } from "../hooks/users/use-get-user"
-import { useGetObligations } from "../hooks/obligations/use-get-obligations"
-import { useBuyObligation } from "../hooks/obligations/use-buy-obligation"
-import { useBcApprove } from "../hooks/obligations/use-bc-approve"
-import { useBcSwap } from "../hooks/obligations/use-bc-swap"
+import { useGetUser } from "../hooks/api/users/use-get-user"
+import { useGetObligations } from "../hooks/api/obligations/use-get-obligations"
+import { useBuyObligation } from "../hooks/api/obligations/use-buy-obligation"
+import { useBcApprove } from "../hooks/blockchain/obligations/use-bc-approve"
+import { useBcSwap } from "../hooks/blockchain/obligations/use-bc-swap"
 
 export const MarketPage = () => {
     const { address } = useAccount()

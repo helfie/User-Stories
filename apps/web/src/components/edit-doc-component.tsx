@@ -1,6 +1,6 @@
 import { Button, Flex, Input, Stack } from "@chakra-ui/react";
 import { useState } from "react";
-import { useEditUserClaim } from "../hooks/claims/use-edit-user-claim";
+import { useEditUserClaim } from "../hooks/api/claims/use-edit-user-claim";
 
 export function EditDocComponent({ address, claimTopic }: { address: string, claimTopic: string }) {
     const [inputEditDoc, setInputEditDoc] = useState<File | null>(null);

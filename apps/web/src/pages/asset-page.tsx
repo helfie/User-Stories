@@ -2,14 +2,14 @@ import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContain
 import { ObligationModal } from "../components/obligation-modal";
 import { UserComponent } from "../components/user-component";
 import { useAccount } from "wagmi";
-import { useGetUser } from "../hooks/users/use-get-user";
-import { useGetUserAssets } from "../hooks/assets/use-get-user-assets";
+import { useGetUser } from "../hooks/api/users/use-get-user";
+import { useGetUserAssets } from "../hooks/api/assets/use-get-user-assets";
 import { useState } from "react";
-import { useCreateAsset } from "../hooks/assets/use-create-asset";
+import { useCreateAsset } from "../hooks/api/assets/use-create-asset";
 import { HeaderComponent } from "../components/header-component";
-import { useDeleteObligation } from "../hooks/obligations/use-delete-obligation";
+import { useDeleteObligation } from "../hooks/api/obligations/use-delete-obligation";
 import { zeroAddress } from "viem";
-import { useBcMintAsset } from "../hooks/assets/use-bc-mint-asset";
+import { useBcMintAsset } from "../hooks/blockchain/assets/use-bc-mint-asset";
 
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();

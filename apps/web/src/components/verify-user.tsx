@@ -1,10 +1,10 @@
 import { Button, Input, Stack } from "@chakra-ui/react";
 import { useState } from "react";
-import { useDeleteIdentity } from "../hooks/identities/use-bc-delete-identity";
-import { useRegisterIdentity } from "../hooks/identities/use-bc-register-identity";
-import { useAddOperator } from "../hooks/users/use-bc-add-operator";
-import { useRemoveOperator } from "../hooks/users/use-bc-remove-operator";
-import { useVerifyUser } from "../hooks/users/use-verify-user";
+import { useDeleteIdentity } from "../hooks/blockchain/identities/use-bc-delete-identity";
+import { useRegisterIdentity } from "../hooks/blockchain/identities/use-bc-register-identity";
+import { useAddOperator } from "../hooks/blockchain/users/use-bc-add-operator";
+import { useRemoveOperator } from "../hooks/blockchain/users/use-bc-remove-operator";
+import { useVerifyUser } from "../hooks/api/users/use-verify-user";
 
 export function VerifyUser({ country, isVerified, identityAddress, address, userAddress }:
     { country: string, isVerified: boolean, identityAddress: string, address: string, userAddress: string }) {

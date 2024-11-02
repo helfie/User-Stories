@@ -1,13 +1,13 @@
 import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Container, Flex, Link, Input, TagLabel, FormControl, FormLabel } from "@chakra-ui/react"
 import { UserComponent } from "../components/user-component"
-import { useGetUser } from "../hooks/users/use-get-user"
+import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useAccount } from "wagmi"
 import { useGetClaims } from "../hooks/claims/use-get-claims"
 import { env } from "../env"
-import { useVerifyUserClaim } from "../hooks/claims/use-verify-user-claim"
+import { useVerifyUserClaim } from "../hooks/api/claims//use-verify-user-claim"
 import { HeaderComponent } from "../components/header-component"
-import { useBcCreateClaim } from "../hooks/claims/use-bc-create-claim-topics"
-import { useBcRemoveClaim } from "../hooks/claims/use-bc-remove-claim-topics"
+import { useBcCreateClaim } from "../hooks/blockchain/claims/use-bc-create-claim-topics"
+import { useBcRemoveClaim } from "../hooks/blockchain/claims/use-bc-remove-claim-topics"
 
 export const AdminClaimPage = () => {
     const { address } = useAccount()

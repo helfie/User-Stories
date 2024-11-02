@@ -1,6 +1,6 @@
 import { Button, Stack, Input, ModalBody, FormControl, FormLabel } from "@chakra-ui/react"
 import { useState } from "react";
-import { useCreateObligation } from "../hooks/obligations/use-create-obligation";
+import { useCreateObligation } from "../hooks/api/obligations/use-create-obligation";
 import { isAddress } from 'viem'
 
 export const CreateObligationBody = ({ assetId, userAddress, modalBody }: { assetId:number, userAddress: string, modalBody: any }) => {

@@ -1,5 +1,5 @@
 import { Modal, ModalCloseButton, ModalContent, ModalHeader, ModalOverlay } from "@chakra-ui/react"
-import { useGetObligationByAsset } from "../hooks/obligations/use-get-obligation";
+import { useGetObligationByAsset } from "../hooks/api/obligations/use-get-obligation";
 import { CreateObligationBody } from "./create-obligation-body";
 
 export const ObligationModal = ({ isOpen, onClose, assetId, userAddress }: { isOpen: boolean, onClose: () => void, assetId: number, userAddress: string }) => {
