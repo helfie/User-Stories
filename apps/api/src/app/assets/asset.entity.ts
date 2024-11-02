@@ -32,6 +32,9 @@ export class Asset extends Model<Asset> {
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({type: String, example: "RWA test asset"})
     type: string;
+    @Column({type: DataType.SMALLINT, allowNull: true})
+    @ApiProperty({type: Number, example: 0})
+    country: number;
     @Column({type: DataType.BOOLEAN, allowNull: false, defaultValue: false})
     @ApiProperty({type: Boolean, example: false})
     isVerified: boolean;

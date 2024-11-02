@@ -35,12 +35,11 @@ export class AssetController {
         return await this.apiService.findAllAssetsByUser({userAddress: userAddress, withObligations: withObligations === 'true'});
     }
 
-    @Get('asset/:userAddress/:tokenAddress')
+    @Get('asset/:tokenAddress')
     @ApiResponse({status: 200, description: 'asset by tokenAddress', type: Asset})
     @ApiOperation({summary: "retrieve asset by tokenAddress"})
-    @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    async getAssetById(@Param('userAddress') userAddress: string, @Param('tokenAddress') tokenAddress: string) { 
+    async getAssetById(@Param('tokenAddress') tokenAddress: string) { 
         return await this.apiService.findAssetById({tokenAddress: tokenAddress});
     }
 
@@ -121,7 +120,7 @@ export class AssetController {
     }
 
     @Patch('/verify-asset')
-    @ApiResponse({status: 200, description: 'verify user', type: Asset})
+    @ApiResponse({status: 200, description: 'verify asset', type: Asset})
     @ApiOperation({summary: "verify asset"})
     async verifyUser(@Body() dto: VerifyAssetDto) {
         if(!(await this.signatureService.verifySignature('verifyAsset', dto.signature, dto.senderAddress))) {
@@ -141,6 +140,6 @@ export class AssetController {
             }
         }
 
-        return await this.apiService.verifyAsset({tokenAddress: dto.tokenAddress, verify: dto.verify});
+        return await this.apiService.verifyAsset({tokenAddress: dto.tokenAddress, verify: dto.verify, country: dto.country});
     }
 }

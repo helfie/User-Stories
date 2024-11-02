@@ -41,14 +41,14 @@ export class ClaimController {
     @ApiOperation({summary: "retrieve claim by claimTokenKey"})
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'claimTopic', required: true, description: 'claim topic', type: Number, example: 0})
-    async getClaimById(@Param('tokenAddress') tokenAddress: string, @Param('claimTopic') claimTopic: string) { 
+    async getTokenClaimById(@Param('tokenAddress') tokenAddress: string, @Param('claimTopic') claimTopic: string) { 
         return await this.apiService.findTokenClaimById({tokenAddress: tokenAddress, claimTopic: Number(claimTopic)});
     }
 
     @Post('/add-claim')
     @ApiResponse({status: 201, description: 'add token claim', type: TokenClaim})
     @ApiOperation({summary: "add token claim"})
-    async createClaim(@Body() dto: CreateTokenClaimDto) {
+    async createTokenClaim(@Body() dto: CreateTokenClaimDto) {
         if(!(await this.signatureService.verifySignature('createTokenClaim', dto.signature, dto.senderAddress))) {
             throw new UnauthorizedException(`User [${dto.senderAddress}] not authorized`)
         } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
@@ -85,7 +85,7 @@ export class ClaimController {
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'claimTopic', required: true, description: 'claim topic', type: Number, example: 0})
     @UseInterceptors(FileInterceptor('file'))
-    async updateDocgen(
+    async updateTokenDocgen(
             @Headers() headers,
             @Param('tokenAddress') tokenAddress: string, 
             @Param('claimTopic') claimTopic: string, 
@@ -124,14 +124,14 @@ export class ClaimController {
     @ApiParam({ name: 'senderAddress', required: true, description: 'eth sender address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f' })
     @ApiParam({ name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f' })
     @ApiParam({ name: 'claimTopic', required: true, description: 'claim topic', type: Number, example: 0 })
-    async getDocgen(@Headers() headers, @Param('senderAddress') senderAddress: string, @Param('tokenAddress') tokenAddress: string, @Param('claimTopic') claimTopic: string): Promise<StreamableFile> {
+    async getTokenDocgen(@Headers() headers, @Param('senderAddress') senderAddress: string, @Param('tokenAddress') tokenAddress: string, @Param('claimTopic') claimTopic: string): Promise<StreamableFile> {
         const signature = headers['signature']
         if (!(await this.apiService.isAssetExists({ tokenAddress: tokenAddress }))) {
             throw new BadRequestException(`Asset [${tokenAddress}] does not exist`)
         } else if (!(await this.apiService.findTokenClaimById({ tokenAddress: tokenAddress, claimTopic: Number(claimTopic) }))) {
             throw new BadRequestException(`Claim [${tokenAddress}-${claimTopic}] does not exist`)
         } else if(!(await this.apiService.isUserAdmin({ userAddress: senderAddress }))) {
-            if (!(await this.signatureService.verifySignature('getDocgen', signature, senderAddress))) {
+            if (!(await this.signatureService.verifySignature('getTokenDocgen', signature, senderAddress))) {
                 throw new UnauthorizedException(`User [${senderAddress}] not authorized`)
             }
         }
@@ -146,7 +146,7 @@ export class ClaimController {
     @Patch('/verify-token-claim')
     @ApiResponse({status: 200, description: 'verify token claim', type: TokenClaim})
     @ApiOperation({summary: "verify token claim"})
-    async verifyClaim(@Body() dto: VerifyTokenClaimDto) {
+    async verifyTokenClaim(@Body() dto: VerifyTokenClaimDto) {
         if(!(await this.signatureService.verifySignature('verifyTokenClaim', dto.signature, dto.senderAddress))) {
             throw new UnauthorizedException(`Sender [${dto.senderAddress}] not authorized`)
         } else if(!(await this.apiService.isUserAdmin({userAddress: dto.senderAddress}))) {

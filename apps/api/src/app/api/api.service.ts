@@ -156,6 +156,7 @@ interface UpdateAssetObligationParams {
 interface VerifyAssetParams {
     tokenAddress: string;
     verify: boolean;
+    country: number;
 }
 ///
 
@@ -522,9 +523,9 @@ export class ApiService {
         return entity;
     }
 
-    async verifyAsset({tokenAddress, verify}:VerifyAssetParams) {
+    async verifyAsset({tokenAddress, verify, country}:VerifyAssetParams) {
         const [rows, entity] = await this.assetRepository.update(
-            {isVerified: verify}, 
+            {isVerified: verify, country: country}, 
             {where : {tokenAddress: tokenAddress.toLowerCase()}, returning: true}
         )
         return entity
