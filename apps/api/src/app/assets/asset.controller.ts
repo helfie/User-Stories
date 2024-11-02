@@ -53,12 +53,15 @@ export class AssetController {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
+        } else if(dto.decimals <= 0 && dto.decimals > 18) {
+            throw new BadRequestException(`Invalid decimals [${dto.decimals}]`)
         }
         return await this.apiService.createAsset({
+            tokenAddress: dto.tokenAddress,
             userAddress: dto.userAddress, 
             name: dto.name, 
-            description: dto.description,
-            type: dto.type
+            symbol: dto.symbol,
+            decimals: dto.decimals
         });
     }
 

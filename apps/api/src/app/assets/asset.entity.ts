@@ -27,11 +27,11 @@ export class Asset extends Model<Asset> {
     @ApiProperty({type: String, example: "Test_Asset"})
     name: string;
     @Column({type: DataType.STRING, allowNull: false})
-    @ApiProperty({type: String, example: "This is a test asset"})
-    description: string;
-    @Column({type: DataType.STRING, allowNull: false})
-    @ApiProperty({type: String, example: "RWA test asset"})
-    type: string;
+    @ApiProperty({type: String, example: "TA"})
+    symbol: string;
+    @Column({type: DataType.SMALLINT, allowNull: true})
+    @ApiProperty({type: Number, example: 18})
+    decimals: number;
     @Column({type: DataType.SMALLINT, allowNull: true})
     @ApiProperty({type: Number, example: 0})
     country: number;

@@ -126,10 +126,11 @@ interface FindAssetById {
 }
 
 interface CreateAssetParams {
+    tokenAddress: string;
     userAddress: string;
     name: string;
-    description: string;
-    type: string;
+    symbol: string;
+    decimals: number;
 }
 
 interface SetTokenIdentityParams {
@@ -489,12 +490,13 @@ export class ApiService {
         return await this.assetRepository.findByPk(tokenAddress.toLowerCase())
     }
 
-    async createAsset({userAddress, name, description, type}:CreateAssetParams) {
+    async createAsset({tokenAddress, userAddress, name, symbol, decimals}: CreateAssetParams) {
         return await this.assetRepository.create({
+            tokenAddress: tokenAddress.toLowerCase(),
             deployer: userAddress.toLowerCase(),
             name: name,
-            description: description,
-            type: type,
+            symbol: symbol,
+            decimals: decimals,
             isVerified: false
         })
     }
