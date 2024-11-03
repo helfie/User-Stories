@@ -1,4 +1,4 @@
-import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Container, Flex, useDisclosure, Input } from "@chakra-ui/react"
+import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContainer, Tbody, Td, Tfoot, Th, Thead, Tr, Container, Flex, useDisclosure, Input, Select } from "@chakra-ui/react"
 import { ObligationModal } from "../components/obligation-modal";
 import { UserComponent } from "../components/user-component";
 import { useAccount } from "wagmi";
@@ -10,6 +10,9 @@ import { HeaderComponent } from "../components/header-component";
 import { useDeleteObligation } from "../hooks/api/obligations/use-delete-obligation";
 import { zeroAddress } from "viem";
 import { useBcMintAsset } from "../hooks/blockchain/assets/use-bc-mint-asset";
+import { AddAssetClaimsPage } from "./add-asset-claims-page";
+import { useBcCreateAsset } from "../hooks/blockchain/assets/use-bc-create-asset";
+import { AVAILABLE_DECIMALS } from "../constants";
 
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();
@@ -19,13 +22,15 @@ export const AssetPage = () => {
     const { isPendingUserAssets, userAssetsData } = useGetUserAssets(address?.toString(), 'true')
 
     const [inputName, setInputName] = useState('');
-    const [inputType, setInputType] = useState('');
-    const [inputDescription, setInputDescription] = useState('');
+    const [inputSymbol, setInputSymbol] = useState('');
+    const [inputDecimals, setInputDecimals] = useState('18');
     const [assetId, setAssetId] = useState(0)
 
     const createAssetMutation = useCreateAsset();
     const deleteObligationMutation = useDeleteObligation();
     const useBcMint = useBcMintAsset();
+    
+    const bcCreateAssetMutation = useBcCreateAsset();
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -41,6 +46,7 @@ export const AssetPage = () => {
                             <Th>Name</Th>
                             <Th>Desciption</Th>
                             <Th>Type</Th>
+                            <Th>Is Verified</Th>
                             <Th>Sell</Th>
                         </Tr>
                     </Thead>
@@ -51,12 +57,25 @@ export const AssetPage = () => {
 
                         {userAssetsData?.map((element: any) => {
                             return (
-                                <Tr key={`${element.id}`}>
-                                    <Td>{element?.id}</Td>
+                                <Tr key={`${element.tokenAddress}`}>
+                                    <Td>{element?.tokenAddress}</Td>
                                     <Td>{element?.userAddress}</Td>
                                     <Td>{element?.name}</Td>
                                     <Td>{element?.description}</Td>
                                     <Td>{element?.type}</Td>
+                                    <Td>{
+                                        !element?.isVerified
+                                        ? 
+                                            <Stack>
+                                                <Button colorScheme='yellow' size='sm' onClick={() => 
+                                                    <AddAssetClaimsPage tokenAddress={element?.tokenAddress}/>
+                                                }>
+                                                    Add Claims
+                                                </Button>
+                                                <Checkbox isChecked={element?.isVerified} disabled></Checkbox>
+                                            </Stack>
+                                        : <Checkbox isChecked={element?.isVerified} disabled></Checkbox>
+                                    }</Td>
                                     <Td>
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' onClick={() => {
@@ -90,23 +109,41 @@ export const AssetPage = () => {
                 <Flex w={'100%'} justifyContent={'center'} margin={'30px'}>
                     <Stack spacing={3} maxW={'2xl'}>
                         <Input placeholder='Name' value={inputName} onChange={(e) => setInputName(e.target.value)} />
-                        <Input placeholder='Description' value={inputDescription} onChange={(e) => setInputDescription(e.target.value)} />
-                        <Input placeholder='Type' value={inputType} onChange={(e) => setInputType(e.target.value)} />
-
+                        <Input placeholder='Symbol' value={inputSymbol} onChange={(e) => setInputSymbol(e.target.value)} />
+                        <Select placeholder='Claim Topic' onChange={(e) => {
+                                if (e.target.value !== '') {
+                                    setInputDecimals(e.target.value)
+                                }
+                            }}>
+                                {
+                                    AVAILABLE_DECIMALS.map((element: any) => {
+                                        return (
+                                            <option value={element}>
+                                                {element}
+                                            </option>
+                                        )
+                                    })
+                                }
+                        </Select>
                         <Button colorScheme='blue' onClick={async () => {
-                            await useBcMint.mutateAsync({ userAddress: address?.toString() })
+                            await bcCreateAssetMutation.mutateAsync({
+                                userAddress: address?.toString(),
+                                name: inputName,
+                                symbol: inputSymbol,
+                                decimals: Number(inputDecimals)
+                            })
                             await createAssetMutation.mutateAsync({
                                 userAddress: address?.toString(),
                                 name: inputName,
-                                description: inputDescription,
-                                type: inputType,
+                                symbol: inputSymbol,
+                                decimals: Number(inputDecimals),
                             })
                             setInputName('')
-                            setInputType('')
-                            setInputDescription('')
+                            setInputSymbol('')
+                            setInputDecimals('18')
                         }}
                         >
-                            Mint Asset
+                            Deploy Asset
                         </Button>
                     </Stack>
                 </Flex>
