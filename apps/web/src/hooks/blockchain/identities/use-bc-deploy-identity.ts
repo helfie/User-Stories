@@ -12,23 +12,23 @@ export const useDeployIdentity = () => {
     const mutation = useMutation({
         mutationFn: async (
             variables: {
-                userAddress: string | undefined,
+                address: string | undefined,
                 senderAddress: string | undefined,
                     }) => {
-            if (!variables.userAddress || !variables.senderAddress) {
+            if (!variables.address || !variables.senderAddress) {
                 throw new Error("No User")
             }
 
             try {
                 let wc;
-                if(variables.userAddress.toLowerCase() !== variables.senderAddress.toLowerCase()) {
+                if(variables.address.toLowerCase() !== variables.senderAddress.toLowerCase()) {
                     wc = await writeContractAsync({
                         abi: ID_FACTORY_ABI,
                         address: IDENTITY_FACTORY,
                         functionName: 'createIdentityWithManagementKeys',
                         args: [
-                            variables.userAddress as Address,
-                            variables.userAddress as Address,
+                            variables.senderAddress as Address,
+                            variables.address as Address,
                             [keccak256(pad(variables.senderAddress as Hex))]
                         ],
                     })
@@ -38,8 +38,8 @@ export const useDeployIdentity = () => {
                         address: IDENTITY_FACTORY,
                         functionName: 'createIdentity',
                         args: [
-                            variables.userAddress as Address,
-                            variables.userAddress as Address
+                            variables.senderAddress as Address,
+                            variables.address as Address
                         ],
                     })
                 } 
@@ -50,7 +50,7 @@ export const useDeployIdentity = () => {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['userAssets'] })
+            queryClient.invalidateQueries({ queryKey: ['users'] })
         },
     })
 

@@ -6,7 +6,7 @@ import { IDENTITY_FACTORY } from '../../../addresses'
 import { Address, keccak256, pad } from 'viem'
 import { KeysTypes } from '../../../types'
 
-export const useBcIdentityAddKey = () => {
+export const useBcIdentityAddKey = (isToken?: boolean) => {
     const queryClient = useQueryClient()
     const { writeContractAsync } = useWriteContract()
     const publicClient = usePublicClient();
@@ -14,10 +14,10 @@ export const useBcIdentityAddKey = () => {
     const mutation = useMutation({
         mutationFn: async (
             variables: {
-                userAddress: string | undefined,
+                address: string | undefined,
                 senderAddress: string | undefined,
             }) => {
-            if (!variables.userAddress || !publicClient) {
+            if (!variables.address || !publicClient) {
                 throw new Error("No User")
             }
 
@@ -26,7 +26,7 @@ export const useBcIdentityAddKey = () => {
                     abi: ID_FACTORY_ABI,
                     address: IDENTITY_FACTORY,
                     functionName: 'getIdentity',
-                    args: [variables.userAddress as Address],
+                    args: [variables.address as Address],
                 })
 
                 const wc = await writeContractAsync({
@@ -45,7 +45,8 @@ export const useBcIdentityAddKey = () => {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['userAssets'] })
+            const query = isToken ? 'assets' : 'users';
+            queryClient.invalidateQueries({ queryKey: [query] })
         },
     })
 

@@ -4,7 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { IR_ABI } from '../../../abis/ir.abi'
 import { Address } from 'viem'
 
-export const useRegisterIdentity = () => {
+export const useRegisterIdentity = (isToken?: boolean) => {
     const queryClient = useQueryClient()
     const { writeContractAsync } = useWriteContract()
     const publicClient = usePublicClient()
@@ -12,11 +12,11 @@ export const useRegisterIdentity = () => {
     const mutation = useMutation({
         mutationFn: async (
             variables: {
-                userAddress: string | undefined,
+                address: string | undefined,
                 identityAddress: string | undefined,
                 country: number,
             }) => {
-            if (!variables.userAddress) {
+            if (!variables.address) {
                 throw new Error("No User")
             } else if (!variables.identityAddress) {
                 throw new Error("No Identity")
@@ -28,7 +28,7 @@ export const useRegisterIdentity = () => {
                     address: IR,
                     functionName: 'registerIdentity',
                     args: [
-                        variables.userAddress as Address,
+                        variables.address as Address,
                         variables.identityAddress  as Address,
                         variables.country,
                     ],
@@ -39,7 +39,8 @@ export const useRegisterIdentity = () => {
             }
         },
         onSuccess: () => {
-            queryClient.invalidateQueries({ queryKey: ['users'] })
+            const query = isToken ? 'assets' : 'users';
+            queryClient.invalidateQueries({ queryKey: [query] })
         },
     })
 
