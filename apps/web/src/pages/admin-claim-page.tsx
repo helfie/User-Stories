@@ -2,7 +2,7 @@ import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContain
 import { UserComponent } from "../components/user-component"
 import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useAccount } from "wagmi"
-import { useGetClaims } from "../hooks/claims/use-get-claims"
+import { useGetClaims } from "../hooks/api/claims/use-get-claims"
 import { env } from "../env"
 import { useVerifyUserClaim } from "../hooks/api/claims//use-verify-user-claim"
 import { HeaderComponent } from "../components/header-component"
@@ -61,13 +61,13 @@ export const AdminClaimPage = () => {
                                                                 if (!element?.isClaimVerified) {
                                                                     await addClaim.mutateAsync({
                                                                         senderAddress: address?.toString(),
-                                                                        userAddress: element?.userAddress,
+                                                                        address: element?.userAddress,
                                                                         identityAddress: element?.user?.identityAddress,
                                                                         claimTopic: BigInt(element?.claimTopic)
                                                                     })
                                                                 } else {
                                                                     await removeClaim.mutateAsync({
-                                                                        userAddress: address?.toString(),
+                                                                        address: address?.toString(),
                                                                         identityAddress: element?.user?.identityAddress,
                                                                         claimTopic: BigInt(element?.claimTopic)
                                                                     })

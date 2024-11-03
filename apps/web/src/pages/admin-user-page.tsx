@@ -15,8 +15,8 @@ export const AdminUserPage = () => {
     const { isLoadingUser, userData } = useGetUser(address?.toString())
     const { isPendingUsers, usersData } = useGetUsers()
 
-    const deployIdentity = useDeployIdentity()
-    const addKey = useBcIdentityAddKey()
+    const deployIdentity = useDeployIdentity(true)
+    const addKey = useBcIdentityAddKey(true)
     const createIdentity = useCreateIdentity()
 
     return <Container maxW={'8xl'} w={'100%'}>
@@ -52,11 +52,11 @@ export const AdminUserPage = () => {
                                             <Button colorScheme='blue' size='sm' onClick={async () => {
                                                 if (!element?.identityAddress) {
                                                     await deployIdentity.mutateAsync({
-                                                        userAddress: element?.userAddress,
+                                                        address: element?.userAddress,
                                                         senderAddress: address?.toString()
                                                     })
                                                     await addKey.mutateAsync({
-                                                        userAddress: element?.userAddress,
+                                                        address: element?.userAddress,
                                                         senderAddress: address?.toString()
                                                     })
                                                     await createIdentity.mutateAsync({
@@ -80,7 +80,7 @@ export const AdminUserPage = () => {
                                             isVerified={element?.isVerified ?? false}
                                             identityAddress={element?.identityAddress ?? zeroAddress}
                                             address={address?.toString() ?? zeroAddress}
-                                            userAddress={address?.toString() ?? zeroAddress} />
+                                            userAddress={element?.userAddress?.toString() ?? zeroAddress} />
                                     </Td>
                                     <Td><Checkbox size="lg" isChecked={element?.isAdmin} disabled /></Td>
                                 </Tr>
