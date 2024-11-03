@@ -13,6 +13,7 @@ import { useBcMintAsset } from "../hooks/blockchain/assets/use-bc-mint-asset";
 import { AddAssetClaimsPage } from "./add-asset-claims-page";
 import { useBcCreateAsset } from "../hooks/blockchain/assets/use-bc-create-asset";
 import { AVAILABLE_DECIMALS } from "../constants";
+import { MintAsset } from "../components/mint-asset";
 
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();
@@ -28,8 +29,7 @@ export const AssetPage = () => {
 
     const createAssetMutation = useCreateAsset();
     const deleteObligationMutation = useDeleteObligation();
-    const useBcMint = useBcMintAsset();
-    
+
     const bcCreateAssetMutation = useBcCreateAsset();
 
     return <Container maxW={'8xl'} w={'100%'}>
@@ -63,19 +63,25 @@ export const AssetPage = () => {
                                     <Td>{element?.name}</Td>
                                     <Td>{element?.description}</Td>
                                     <Td>{element?.type}</Td>
-                                    <Td>{
-                                        !element?.isVerified
-                                        ? 
-                                            <Stack>
-                                                <Button colorScheme='yellow' size='sm' onClick={() => 
-                                                    <AddAssetClaimsPage tokenAddress={element?.tokenAddress}/>
-                                                }>
-                                                    Add Claims
-                                                </Button>
-                                                <Checkbox isChecked={element?.isVerified} disabled></Checkbox>
-                                            </Stack>
-                                        : <Checkbox isChecked={element?.isVerified} disabled></Checkbox>
-                                    }</Td>
+                                    <Td>
+                                        <Stack>
+                                            {
+                                                !element?.isVerfied
+                                                    ? <Button colorScheme='yellow' size='sm' onClick={() =>
+                                                        <AddAssetClaimsPage tokenAddress={element?.tokenAddress} />
+                                                    }>
+                                                        Add Claim
+                                                    </Button>
+                                                    :
+                                                    <MintAsset
+                                                        tokenAddress={element?.tokenAddress ?? zeroAddress}
+                                                        userAddress={address?.toString() ?? zeroAddress}
+                                                        isVerified={element?.isVerified}
+                                                    />
+                                            }
+                                            <Checkbox isChecked={element?.isVerified} disabled></Checkbox>
+                                        </Stack>
+                                    </Td>
                                     <Td>
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' onClick={() => {
@@ -111,19 +117,19 @@ export const AssetPage = () => {
                         <Input placeholder='Name' value={inputName} onChange={(e) => setInputName(e.target.value)} />
                         <Input placeholder='Symbol' value={inputSymbol} onChange={(e) => setInputSymbol(e.target.value)} />
                         <Select placeholder='Claim Topic' onChange={(e) => {
-                                if (e.target.value !== '') {
-                                    setInputDecimals(e.target.value)
-                                }
-                            }}>
-                                {
-                                    AVAILABLE_DECIMALS.map((element: any) => {
-                                        return (
-                                            <option value={element}>
-                                                {element}
-                                            </option>
-                                        )
-                                    })
-                                }
+                            if (e.target.value !== '') {
+                                setInputDecimals(e.target.value)
+                            }
+                        }}>
+                            {
+                                AVAILABLE_DECIMALS.map((element: any) => {
+                                    return (
+                                        <option value={element}>
+                                            {element}
+                                        </option>
+                                    )
+                                })
+                            }
                         </Select>
                         <Button colorScheme='blue' onClick={async () => {
                             await bcCreateAssetMutation.mutateAsync({
