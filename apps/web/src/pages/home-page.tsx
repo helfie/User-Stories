@@ -7,7 +7,6 @@ import { useCreateUserClaim } from "../hooks/api/claims/use-create-user-claim"
 import { useState } from "react"
 import { HeaderComponent } from "../components/header-component"
 import { HeaderImage } from "../components/image-component"
-import { useEditUserClaim } from "../hooks/api/claims/use-edit-user-claim"
 import { useGetClaimTopics } from "../hooks/blockchain/claims/use-bc-get-claim-topics"
 import { zeroAddress } from "viem"
 import { EditDocComponent } from "../components/edit-doc-component"
@@ -20,10 +19,8 @@ export const HomePage = () => {
 
     const [inputClaimTopic, setClaimTopic] = useState('');
     const [inputDoc, setInputDoc] = useState<File | null>(null);
-    const [inputEditDoc, setInputEditDoc] = useState<File | null>(null);
 
     const mutation = useCreateUserClaim()
-    const editMutation = useEditUserClaim()
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -56,8 +53,11 @@ export const HomePage = () => {
                                 <Td w={'25%'}>
                                     {
                                         !element?.isClaimVerified && 
-                                            <EditDocComponent address={address?.toString() ?? zeroAddress}
-                                                claimTopic={element?.claimTopic ?? 0}/>
+                                            <EditDocComponent 
+                                                senderAddress={address?.toString() ?? zeroAddress}
+                                                address={address?.toString() ?? zeroAddress}
+                                                claimTopic={element?.claimTopic ?? 0}
+                                                isToken={false}/>
                                     }
                                 </Td>
                             </Tr>
