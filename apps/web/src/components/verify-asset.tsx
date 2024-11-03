@@ -2,20 +2,16 @@ import { Button, Input, Stack } from "@chakra-ui/react";
 import { useState } from "react";
 import { useDeleteIdentity } from "../hooks/blockchain/identities/use-bc-delete-identity";
 import { useRegisterIdentity } from "../hooks/blockchain/identities/use-bc-register-identity";
-import { useAddOperator } from "../hooks/blockchain/users/use-bc-add-operator";
-import { useRemoveOperator } from "../hooks/blockchain/users/use-bc-remove-operator";
-import { useVerifyUser } from "../hooks/api/users/use-verify-user";
+import { useVerifyAsset } from "../hooks/api/assets/use-verify-asset";
 
-export function VerifyUser({ country, isVerified, identityAddress, address, userAddress }:
-    { country: string, isVerified: boolean, identityAddress: string, address: string, userAddress: string }) {
+export function VerifyAsset({ country, isVerified, identityAddress, address, tokenAddress }:
+    { country: string, isVerified: boolean, identityAddress: string, address: string, tokenAddress: string }) {
     const [inputCountry, setInputCountry] = useState(country);
 
-    const verifyUser = useVerifyUser()
+    const verifyAsset = useVerifyAsset()
 
-    const useAddUser = useAddOperator()
     const registerIdentity = useRegisterIdentity()
 
-    const useRemoveUser = useRemoveOperator()
     const deleteIdentity = useDeleteIdentity()
 
     return (
@@ -29,19 +25,17 @@ export function VerifyUser({ country, isVerified, identityAddress, address, user
                 onClick={async () => {
                     if (identityAddress) {
                         if (isVerified) {
-                            await deleteIdentity.mutateAsync({ address: userAddress })
-                            await useRemoveUser.mutateAsync({ userAddress: userAddress })
+                            await deleteIdentity.mutateAsync({ address: tokenAddress })
                         } else {
                             await registerIdentity.mutateAsync({
-                                address: userAddress,
+                                address: tokenAddress,
                                 identityAddress: identityAddress,
                                 country: Number(inputCountry),
                             })
-                            await useAddUser.mutateAsync({ userAddress: userAddress })
                         }
-                        await verifyUser.mutateAsync({
+                        await verifyAsset.mutateAsync({
                             senderAddress: address?.toString(),
-                            userAddress: userAddress,
+                            tokenAddress: tokenAddress,
                             country: Number(inputCountry),
                             verify: isVerified ? false : true,
                         })
