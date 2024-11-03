@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { env } from "../../../env"
 
-export const useGetUserAssets = (withObligations: string) => {
+export const useGetAssets = (withObligations: string) => {
     const { isPending, error, data } = useQuery({
         queryKey: ['assets', withObligations],
         queryFn: () =>
@@ -9,5 +9,5 @@ export const useGetUserAssets = (withObligations: string) => {
             res.json(),
         ),
     })
-    return { isPendingUserAssets: isPending, userAssetsData: data }
+    return { isPendingAssets: isPending, assetsData: data }
 }
