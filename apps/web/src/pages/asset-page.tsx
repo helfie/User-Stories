@@ -14,6 +14,7 @@ import { AddAssetClaimsPage } from "./add-asset-claims-page";
 import { useBcCreateAsset } from "../hooks/blockchain/assets/use-bc-create-asset";
 import { AVAILABLE_DECIMALS } from "../constants";
 import { MintAsset } from "../components/mint-asset";
+import { useNavigate } from "react-router-dom";
 
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();
@@ -31,6 +32,7 @@ export const AssetPage = () => {
     const deleteObligationMutation = useDeleteObligation();
 
     const bcCreateAssetMutation = useBcCreateAsset();
+    const navigate = useNavigate();
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -68,7 +70,7 @@ export const AssetPage = () => {
                                             {
                                                 !element?.isVerfied
                                                     ? <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                        <AddAssetClaimsPage tokenAddress={element?.tokenAddress} />
+                                                         navigate(`/admin-asset-claim/${element?.tokenAddress}`)
                                                     }>
                                                         Add Claim
                                                     </Button>
