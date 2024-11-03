@@ -12,7 +12,7 @@ export const useBcRemoveClaim = (isToken?: boolean) => {
   const mutation = useMutation({
     mutationFn: async (
       variables: {
-        userAddress: string | undefined,
+        address: string | undefined,
         identityAddress: string | undefined,
         claimTopic: bigint,
       }) => {

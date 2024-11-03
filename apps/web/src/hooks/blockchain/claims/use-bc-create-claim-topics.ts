@@ -15,19 +15,19 @@ export const useBcCreateClaim = (isToken?: boolean) => {
     mutationFn: async (
       variables: {
         senderAddress: string | undefined,
-        userAddress: string | undefined,
+        address: string | undefined,
         identityAddress: string | undefined,
         claimTopic: bigint,
       }) => {
-      if (!variables.senderAddress || !variables.userAddress || !variables.identityAddress) {
+      if (!variables.senderAddress || !variables.address || !variables.identityAddress) {
         throw new Error("No Sender")
       }
 
       try {
         const data = CLAIM_DATA
-        const message = claimSignature(variables.userAddress as Address, variables.claimTopic, data)
+        const message = claimSignature(variables.senderAddress as Address, variables.claimTopic, data)
         const signature = await signMessageAsync({ message: message })
-        const uri = `${variables.claimTopic}-${variables.userAddress}`
+        const uri = `${variables.claimTopic}-${variables.address}`
         const wc = await writeContractAsync({
           abi: IDENTITY_ABI,
           address: variables.identityAddress as Address,
