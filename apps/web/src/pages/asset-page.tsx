@@ -43,12 +43,13 @@ export const AssetPage = () => {
                     <TableCaption placement="top">User Assets</TableCaption>
                     <Thead>
                         <Tr>
-                            <Th isNumeric>Asset id</Th>
-                            <Th>User Address</Th>
+                            <Th>Token</Th>
+                            <Th>User</Th>
                             <Th>Name</Th>
-                            <Th>Desciption</Th>
-                            <Th>Type</Th>
-                            <Th>Is Verified</Th>
+                            <Th>Symbol</Th>
+                            <Th>Decimals</Th>
+                            <Th>Verified</Th>
+                            <Th>Compliance</Th>
                             <Th>Sell</Th>
                         </Tr>
                     </Thead>
@@ -63,8 +64,8 @@ export const AssetPage = () => {
                                     <Td>{element?.tokenAddress}</Td>
                                     <Td>{element?.userAddress}</Td>
                                     <Td>{element?.name}</Td>
-                                    <Td>{element?.description}</Td>
-                                    <Td>{element?.type}</Td>
+                                    <Td>{element?.symbol}</Td>
+                                    <Td>{element?.decimals}</Td>
                                     <Td>
                                         <Stack>
                                             {
@@ -85,6 +86,14 @@ export const AssetPage = () => {
                                         </Stack>
                                     </Td>
                                     <Td>
+                                        <Button colorScheme='yellow' size='sm' onClick={() =>
+                                                navigate(`/token-compliance-requests/${element?.tokenAddress}-${element?.userAddress}`)
+                                        }>
+                                            Request changing compliance
+                                        </Button>
+                                    </Td>
+                                    <Td>
+                                        
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' onClick={() => {
                                                 setAssetId(element?.id)

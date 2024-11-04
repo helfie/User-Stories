@@ -5,3 +5,9 @@ export enum KeysTypes {
     CLAIM,
     ENCRYPTION
 }
+
+export enum ExecuteStatus {
+    Processing = 0,
+    Canceled,
+    Executed
+}
