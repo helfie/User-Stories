@@ -14,16 +14,16 @@ export class Obligation extends Model<Obligation> {
     tokenAddress: string;
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
-    userAddress: string;
-    @Column({type: DataType.INTEGER, allowNull: false})
-    @ApiProperty({type: Number, example: 100})
-    minPurchaseAmount: number;
-    @Column({type: DataType.INTEGER, allowNull: false})
-    @ApiProperty({type: Number, example: 100})
-    lockupPeriod: number;
-    @Column({type: DataType.STRING, allowNull: false})
+    seller: string;
+    @Column({type: DataType.STRING, allowNull: true})
     @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
-    transferRestrictionAddress: string;
+    buyer: string;
+    @Column({type: DataType.INTEGER, allowNull: false})
+    @ApiProperty({type: Number, example: 100})
+    amount: number;
+    @Column({type: DataType.SMALLINT, allowNull: false})
+    @ApiProperty({type: Number, example: 2})
+    txCount: number;
     @Column({type: DataType.BOOLEAN, allowNull: false})
     @ApiProperty({type: Boolean, example: false})
     isExecuted: boolean;
