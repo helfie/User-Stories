@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ASSET_REPOSITORY, CLAIM_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, TOKEN_CLAIM_REPOSITORY, TOKEN_COMPLIANCE_REQUEST_REPOSITORY, TOKEN_IDENTITY_REPOSITORY, USER_REPOSITORY } from "../constants";
+import { ASSET_REPOSITORY, CLAIM_REPOSITORY, DVD_TRANSFER_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, TOKEN_CLAIM_REPOSITORY, TOKEN_COMPLIANCE_REQUEST_REPOSITORY, TOKEN_IDENTITY_REPOSITORY, USER_REPOSITORY } from "../constants";
 import { Claim } from "../claims/claim.entity";
 import { Identity } from "../identities/identity.entity";
 import { Asset } from "../assets/asset.entity";
@@ -8,8 +8,9 @@ import { Obligation } from "../obligations/obligation.entity";
 import { TokenIdentity } from "../token-identities/token-identity.entity";
 import { TokenClaim } from "../token-claims/token-claim.entity";
 import { TokenComplianceRequest } from "../token-compliance/token-compliance-request.entity";
-import { ExecuteStatus } from "../types";
+import { ExecuteStatus, ObligationStatus } from "../types";
 import { Op } from "sequelize";
+import { DvdTransfer } from "../dvd-transfers/dvd-transfer.entity";
 
 /// User Service
 interface CreateUserParams {
@@ -198,7 +199,7 @@ interface VerifyTokenComplianceRequest {
 /// Obligation Service
 interface FindAllObligationsWithAssets {
     withAssets: boolean;
-    isNotExecuted?: boolean;
+    isExecuted?: boolean;
 }
 
 interface FindObligationByAssetId {
@@ -212,23 +213,13 @@ interface FindObligationById {
 interface CreateObligationParams {
     tokenAddress: string;
     userAddress: string;
-    minPurchaseAmount: number;
-    lockupPeriod: number;
-    transferRestrictionAddress: string;
+    amount: number;
+    txCount: number;
 }
 
 interface UpdateObligationParams {
     obligationId: number;
     userAddress: string;
-    minPurchaseAmount: number;
-    lockupPeriod: number;
-    transferRestrictionAddress: string;
-}
-
-interface ExecuteObligationParams {
-    obligationId: number;
-    userAddress: string;
-    isExecuted: boolean;
 }
 
 interface DeleteObligationParams {
@@ -242,6 +233,44 @@ interface FindObligationParams {
 interface FindObligationByOwnerParams {
     obligationId: number;
     userAddress: string;
+}
+///
+
+/// DvdTransfer Service
+interface FindAllDvdTransfers {
+    withObligations: boolean;
+}
+
+interface FindDvdTransfersByToken {
+    tokenAddress: string;
+}
+
+interface FindDvdTransfersByBuyer {
+    buyer: string;
+}
+
+interface FindDvdTransfersById {
+    dvdTransferId: number;
+}
+
+interface CreateDvdTransferParams {
+    nonce: number;
+    buyer: string;
+    buyerToken: string;
+    buyerAmount: number;
+    seller: string;
+    sellerToken: string;
+    sellerAmount: number;
+}
+
+interface UpdateDvdTransfer {
+    dvdTransferId: number;
+    status: ExecuteStatus;
+}
+
+interface IsDvdTransferSeller {
+    dvdTransferId: number;
+    seller: string;
 }
 ///
 
@@ -260,6 +289,7 @@ export class ApiService {
         @Inject(TOKEN_IDENTITY_REPOSITORY) private readonly tokenIdentityRepository: typeof TokenIdentity,
         @Inject(TOKEN_CLAIM_REPOSITORY) private readonly tokenClaimRepository: typeof TokenClaim,
         @Inject(TOKEN_COMPLIANCE_REQUEST_REPOSITORY) private readonly tokenComplianceRequestRepository: typeof TokenComplianceRequest,
+        @Inject(DVD_TRANSFER_REPOSITORY) private readonly dvdTransferRepository: typeof DvdTransfer,
     ) {
     }
 
@@ -674,10 +704,10 @@ export class ApiService {
     ///
 
     /// ObligationService
-    async findAllObligations({ withAssets, isNotExecuted }: FindAllObligationsWithAssets) {
-        if (isNotExecuted !== null && withAssets) {
+    async findAllObligations({ withAssets, isExecuted }: FindAllObligationsWithAssets) {
+        if (status !== null && withAssets) {
             return await this.obligationRepository.findAll({
-                where: { isExecuted: isNotExecuted },
+                where: { isExecuted: isExecuted },
                 include: [Asset]
             })
         } else if (withAssets) {
@@ -697,49 +727,22 @@ export class ApiService {
         return await this.obligationRepository.findByPk(obligationId)
     }
 
-    async getObligationUnlockDate({ obligationId }: FindObligationById) {
-        const obligation = await this.obligationRepository.findByPk(obligationId)
-        const date = obligation?.createdAt
-        date.setSeconds(date?.getSeconds() + obligation?.lockupPeriod)
-        return date;
-    }
-
-    async createObligation({ tokenAddress, userAddress, lockupPeriod, minPurchaseAmount, transferRestrictionAddress }: CreateObligationParams) {
+    async createObligation({ tokenAddress, userAddress, amount, txCount }: CreateObligationParams) {
         return await this.obligationRepository.create({
             tokenAddress: tokenAddress,
-            userAddress: userAddress.toLowerCase(),
-            lockupPeriod: lockupPeriod,
-            minPurchaseAmount: minPurchaseAmount,
-            transferRestrictionAddress: transferRestrictionAddress.toLowerCase(),
+            seller: userAddress.toLowerCase(),
+            amount: amount,
+            txCount: txCount,
             isExecuted: false,
         })
     }
 
-    async updateObligation({ obligationId, userAddress, lockupPeriod, minPurchaseAmount, transferRestrictionAddress }: UpdateObligationParams) {
+    async updateObligation({ obligationId, userAddress }: UpdateObligationParams) {
         const [rows, entity] = await this.obligationRepository.update(
-            {
-                userAddress: userAddress.toLowerCase(),
-                lockupPeriod: lockupPeriod,
-                minPurchaseAmount: minPurchaseAmount,
-                transferRestrictionAddress: transferRestrictionAddress.toLowerCase(),
-                isExecuted: false
-            },
+            { buyer: userAddress.toLowerCase(), isExecuted: true },
             { where: { id: obligationId, }, returning: true }
         )
         return entity;
-    }
-
-    async executeObligation({ obligationId, userAddress, isExecuted }: ExecuteObligationParams) {
-        const [rows, entity] = await this.obligationRepository.update(
-            { userAddress: userAddress.toLowerCase(), isExecuted: isExecuted },
-            { where: { id: obligationId, }, returning: true }
-        )
-        return entity;
-    }
-
-    async deleteObligation({ obligationId }: DeleteObligationParams) {
-        const rows = await this.obligationRepository.destroy({ where: { id: obligationId } })
-        return obligationId;
     }
 
     async isObligationExists({ obligationId }: FindObligationParams) {
@@ -752,57 +755,79 @@ export class ApiService {
         return obligation?.isExecuted
     }
 
-    async isObligationOwner({ obligationId, userAddress }: FindObligationByOwnerParams) {
+    async isObligationSeller({ obligationId, userAddress }: FindObligationByOwnerParams) {
         const obligation = await this.obligationRepository.findByPk(obligationId)
         if (obligation.isExecuted) {
-            if (obligation?.userAddress === userAddress.toLowerCase()) {
+            if (obligation?.seller === userAddress.toLowerCase()) {
                 return true;
             }
         }
-        return obligation?.userAddress === userAddress.toLowerCase()
-    }
-
-    async isObligationNotLocked({ userAddress, obligationId }: isAvailableToCreateObligationParams) {
-        const obligation = await this.obligationRepository.findByPk(obligationId)
-        if (obligation) {
-            if (obligation.isExecuted) {
-                if (obligation.userAddress !== userAddress.toLowerCase()) {
-                    const date = obligation.updatedAt.getTime()
-                    const newDate = new Date(date + obligation.lockupPeriod * 1000)
-                    if (Date.now() >= newDate.getTime()) {
-                        return true
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-    async isObligationRestrictedAddress({ userAddress, obligationId }: isAvailableToCreateObligationParams) {
-        const obligation = await this.obligationRepository.findByPk(obligationId)
-        if (obligation) {
-            if (obligation.transferRestrictionAddress ===
-                userAddress.toLowerCase()) {
-                return true
-            }
-        }
-        return false;
-    }
-
-    async isAvailableToUpdateObligation({ userAddress, obligationId }: isAvailableToCreateObligationParams) {
-        const obligation = await this.obligationRepository.findByPk(obligationId)
-        if (obligation) {
-            if (obligation.isExecuted) {
-                if (obligation.userAddress === userAddress.toLowerCase()) {
-                    const date = obligation.updatedAt.getTime()
-                    const newDate = new Date(date + obligation.lockupPeriod * 1000)
-                    if (Date.now() >= newDate.getTime()) {
-                        return true
-                    }
-                }
-            }
-        }
-        return false;
+        return obligation?.seller === userAddress.toLowerCase()
     }
     ///
+
+    /// DVDTransfer
+        async findAllDvdTransfers({ withObligations }: FindAllDvdTransfers) {
+            if (withObligations) {
+                return await this.dvdTransferRepository.findAll({
+                    include: [Obligation]
+                })
+            } else {
+                return await this.dvdTransferRepository.findAll()
+            }
+        }
+    
+        async findDvdTransfersByToken({ tokenAddress }: FindDvdTransfersByToken) {
+            return await this.dvdTransferRepository.findAll({ where: { sellerToken: tokenAddress.toLowerCase() } })
+        }
+
+        async findDvdTransfersByBuyer({ buyer }: FindDvdTransfersByBuyer) {
+            return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase() } })
+        }
+    
+        async findDvdTransferById({ dvdTransferId }: FindDvdTransfersById) {
+            return await this.dvdTransferRepository.findByPk(dvdTransferId)
+        }
+    
+        async createDvdTransfer({ nonce, buyer, buyerToken, buyerAmount, seller, sellerToken, sellerAmount }: CreateDvdTransferParams) {
+            return await this.dvdTransferRepository.create({
+                nonce: nonce,
+                buyer: buyer.toLowerCase(),
+                buyerToken: buyerToken.toLowerCase(),
+                buyerAmount: buyerAmount,
+                seller: seller.toLowerCase(),
+                sellerToken: sellerToken.toLowerCase(),
+                sellerAmount: sellerAmount,
+            })
+        }
+    
+        async updateDvdTransfer({ dvdTransferId, status }: UpdateDvdTransfer) {
+            const [rows, entity] = await this.dvdTransferRepository.update(
+                { status: status },
+                { where: { id: dvdTransferId, }, returning: true }
+            )
+            return entity;
+        }
+        
+        async isDvdTransferExists({ dvdTransferId }: FindDvdTransfersById) {
+            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+            return dvdTransfer ? true : false
+        }
+    
+        async isDvdTransferProcessing({ dvdTransferId }: FindDvdTransfersById) {
+            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+            if(dvdTransfer) {
+                return dvdTransfer.status === ExecuteStatus.Processing;
+            }
+            return false;
+        }
+
+        async isDvdTransferSeller({ dvdTransferId, seller }: IsDvdTransferSeller) {
+            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+            if(dvdTransfer) {
+                return dvdTransfer.seller.toLowerCase() === seller.toLowerCase();
+            }
+            return false;
+        }
+        ///
 }
