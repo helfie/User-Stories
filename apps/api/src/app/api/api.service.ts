@@ -8,7 +8,7 @@ import { Obligation } from "../obligations/obligation.entity";
 import { TokenIdentity } from "../token-identities/token-identity.entity";
 import { TokenClaim } from "../token-claims/token-claim.entity";
 import { TokenComplianceRequest } from "../token-compliance/token-compliance-request.entity";
-import { ExecuteStatus, ObligationStatus } from "../types";
+import { ExecuteStatus } from "../types";
 import { Op } from "sequelize";
 import { DvdTransfer } from "../dvd-transfers/dvd-transfer.entity";
 
@@ -245,17 +245,12 @@ interface FindDvdTransfersByToken {
     tokenAddress: string;
 }
 
-interface FindDvdTransfersByBuyer {
-    buyer: string;
+interface FindDvdTransfersByUser {
+    userAddress: string;
 }
 
-interface FindDvdTransfersBySeller {
-    buyer: string;
-    buyerToken: string;
-}
-
-interface FindDvdTransfersBySeller {
-    seller: string;
+interface FindDvdTransfersByUserAndSellerToken {
+    userAddress: string;
     sellerToken: string;
 }
 
@@ -791,16 +786,21 @@ export class ApiService {
         return await this.dvdTransferRepository.findAll({ where: { sellerToken: tokenAddress.toLowerCase() } })
     }
 
-    async findDvdTransfersByBuyer({ buyer }: FindDvdTransfersByBuyer) {
-        return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase() } })
+    async findDvdTransfersByUser({ userAddress }: FindDvdTransfersByUser) {
+        return await this.dvdTransferRepository.findAll({
+            where: {
+                [Op.or]: [{ buyer: userAddress.toLowerCase() }, { seller: userAddress.toLowerCase() }]
+            }
+        })
     }
 
-    async findDvdTransfersByBuyerAndBuyerToken({ buyer, buyerToken }: FindDvdTransfersBySeller) {
-        return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase(), buyerToken: buyerToken.toLowerCase() } })
-    }
-
-    async findDvdTransfersBySellerAndSellerToken({ seller, sellerToken }: FindDvdTransfersBySeller) {
-        return await this.dvdTransferRepository.findAll({ where: { seller: seller.toLowerCase(), sellerToken: sellerToken.toLowerCase() } })
+    async findDvdTransfersByUserAndSellerToken({ userAddress, sellerToken }: FindDvdTransfersByUserAndSellerToken) {
+        return await this.dvdTransferRepository.findAll({
+            where: {
+                [Op.or]: [{ buyer: userAddress.toLowerCase() }, { seller: userAddress.toLowerCase() }],
+                sellerToken: sellerToken.toLowerCase()
+            }
+        })
     }
 
     async findDvdTransferById({ dvdTransferId }: FindDvdTransfersById) {

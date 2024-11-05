@@ -32,30 +32,21 @@ export class ObligationController {
         return await this.apiService.findDvdTransfersByToken({tokenAddress: tokenAddress});
     }
 
-    @Get('/:buyer')
-    @ApiResponse({status: 200, description: 'buyer dvd transfers', type: [DvdTransfer]})
-    @ApiOperation({summary: "retrieve all buyer dvd transfers"})
-    @ApiParam({name: 'buyer', required: true, description: 'eth buyer address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    async getDvdTransfersByBuyer(@Param('buyer') buyer: string) {
-        return await this.apiService.findDvdTransfersByBuyer({buyer: buyer});
+    @Get('/:userAddress')
+    @ApiResponse({status: 200, description: 'user dvd transfers', type: [DvdTransfer]})
+    @ApiOperation({summary: "retrieve all user dvd transfers"})
+    @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    async getDvdTransfersByBuyer(@Param('userAddress') userAddress: string) {
+        return await this.apiService.findDvdTransfersByUser({userAddress: userAddress});
     }
 
-    @Get('/buyer/:buyer-:buyerToken')
+    @Get('/user/:userAddress-:sellerToken')
     @ApiResponse({status: 200, description: 'buyer dvd transfers', type: [DvdTransfer]})
     @ApiOperation({summary: "retrieve all buyer dvd transfers"})
-    @ApiParam({name: 'buyer', required: true, description: 'eth buyer address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    @ApiParam({name: 'buyerToken', required: true, description: 'eth buyer token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    async getDvdTransfersByBuyerAndToken(@Param('buyer') buyer: string, @Param('buyerToken') buyerToken: string) {
-        return await this.apiService.findDvdTransfersByBuyerAndBuyerToken({buyer: buyer, buyerToken: buyerToken});
-    }
-
-    @Get('/seller/:seller-:sellerToken')
-    @ApiResponse({status: 200, description: 'seller dvd transfers', type: [DvdTransfer]})
-    @ApiOperation({summary: "retrieve all buyer dvd transfers"})
-    @ApiParam({name: 'seller', required: true, description: 'eth seller address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'sellerToken', required: true, description: 'eth seller token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    async getDvdTransfersBySellerAndToken(@Param('seller') seller: string, @Param('sellerToken') sellerToken: string) {
-        return await this.apiService.findDvdTransfersBySellerAndSellerToken({seller: seller, sellerToken: sellerToken});
+    async getDvdTransfersByBuyerAndToken(@Param('userAddress') userAddress: string, @Param('sellerToken') sellerToken: string) {
+        return await this.apiService.findDvdTransfersByUserAndSellerToken({userAddress: userAddress, sellerToken: sellerToken});
     }
 
     @Get('dvd-transfer/:dvdTransferId')
