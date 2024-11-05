@@ -9,6 +9,7 @@ import { AdminAssetPage } from '../pages/admin-asset-page';
 import { AdminTokenCompliancePage } from '../pages/admin-token-compliance-request-page';
 import { AddAssetClaimsPage } from '../pages/add-asset-claims-page';
 import { AddTokenComplianceRequestPage } from '../pages/add-token-compliance-request-page';
+import { DvdTransferPage } from '../pages/dvd-transfer-page';
 
 export const routes = {
     home: '/',
@@ -21,6 +22,7 @@ export const routes = {
     market: '/market',
     assetClaim: 'asset-claim/:tokenAddress',
     tokenComplainceRequest: 'token-compliance-request/:tokenAddress-:userAddress',
+    dvdTransfer: 'dvd-transfer/:tokenAddress-:userAddress'
 }
 
 export const router = createBrowserRouter([{
@@ -34,5 +36,6 @@ export const router = createBrowserRouter([{
         { path: routes.market, Component: MarketPage },
         { path: routes.assetClaim, Component: AddAssetClaimsPage },
         { path: routes.tokenComplainceRequest, Component: AddTokenComplianceRequestPage },
+        { path: routes.dvdTransfer, Component: DvdTransferPage },
     ]
 }])
