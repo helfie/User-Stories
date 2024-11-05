@@ -249,6 +249,16 @@ interface FindDvdTransfersByBuyer {
     buyer: string;
 }
 
+interface FindDvdTransfersBySeller {
+    buyer: string;
+    buyerToken: string;
+}
+
+interface FindDvdTransfersBySeller {
+    seller: string;
+    sellerToken: string;
+}
+
 interface FindDvdTransfersById {
     dvdTransferId: number;
 }
@@ -767,67 +777,75 @@ export class ApiService {
     ///
 
     /// DVDTransfer
-        async findAllDvdTransfers({ withObligations }: FindAllDvdTransfers) {
-            if (withObligations) {
-                return await this.dvdTransferRepository.findAll({
-                    include: [Obligation]
-                })
-            } else {
-                return await this.dvdTransferRepository.findAll()
-            }
-        }
-    
-        async findDvdTransfersByToken({ tokenAddress }: FindDvdTransfersByToken) {
-            return await this.dvdTransferRepository.findAll({ where: { sellerToken: tokenAddress.toLowerCase() } })
-        }
-
-        async findDvdTransfersByBuyer({ buyer }: FindDvdTransfersByBuyer) {
-            return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase() } })
-        }
-    
-        async findDvdTransferById({ dvdTransferId }: FindDvdTransfersById) {
-            return await this.dvdTransferRepository.findByPk(dvdTransferId)
-        }
-    
-        async createDvdTransfer({ nonce, buyer, buyerToken, buyerAmount, seller, sellerToken, sellerAmount }: CreateDvdTransferParams) {
-            return await this.dvdTransferRepository.create({
-                nonce: nonce,
-                buyer: buyer.toLowerCase(),
-                buyerToken: buyerToken.toLowerCase(),
-                buyerAmount: buyerAmount,
-                seller: seller.toLowerCase(),
-                sellerToken: sellerToken.toLowerCase(),
-                sellerAmount: sellerAmount,
+    async findAllDvdTransfers({ withObligations }: FindAllDvdTransfers) {
+        if (withObligations) {
+            return await this.dvdTransferRepository.findAll({
+                include: [Obligation]
             })
+        } else {
+            return await this.dvdTransferRepository.findAll()
         }
-    
-        async updateDvdTransfer({ dvdTransferId, status }: UpdateDvdTransfer) {
-            const [rows, entity] = await this.dvdTransferRepository.update(
-                { status: status },
-                { where: { id: dvdTransferId, }, returning: true }
-            )
-            return entity;
-        }
-        
-        async isDvdTransferExists({ dvdTransferId }: FindDvdTransfersById) {
-            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
-            return dvdTransfer ? true : false
-        }
-    
-        async isDvdTransferProcessing({ dvdTransferId }: FindDvdTransfersById) {
-            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
-            if(dvdTransfer) {
-                return dvdTransfer.status === ExecuteStatus.Processing;
-            }
-            return false;
-        }
+    }
 
-        async isDvdTransferSeller({ dvdTransferId, seller }: IsDvdTransferSeller) {
-            const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
-            if(dvdTransfer) {
-                return dvdTransfer.seller.toLowerCase() === seller.toLowerCase();
-            }
-            return false;
+    async findDvdTransfersByToken({ tokenAddress }: FindDvdTransfersByToken) {
+        return await this.dvdTransferRepository.findAll({ where: { sellerToken: tokenAddress.toLowerCase() } })
+    }
+
+    async findDvdTransfersByBuyer({ buyer }: FindDvdTransfersByBuyer) {
+        return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase() } })
+    }
+
+    async findDvdTransfersByBuyerAndBuyerToken({ buyer, buyerToken }: FindDvdTransfersBySeller) {
+        return await this.dvdTransferRepository.findAll({ where: { buyer: buyer.toLowerCase(), buyerToken: buyerToken.toLowerCase() } })
+    }
+
+    async findDvdTransfersBySellerAndSellerToken({ seller, sellerToken }: FindDvdTransfersBySeller) {
+        return await this.dvdTransferRepository.findAll({ where: { seller: seller.toLowerCase(), sellerToken: sellerToken.toLowerCase() } })
+    }
+
+    async findDvdTransferById({ dvdTransferId }: FindDvdTransfersById) {
+        return await this.dvdTransferRepository.findByPk(dvdTransferId)
+    }
+
+    async createDvdTransfer({ nonce, buyer, buyerToken, buyerAmount, seller, sellerToken, sellerAmount }: CreateDvdTransferParams) {
+        return await this.dvdTransferRepository.create({
+            nonce: nonce,
+            buyer: buyer.toLowerCase(),
+            buyerToken: buyerToken.toLowerCase(),
+            buyerAmount: buyerAmount,
+            seller: seller.toLowerCase(),
+            sellerToken: sellerToken.toLowerCase(),
+            sellerAmount: sellerAmount,
+        })
+    }
+
+    async updateDvdTransfer({ dvdTransferId, status }: UpdateDvdTransfer) {
+        const [rows, entity] = await this.dvdTransferRepository.update(
+            { status: status },
+            { where: { id: dvdTransferId, }, returning: true }
+        )
+        return entity;
+    }
+
+    async isDvdTransferExists({ dvdTransferId }: FindDvdTransfersById) {
+        const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+        return dvdTransfer ? true : false
+    }
+
+    async isDvdTransferProcessing({ dvdTransferId }: FindDvdTransfersById) {
+        const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+        if (dvdTransfer) {
+            return dvdTransfer.status === ExecuteStatus.Processing;
         }
-        ///
+        return false;
+    }
+
+    async isDvdTransferSeller({ dvdTransferId, seller }: IsDvdTransferSeller) {
+        const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
+        if (dvdTransfer) {
+            return dvdTransfer.seller.toLowerCase() === seller.toLowerCase();
+        }
+        return false;
+    }
+    ///
 }
