@@ -22,7 +22,7 @@ export const useBcMintAsset = () => {
       }
 
       try {
-        const tokenDecimals = await publicClient.readContract({
+        const tokenDecimals = await publicClient?.readContract({
           abi: TOKEN_ABI,
           address: variables.tokenAddress as Address,
           functionName: 'decimals',

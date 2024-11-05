@@ -4,18 +4,18 @@ import { UserComponent } from "../components/user-component"
 import { useAccount } from "wagmi"
 import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useGetObligations } from "../hooks/api/obligations/use-get-obligations"
-import { useBuyObligation } from "../hooks/api/obligations/use-buy-obligation"
+import { useUpdateObligation } from "../hooks/api/obligations/use-update-obligation"
 import { useBcApprove } from "../hooks/blockchain/obligations/use-bc-approve"
-import { useBcSwap } from "../hooks/blockchain/obligations/use-bc-swap"
+import { useBcInitDvdTransfers } from "../hooks/blockchain/dvd-transfers/use-bc-init-dvd-transfers"
 
 export const MarketPage = () => {
     const { address } = useAccount()
     const { isLoadingUser, userData } = useGetUser(address?.toString())
-    const { isPendingObligations, obligationsData } = useGetObligations('true', null)
+    const { isPendingObligations, obligationsData } = useGetObligations('true', 'false')
 
-    const buyMutation = useBuyObligation()
+    const updateObligation = useUpdateObligation()
     const approve = useBcApprove()
-    const swap = useBcSwap()
+    const initDvdTransfers = useBcInitDvdTransfers()
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -26,13 +26,12 @@ export const MarketPage = () => {
                 <TableCaption placement="top">Market Obligations</TableCaption>
                 <Thead>
                     <Tr>
-                        <Th isNumeric>Asset id</Th>
-                        <Th>Asset Owner</Th>
+                        <Th>Asset</Th>
+                        <Th>Seller</Th>
                         <Th>Name</Th>
-                        <Th>Desciption</Th>
-                        <Th>Type</Th>
-                        <Th isNumeric>Min purchase Amount</Th>
-                        <Th>Buy Asset</Th>
+                        <Th>Symbol</Th>
+                        <Th>Amount</Th>
+                        <Th>Agree</Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -42,20 +41,26 @@ export const MarketPage = () => {
                                 <Td>{element?.asset?.id}</Td>
                                 <Td>{element?.userAddress}</Td>
                                 <Td>{element?.asset?.name}</Td>
-                                <Td>{element?.asset?.description}</Td>
-                                <Td>{element?.asset?.type}</Td>
-                                <Td>{element?.minPurchaseAmount}</Td>
+                                <Td>{element?.asset?.symbol}</Td>
+                                <Td>{element?.amount}</Td>
                                 <Td>
                                     <Button colorScheme='yellow' size='sm' onClick={async () => {
                                         if(userData?.isVerified && element?.userAddress.toLowerCase() !== userData?.userAddress?.toLowerCase()) {
                                             await approve.mutateAsync({userAddress: userData?.userAddress,})
-                                            await swap.mutateAsync({userAddress: userData?.userAddress,})
-                                            await buyMutation.mutateAsync({
-                                                assetId: element?.asset?.id,
+                                            await updateObligation.mutateAsync({
                                                 userAddress: userData?.userAddress,
-                                                minPurchaseAmount: element?.minPurchaseAmount,
                                                 obligationId: element?.id
                                             })
+                                            await initDvdTransfers.mutateAsync({
+                                                buyer: userData?.userAddress,
+                                                buyerToken: UNI_TEST_TOKEN0,
+                                                buyerAmount: element?.amount,
+                                                seller: element?.seller,
+                                                sellerToken: element?.asset.address,
+                                                sellerAmount: element?.amount,
+                                                txCount: element?.txCount,
+                                            })
+                                            
                                         }
                                         }} isDisabled={!userData?.isVerified || element?.userAddress.toLowerCase() === userData?.userAddress?.toLowerCase()}>
                                             Buy

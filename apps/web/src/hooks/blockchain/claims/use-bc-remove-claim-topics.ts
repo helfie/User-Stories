@@ -16,7 +16,7 @@ export const useBcRemoveClaim = (isToken?: boolean) => {
         identityAddress: string | undefined,
         claimTopic: bigint,
       }) => {
-      if (!variables.userAddress || !variables.identityAddress) {
+      if (!variables.address || !variables.identityAddress) {
         throw new Error("No User")
       }
 

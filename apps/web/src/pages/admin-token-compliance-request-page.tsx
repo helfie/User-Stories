@@ -7,7 +7,7 @@ import { useGetTokenComplianceRequestsAdmin } from "../hooks/api/token-complianc
 import { useVerifyTokenComplianceRequest } from "../hooks/api/token-compliance-request/use-verify-token-compliance-request"
 import { ExecuteStatus } from "../types"
 
-export const AdminClaimPage = () => {
+export const AdminTokenCompliancePage = () => {
     const { address } = useAccount()
     const { isLoadingUser, userData } = useGetUser(address?.toString())
     const { isPendingRequest, requestsData } = useGetTokenComplianceRequestsAdmin()

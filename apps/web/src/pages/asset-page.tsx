@@ -71,7 +71,7 @@ export const AssetPage = () => {
                                             {
                                                 !element?.isVerfied
                                                     ? <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                         navigate(`/admin-asset-claim/${element?.tokenAddress}`)
+                                                         navigate(`/asset-claim/${element?.tokenAddress}`)
                                                     }>
                                                         Add Claim
                                                     </Button>
@@ -87,7 +87,7 @@ export const AssetPage = () => {
                                     </Td>
                                     <Td>
                                         <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                navigate(`/token-compliance-requests/${element?.tokenAddress}-${element?.userAddress}`)
+                                                navigate(`/token-compliance-request/${element?.tokenAddress}-${element?.userAddress}`)
                                         }>
                                             Request changing compliance
                                         </Button>
