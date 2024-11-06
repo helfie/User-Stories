@@ -4,7 +4,7 @@ import { DVD } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_ABI } from '../../../abis/token.abi'
 import { MAX_AMOUNT } from '../../../constants'
-import { DVD_ABI } from 'apps/web/src/abis/dvd.abi'
+import { DVD_ABI } from '../../../abis/dvd.abi'
 
 export const useBcBuyerApprove = () => {
     const queryClient = useQueryClient()

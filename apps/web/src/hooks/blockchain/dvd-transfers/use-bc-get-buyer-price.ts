@@ -1,8 +1,8 @@
 import { usePublicClient, useReadContract } from "wagmi"
 import { DVD } from "../../../addresses"
-import { DVD_ABI } from "apps/web/src/abis/dvd.abi"
+import { DVD_ABI } from "../../../abis/dvd.abi"
 import { Address, parseUnits } from "viem"
-import { TOKEN_ABI } from "apps/web/src/abis/token.abi"
+import { TOKEN_ABI } from "../../../abis/token.abi"
 
 export const useBcGetBuyerPrice = (
     sellerToken: string,

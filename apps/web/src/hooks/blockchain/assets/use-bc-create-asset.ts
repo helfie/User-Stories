@@ -2,8 +2,8 @@ import { usePublicClient, useWriteContract } from 'wagmi'
 import { Address, zeroAddress, encodeFunctionData, Hex  } from 'viem'
 import { COUNTRY_MODULE, TOKEN_FACTORY } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { TOKEN_FACTORY_ABI } from 'apps/web/src/abis/token-factory.abi'
-import { COUNTRY_ALLOW_ABI } from 'apps/web/src/abis/modules/country-allow.abi'
+import { TOKEN_FACTORY_ABI } from '../../../abis/token-factory.abi'
+import { COUNTRY_ALLOW_ABI } from '../../../abis/modules/country-allow.abi'
 
 export const useBcCreateAsset = () => {
     const queryClient = useQueryClient()

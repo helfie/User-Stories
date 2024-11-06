@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { env } from '../../../env'
 import { usePublicClient, useSignMessage } from 'wagmi'
 import { verifyMessage } from "../../../functions"
-import { TOKEN_FACTORY_ABI } from 'apps/web/src/abis/token-factory.abi'
-import { TOKEN_FACTORY } from 'apps/web/src/addresses'
+import { TOKEN_FACTORY_ABI } from '../../../abis/token-factory.abi'
+import { TOKEN_FACTORY } from '../../../addresses'
 import { Address, Hex } from 'viem'
 
 export const useCreateAsset = () => {

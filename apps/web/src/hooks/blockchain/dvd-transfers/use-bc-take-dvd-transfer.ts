@@ -2,7 +2,7 @@ import { usePublicClient, useWriteContract } from 'wagmi'
 import { Hex } from 'viem'
 import { DVD } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { DVD_ABI } from 'apps/web/src/abis/dvd.abi'
+import { DVD_ABI } from '../../../abis/dvd.abi'
 
 export const useBcTakeDvdTransfer = () => {
     const queryClient = useQueryClient()

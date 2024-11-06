@@ -2,8 +2,8 @@ import { usePublicClient, useSignMessage, useWriteContract } from 'wagmi'
 import { parseUnits, Address } from 'viem'
 import { DVD } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { DVD_ABI } from 'apps/web/src/abis/dvd.abi'
-import { TOKEN_ABI } from 'apps/web/src/abis/token.abi'
+import { DVD_ABI } from '../../../abis/dvd.abi'
+import { TOKEN_ABI } from '../../../abis/token.abi'
 import { generateTransferId, verifyMessage } from "../../../functions"
 import { env } from '../../../env'
 
