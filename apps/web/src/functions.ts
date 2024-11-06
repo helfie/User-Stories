@@ -1,4 +1,4 @@
-import { toBytes, keccak256, encodeAbiParameters, parseAbiParameters, Address, SignableMessage } from 'viem'
+import { keccak256, encodeAbiParameters, parseAbiParameters, Address, SignableMessage, encodePacked } from 'viem'
 import { ExecuteStatus } from './types';
 
 export const verifyMessage = (address: string, methodStr: string) => {
@@ -35,13 +35,38 @@ export const generateClaimId = (
 };
 
 export const getStatusName = (status: ExecuteStatus): string => {
-    if(status === ExecuteStatus.Processing) {
+    if (status === ExecuteStatus.Processing) {
         return 'Processing';
-    } else if(status === ExecuteStatus.Canceled) {
+    } else if (status === ExecuteStatus.Canceled) {
         return 'Canceled';
-    } else if(status === ExecuteStatus.Executed) {
+    } else if (status === ExecuteStatus.Executed) {
         return 'Executed';
     } else {
         return 'None';
     }
 }
+
+export const generateTransferId = (
+    nonce: bigint,
+    buyer: string,
+    buyerToken: string,
+    buyerAmount: bigint,
+    seller: string,
+    sellerToken: string,
+    sellerAmount: bigint): string => {
+    return keccak256(
+        encodePacked(
+            ['uint256', 'address', 'address', 'uint256', 'address', 'address', 'uint256'],
+            [
+                nonce,
+                buyer as Address,
+                buyerToken as Address,
+                buyerAmount,
+                seller as Address,
+                sellerToken as Address,
+                sellerAmount,
+            ]
+        )
+    )
+}
+
