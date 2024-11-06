@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { parseUnits, Address } from 'viem'
-import { UNI_ROUTER, UNI_TEST_TOKEN0 } from '../../../addresses'
+import { DVD } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_ABI } from '../../../abis/token.abi'
 import { MAX_AMOUNT } from '../../../constants'
@@ -13,19 +13,30 @@ export const useBcApprove = () => {
     const mutation = useMutation({
         mutationFn: async (
           variables: { 
+            tokenAddress: string | undefined, 
             userAddress: string | undefined, 
-            amount?: bigint } ) => {
-          if(!variables.userAddress) {
+            amount: number | undefined } ) => {
+          if(!variables.tokenAddress || !variables.userAddress || !variables.amount) {
             throw new Error("No User")
           }
           try {
+            const tokenDecimals = await publicClient?.readContract({
+              abi: TOKEN_ABI,
+              address: variables.tokenAddress as Address,
+              functionName: 'decimals',
+              args: [],
+            })
+            if(!tokenDecimals) {
+              throw new Error("No Token decimals")
+            }
+
             const wc = await writeContractAsync({
                 abi: TOKEN_ABI,
-                address: UNI_TEST_TOKEN0,
+                address: variables.tokenAddress as Address,
                 functionName: 'approve',
                 args: [
-                    UNI_ROUTER,
-                    parseUnits(MAX_AMOUNT, 6),
+                    DVD,
+                    parseUnits(variables.amount.toString(), tokenDecimals),
                 ],
             })
             await publicClient?.waitForTransactionReceipt({hash: wc})
@@ -34,9 +45,7 @@ export const useBcApprove = () => {
             throw error
           }
         },
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ['obligations'] })
-        },
+        onSuccess: () => {},
       })
     
     return mutation

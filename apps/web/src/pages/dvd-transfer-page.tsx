@@ -9,13 +9,20 @@ import { useParams } from "react-router-dom"
 import { ExecuteStatus } from "../types"
 import { useUpdateDvdTransfer } from "../hooks/api/dvd-transfers/use-update-dvd-transfer"
 import { useGetDvdTransfersByUserAndSellerToken } from "../hooks/api/dvd-transfers/use-get-dvd-transfers-by-user-seller-token"
-
+import { useBcApprove } from "../hooks/blockchain/obligations/use-bc-approve"
+import { useBcCancelDvdTransfer } from "../hooks/blockchain/dvd-transfers/use-bc-cancel-dvd-transfer"
+import { useBcTakeDvdTransfer } from "../hooks/blockchain/dvd-transfers/use-bc-take-dvd-transfer"
+ 
 export const DvdTransferPage = () => {
     const { address } = useAccount()
     const { tokenAddress } = useParams()
     const { isLoadingUser, userData } = useGetUser(address?.toString() ?? zeroAddress)
     const { isPendingAsset, assetData } = useGetAsset(tokenAddress?.toString() ?? zeroAddress)
     const { isPendingTransfers, transfersData } = useGetDvdTransfersByUserAndSellerToken(address?.toString() ?? zeroAddress, tokenAddress?.toString() ?? zeroAddress)
+    
+    const approve = useBcApprove()
+    const takeDvdTransfer = useBcTakeDvdTransfer()
+    const cancelDvdTransfer = useBcCancelDvdTransfer()
     const updateDvdTransfer = useUpdateDvdTransfer();
 
     return <Container maxW={'8xl'} w={'100%'}>
@@ -52,6 +59,23 @@ export const DvdTransferPage = () => {
                                     <Stack direction={'row'}>
                                         <Button colorScheme={"green"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
                                             if (element?.status === ExecuteStatus.Processing) {
+                                                await approve.mutateAsync({
+                                                    tokenAddress: element?.sellerToken, 
+                                                    userAddress: userData?.userAddress,
+                                                    amount: element?.sellerAmount,
+                                                })
+                                                // await takeDvdTransfer.mutateAsync({
+                                                //     nonce: element?.nonce,
+                                                //     buyer: element?.buyer,
+                                                //     buyerToken: element?.buyerToken,
+                                                //     buyerAmount: element?.buyerAmount,
+                                                //     seller: element?.seller,
+                                                //     sellerToken: element?.sellerToken,
+                                                //     sellerAmount: element?.sellerAmount,
+                                                // })
+                                                await takeDvdTransfer.mutateAsync({
+                                                    transferId: element?.transferId
+                                                })
                                                 await updateDvdTransfer.mutateAsync({
                                                     dvdTransferId: element?.id,
                                                     userAddress: address?.toString(),
@@ -63,6 +87,9 @@ export const DvdTransferPage = () => {
                                         </Button>
                                         <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
                                             if (element?.status === ExecuteStatus.Processing) {
+                                                await cancelDvdTransfer.mutateAsync({
+                                                    transferId: element?.transferId
+                                                })
                                                 await updateDvdTransfer.mutateAsync({
                                                     dvdTransferId: element?.id,
                                                     userAddress: address?.toString(),
