@@ -45,6 +45,22 @@ export const DVD_ABI = [
     {
         "inputs": [
             {
+                "internalType": "uint256",
+                "name": "price",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "validPrice",
+                "type": "uint256"
+            }
+        ],
+        "name": "InvalidBuyPrice",
+        "type": "error"
+    },
+    {
+        "inputs": [
+            {
                 "internalType": "address",
                 "name": "sender",
                 "type": "address"
@@ -298,6 +314,25 @@ export const DVD_ABI = [
         "anonymous": false,
         "inputs": [
             {
+                "indexed": false,
+                "internalType": "address",
+                "name": "sender",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "internalType": "address",
+                "name": "feed",
+                "type": "address"
+            }
+        ],
+        "name": "SetDataFeed",
+        "type": "event"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
                 "indexed": true,
                 "internalType": "address",
                 "name": "token",
@@ -328,6 +363,19 @@ export const DVD_ABI = [
     {
         "inputs": [],
         "name": "FEE_DECIMALS",
+        "outputs": [
+            {
+                "internalType": "uint8",
+                "name": "",
+                "type": "uint8"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "TOKEN_DECIMALS",
         "outputs": [
             {
                 "internalType": "uint8",
@@ -449,6 +497,43 @@ export const DVD_ABI = [
         "type": "function"
     },
     {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "token",
+                "type": "address"
+            },
+            {
+                "internalType": "uint256",
+                "name": "sellAmount",
+                "type": "uint256"
+            }
+        ],
+        "name": "evaluateBuyerPrice",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getChainlinkDataFeedLatestAnswer",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
         "inputs": [],
         "name": "getCommonFee",
         "outputs": [
@@ -456,6 +541,19 @@ export const DVD_ABI = [
                 "internalType": "uint256",
                 "name": "",
                 "type": "uint256"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [],
+        "name": "getDataFeed",
+        "outputs": [
+            {
+                "internalType": "contract AggregatorV3Interface",
+                "name": "",
+                "type": "address"
             }
         ],
         "stateMutability": "view",
@@ -586,6 +684,11 @@ export const DVD_ABI = [
                 "internalType": "uint256",
                 "name": "commonFee",
                 "type": "uint256"
+            },
+            {
+                "internalType": "address",
+                "name": "feed",
+                "type": "address"
             }
         ],
         "name": "initialize",
@@ -655,6 +758,19 @@ export const DVD_ABI = [
             }
         ],
         "name": "setCommonFee",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "feed",
+                "type": "address"
+            }
+        ],
+        "name": "setDataFeed",
         "outputs": [],
         "stateMutability": "nonpayable",
         "type": "function"
