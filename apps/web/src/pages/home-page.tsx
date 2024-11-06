@@ -7,7 +7,7 @@ import { useCreateUserClaim } from "../hooks/api/claims/use-create-user-claim"
 import { useState } from "react"
 import { HeaderComponent } from "../components/header-component"
 import { HeaderImage } from "../components/image-component"
-import { useGetClaimTopics } from "../hooks/blockchain/claims/use-bc-get-claim-topics"
+import { useBcGetClaimTopics } from "../hooks/blockchain/claims/use-bc-get-claim-topics"
 import { zeroAddress } from "viem"
 import { EditDocComponent } from "../components/edit-doc-component"
 
@@ -15,7 +15,7 @@ export const HomePage = () => {
     const { address } = useAccount()
     const { isLoadingUser, userData } = useGetUser(address?.toString())
     const { isPendingUserClaims, userClaimsData } = useGetUserClaims(address?.toString())
-    const { claimTopicsData } = useGetClaimTopics()
+    const { claimTopicsData } = useBcGetClaimTopics()
 
     const [inputClaimTopic, setClaimTopic] = useState('');
     const [inputDoc, setInputDoc] = useState<File | null>(null);
@@ -77,8 +77,8 @@ export const HomePage = () => {
                     {
                         claimTopicsData.map((element: any) => {
                             return (
-                                <option value={element}>
-                                    {element}
+                                <option value={element.value}>
+                                    {element.name}
                                 </option>
                             )
                         })

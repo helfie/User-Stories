@@ -102,7 +102,7 @@ export class ObligationController {
             throw new BadRequestException(`Not Asset DvdTransfer [${dto.dvdTransferId}] owner [${dto.userAddress}]`)            
         }
 
-        const status = dto.verify ? ExecuteStatus.Executed : ExecuteStatus.Canceled;
+        const status = dto.verify ? ExecuteStatus.EXECUTED : ExecuteStatus.CANCELED;
         return await this.apiService.updateDvdTransfer({
             dvdTransferId: dto.dvdTransferId,
             status: status

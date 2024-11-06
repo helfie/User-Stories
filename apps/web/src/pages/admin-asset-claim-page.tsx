@@ -8,6 +8,7 @@ import { useVerifyTokenClaim } from "../hooks/api/token-claims/use-verify-token-
 import { HeaderComponent } from "../components/header-component"
 import { useBcCreateClaim } from "../hooks/blockchain/claims/use-bc-create-claim-topics"
 import { useBcRemoveClaim } from "../hooks/blockchain/claims/use-bc-remove-claim-topics"
+import { getTokenClaimTopicName } from "../functions"
 
 export const AdminAssetClaimPage = () => {
     const { address } = useAccount()
@@ -46,7 +47,7 @@ export const AdminAssetClaimPage = () => {
                                             </Stack>
                                         </Td>
                                         <Td>
-                                            <Text>{element?.claimTopic}</Text >
+                                            <Text>{getTokenClaimTopicName(element?.claimTopic)}</Text >
                                         </Td>
                                         <Td>
                                             <Image src={`${env.VITE_API_URL}/token-claims/claim/docgen/${address?.toString()}/${element?.tokenAddress}-${element?.claimTopic}`} alt='Doc' boxSize='75px' />

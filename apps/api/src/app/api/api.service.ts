@@ -635,7 +635,7 @@ export class ApiService {
 
     async findAllTokenComplianceRequestsForAdmin() {
         return await this.tokenComplianceRequestRepository.findAll({
-            where: { status: ExecuteStatus.Processing },
+            where: { status: ExecuteStatus.PROCESSING },
             order: [['tokenAddress', 'ASC']]
         })
     }
@@ -674,7 +674,7 @@ export class ApiService {
             tokenAddress: tokenAddress.toLowerCase(),
             userAddress: userAddress.toLowerCase(),
             maxTransferAmount: amount,
-            status: ExecuteStatus.Processing
+            status: ExecuteStatus.PROCESSING
         })
     }
 
@@ -685,7 +685,7 @@ export class ApiService {
                 where: {
                     tokenAddress: tokenAddress.toLowerCase(),
                     userAddress: userAddress.toLowerCase(),
-                    status: ExecuteStatus.Processing
+                    status: ExecuteStatus.PROCESSING
                 },
                 returning: true
             })
@@ -698,7 +698,7 @@ export class ApiService {
                 where: {
                     tokenAddress: tokenAddress.toLowerCase(),
                     userAddress: userAddress.toLowerCase(),
-                    status: ExecuteStatus.Processing
+                    status: ExecuteStatus.PROCESSING
                 }
             }
         )
@@ -837,7 +837,7 @@ export class ApiService {
     async isDvdTransferProcessing({ dvdTransferId }: FindDvdTransfersById) {
         const dvdTransfer = await this.dvdTransferRepository.findByPk(dvdTransferId)
         if (dvdTransfer) {
-            return dvdTransfer.status === ExecuteStatus.Processing;
+            return dvdTransfer.status === ExecuteStatus.PROCESSING;
         }
         return false;
     }

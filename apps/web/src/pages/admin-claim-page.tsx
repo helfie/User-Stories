@@ -8,6 +8,7 @@ import { useVerifyUserClaim } from "../hooks/api/claims//use-verify-user-claim"
 import { HeaderComponent } from "../components/header-component"
 import { useBcCreateClaim } from "../hooks/blockchain/claims/use-bc-create-claim-topics"
 import { useBcRemoveClaim } from "../hooks/blockchain/claims/use-bc-remove-claim-topics"
+import { getClaimTopicName } from "../functions"
 
 export const AdminClaimPage = () => {
     const { address } = useAccount()
@@ -46,7 +47,7 @@ export const AdminClaimPage = () => {
                                             </Stack>
                                         </Td>
                                         <Td>
-                                            <Text>{element?.claimTopic}</Text >
+                                            <Text>{getClaimTopicName(element?.claimTopic)}</Text >
                                         </Td>
                                         <Td>
                                             <Image src={`${env.VITE_API_URL}/claims/claim/docgen/${address?.toString()}/${element?.userAddress}-${element?.claimTopic}`} alt='Doc' boxSize='75px' />

@@ -1,5 +1,5 @@
 export enum ExecuteStatus {
-    Processing = 0,
-    Canceled,
-    Executed
+    PROCESSING = 0,
+    CANCELED,
+    EXECUTED
 }

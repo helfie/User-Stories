@@ -106,7 +106,7 @@ export class TokenIdentityController {
             throw new BadRequestException(`Token Compliance Request [${dto.tokenAddress}-${dto.userAddress}] is already viewed`)
         }
 
-        const status = dto.verify ? ExecuteStatus.Executed : ExecuteStatus.Canceled;
+        const status = dto.verify ? ExecuteStatus.EXECUTED : ExecuteStatus.CANCELED;
         return await this.apiService.executeTokenComplianceRequest({ tokenAddress: dto.tokenAddress, userAddress: dto.userAddress, status: status });
     }
 }

@@ -57,8 +57,8 @@ export const DvdTransferPage = () => {
                                 <Td>{element?.sellerAmount}</Td>
                                 <Td>
                                     <Stack direction={'row'}>
-                                        <Button colorScheme={"green"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
-                                            if (element?.status === ExecuteStatus.Processing) {
+                                        <Button colorScheme={"green"} size='sm' isDisabled={element?.status !== ExecuteStatus.PROCESSING} onClick={async () => {
+                                            if (element?.status === ExecuteStatus.PROCESSING) {
                                                 await approve.mutateAsync({
                                                     tokenAddress: element?.sellerToken, 
                                                     userAddress: userData?.userAddress,
@@ -85,8 +85,8 @@ export const DvdTransferPage = () => {
                                         }}>
                                             Verify
                                         </Button>
-                                        <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
-                                            if (element?.status === ExecuteStatus.Processing) {
+                                        <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.PROCESSING} onClick={async () => {
+                                            if (element?.status === ExecuteStatus.PROCESSING) {
                                                 await cancelDvdTransfer.mutateAsync({
                                                     transferId: element?.transferId
                                                 })

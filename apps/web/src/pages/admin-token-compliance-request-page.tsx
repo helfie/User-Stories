@@ -40,8 +40,8 @@ export const AdminTokenCompliancePage = () => {
                                         <Td>{element?.maxTransferAmount}</Td>
                                         <Td>
                                             <Stack direction={'row'}>
-                                                <Button colorScheme={"green"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
-                                                    if (element?.status === ExecuteStatus.Processing) {
+                                                <Button colorScheme={"green"} size='sm' isDisabled={element?.status !== ExecuteStatus.PROCESSING} onClick={async () => {
+                                                    if (element?.status === ExecuteStatus.PROCESSING) {
                                                         await verifyTokenComplianceRequest.mutateAsync({
                                                             senderAddress: address?.toString(),
                                                             tokenAddress: element?.tokenAddress,
@@ -52,8 +52,8 @@ export const AdminTokenCompliancePage = () => {
                                                 }}>
                                                     Verify
                                                 </Button>
-                                                <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.Processing} onClick={async () => {
-                                                    if (element?.status === ExecuteStatus.Processing) {
+                                                <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.PROCESSING} onClick={async () => {
+                                                    if (element?.status === ExecuteStatus.PROCESSING) {
                                                         await verifyTokenComplianceRequest.mutateAsync({
                                                             senderAddress: address?.toString(),
                                                             tokenAddress: element?.tokenAddress,

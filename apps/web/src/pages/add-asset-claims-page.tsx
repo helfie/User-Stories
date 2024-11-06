@@ -5,13 +5,13 @@ import { UserComponent } from "../components/user-component"
 import { useState } from "react"
 import { HeaderComponent } from "../components/header-component"
 import { HeaderImage } from "../components/image-component"
-import { useGetClaimTopics } from "../hooks/blockchain/claims/use-bc-get-claim-topics"
 import { zeroAddress } from "viem"
 import { EditDocComponent } from "../components/edit-doc-component"
 import { useGetTokenClaims } from "../hooks/api/token-claims/use-get-token-claims"
 import { useCreateTokenClaim } from "../hooks/api/token-claims/use-create-token-claim"
 import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useParams } from "react-router-dom"
+import { useBcGetTokenClaimTopics } from "../hooks/blockchain/claims/use-bc-get-token-claim-topics"
 
 export const AddAssetClaimsPage = () => {
     const { address } = useAccount()
@@ -19,7 +19,7 @@ export const AddAssetClaimsPage = () => {
     const { isLoadingUser, userData } = useGetUser(address?.toString() ?? zeroAddress)
     const { isPendingAsset, assetData } = useGetAsset(tokenAddress?.toString() ?? zeroAddress)
     const { isPendingTokenClaims, tokenClaimsData } = useGetTokenClaims(tokenAddress?.toString())
-    const { claimTopicsData } = useGetClaimTopics()
+    const { tokenClaimTopicsData } = useBcGetTokenClaimTopics()
     const [inputClaimTopic, setClaimTopic] = useState('');
     const [inputDoc, setInputDoc] = useState<File | null>(null);
 
@@ -78,10 +78,10 @@ export const AddAssetClaimsPage = () => {
                     }
                 }}>
                     {
-                        claimTopicsData.map((element: any) => {
+                        tokenClaimTopicsData.map((element: any) => {
                             return (
-                                <option value={element}>
-                                    {element}
+                                <option value={element.value}>
+                                    {element.name}
                                 </option>
                             )
                         })
