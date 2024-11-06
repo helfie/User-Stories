@@ -82,6 +82,7 @@ export class ObligationController {
             seller: dto.seller,
             sellerToken: dto.sellerToken,
             sellerAmount: dto.sellerAmount,
+            transferId: dto.transferId
         });
     }
 

@@ -13,9 +13,9 @@ export class DvdTransfer extends Model<DvdTransfer> {
     @Column({type: DataType.INTEGER, allowNull: false})
     @ApiProperty({type: Number, example: 0})
     obligationId: string;
-    @Column({type: DataType.INTEGER, allowNull: false})
-    @ApiProperty({type: Number, example: 0})
-    nonce: number;
+    @Column({type: DataType.BIGINT, allowNull: false})
+    @ApiProperty({type: BigInt, example: 0})
+    nonce: bigint;
     @Column({type: DataType.STRING, allowNull: true})
     @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
     buyer: string;
@@ -37,6 +37,9 @@ export class DvdTransfer extends Model<DvdTransfer> {
     @Column({type: DataType.SMALLINT, allowNull: false})
     @ApiProperty({type: ExecuteStatus, example: false})
     status: ExecuteStatus;
+    @Column({type: DataType.STRING, allowNull: false})
+    @ApiProperty({type: String, example: "0x2B6a3EDD4B1652CB9cc5aA6f5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
+    transferId: string;
     @BelongsTo(() => Obligation)
     obligation: Obligation;
 }
