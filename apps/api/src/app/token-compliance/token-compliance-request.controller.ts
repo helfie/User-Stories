@@ -9,7 +9,7 @@ import { VerifyTokenComplianceRequestDto } from "./dto/verify-token-compliance-r
 
 @ApiTags('TokenComplianceRequests')
 @Controller('/token-compliance-requests')
-export class TokenIdentityController {
+export class TokenComplianceController {
     constructor(
         private readonly apiService: ApiService,
         private readonly signatureService: SignatureService) {

@@ -10,7 +10,7 @@ import { ExecuteStatus } from "../types";
 
 @ApiTags('DvdTransfers')
 @Controller('/dvd-transfers')
-export class ObligationController {
+export class DvdTransferController {
     constructor(
         private readonly apiService: ApiService,
         private readonly signatureService: SignatureService) {

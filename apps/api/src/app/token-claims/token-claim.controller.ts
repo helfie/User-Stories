@@ -13,7 +13,7 @@ import { VerifyTokenClaimDto } from "./dto/verify-token-claim.dto";
 
 @ApiTags('TokenClaims')
 @Controller('/token-claims')
-export class ClaimController {
+export class TokenClaimController {
     constructor(
         private readonly apiService: ApiService, 
         private readonly signatureService: SignatureService,
