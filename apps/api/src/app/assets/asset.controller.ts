@@ -65,27 +65,6 @@ export class AssetController {
         });
     }
 
-    @Patch('asset/add-obligation')
-    @ApiResponse({status: 200, description: 'update obligation on specific asset', type: Asset})
-    @ApiOperation({summary: "update obligation by tokenAddress"})
-    async updateObligationAsset(@Body() dto: UpdateAssetObligationDto) {
-        if(!(await this.signatureService.verifySignature('updateAssetObligation', dto.signature, dto.userAddress))) {
-            throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
-        } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
-            throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
-        } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
-            throw new BadRequestException(`Asset [${dto.tokenAddress}] does not exist`)
-        } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
-            throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
-        } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
-            throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
-        }
-        return await this.apiService.updateAssetObligation({
-            tokenAddress: dto.tokenAddress,
-            obligationId: dto.obligationId,
-        });
-    }
-
     @Patch('asset/update-user')
     @ApiResponse({status: 200, description: 'update userAddress on specific asset', type: Asset})
     @ApiOperation({summary: "update userAddress by tokenAddress"})

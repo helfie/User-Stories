@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { ASSET_REPOSITORY, CLAIM_REPOSITORY, DVD_TRANSFER_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, TOKEN_CLAIM_REPOSITORY, TOKEN_COMPLIANCE_REQUEST_REPOSITORY, TOKEN_IDENTITY_REPOSITORY, USER_REPOSITORY } from "../constants";
+import { ASSET_REPOSITORY, CLAIM_REPOSITORY, DVD_TRANSFER_REPOSITORY, IDENTITY_REPOSITORY, OBLIGATION_REPOSITORY, TOKEN_CLAIM_REPOSITORY, TOKEN_COMPLIANCE_REQUEST_REPOSITORY, TOKEN_IDENTITY_REPOSITORY, USER_ASSET_REPOSITORY, USER_REPOSITORY } from "../constants";
 import { Claim } from "../claims/claim.entity";
 import { Identity } from "../identities/identity.entity";
 import { Asset } from "../assets/asset.entity";
@@ -11,6 +11,7 @@ import { TokenComplianceRequest } from "../token-compliance/token-compliance-req
 import { ExecuteStatus } from "../types";
 import { Op } from "sequelize";
 import { DvdTransfer } from "../dvd-transfers/dvd-transfer.entity";
+import { UserAsset } from "../user-assets/user-asset.entity";
 
 /// User Service
 interface CreateUserParams {
@@ -291,6 +292,7 @@ export class ApiService {
         @Inject(CLAIM_REPOSITORY) private readonly claimRepository: typeof Claim,
         @Inject(IDENTITY_REPOSITORY) private readonly identityRepository: typeof Identity,
         @Inject(ASSET_REPOSITORY) private readonly assetRepository: typeof Asset,
+        @Inject(USER_ASSET_REPOSITORY) private readonly userAssetRepository: typeof UserAsset,
         @Inject(OBLIGATION_REPOSITORY) private readonly obligationRepository: typeof Obligation,
         @Inject(TOKEN_IDENTITY_REPOSITORY) private readonly tokenIdentityRepository: typeof TokenIdentity,
         @Inject(TOKEN_CLAIM_REPOSITORY) private readonly tokenClaimRepository: typeof TokenClaim,
@@ -541,21 +543,21 @@ export class ApiService {
     /// AssetService
     async findAllAssets({ withObligations }: FindAllAssetsWithObligations) {
         if (withObligations) {
-            return await this.assetRepository.findAll({ include: [Obligation] })
+            return await this.assetRepository.findAll({ include: [User, Obligation] })
         } else {
-            return await this.assetRepository.findAll()
+            return await this.assetRepository.findAll({ include: [User] })
         }
     }
 
     async findAllAssetsByUser({ userAddress, withObligations }: FindAllAssetsByUserWithObligations) {
         if (withObligations) {
             return await this.assetRepository.findAll({
-                where: { userAddress: userAddress.toLowerCase() },
+                where: { deployer: userAddress.toLowerCase() },
                 include: [Obligation],
                 order: [['id', 'ASC']]
             })
         } else {
-            return await this.assetRepository.findAll({ where: { userAddress: userAddress.toLowerCase() }, order: [['id', 'ASC']] })
+            return await this.assetRepository.findAll({ where: { deployer: userAddress.toLowerCase() }, order: [['id', 'ASC']] })
         }
     }
 
@@ -566,7 +568,7 @@ export class ApiService {
     async createAsset({ tokenAddress, userAddress, name, symbol, decimals }: CreateAssetParams) {
         return await this.assetRepository.create({
             tokenAddress: tokenAddress.toLowerCase(),
-            userAddress: userAddress.toLowerCase(),
+            deployer: userAddress.toLowerCase(),
             name: name,
             symbol: symbol,
             decimals: decimals,
@@ -584,15 +586,7 @@ export class ApiService {
 
     async updateUserAsset({ tokenAddress, userAddress }: UpdateAssetUserParams) {
         const [rows, entity] = await this.assetRepository.update(
-            { userAddress: userAddress.toLowerCase() },
-            { where: { tokenAddress: tokenAddress.toLowerCase(), }, returning: true }
-        )
-        return entity;
-    }
-
-    async updateAssetObligation({ tokenAddress, obligationId }: UpdateAssetObligationParams) {
-        const [rows, entity] = await this.assetRepository.update(
-            { obligationId: obligationId },
+            { deployer: userAddress.toLowerCase() },
             { where: { tokenAddress: tokenAddress.toLowerCase(), }, returning: true }
         )
         return entity;

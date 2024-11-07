@@ -12,6 +12,7 @@ import { identitysProviders } from "../identities/identity.providers";
 import { assetsProviders } from "../assets/asset.providers";
 import { obligationsProviders } from "../obligations/obligation.providers";
 import { ObligationController } from "../obligations/obligation.controller";
+import { userAssetsProviders } from "../user-assets/user-asset.providers";
 import { tokenClaimsProviders } from "../token-claims/token-claim.providers";
 import { tokenIdentitiesProviders } from "../token-identities/token-identity.providers";
 import { tokenComplianceRequestsProviders } from "../token-compliance/token-compliance-request.providers";
@@ -28,6 +29,7 @@ import { DvdTransferController } from "../dvd-transfers/dvd-transfer.controller"
         ...claimsProviders, 
         ...identitysProviders, 
         ...assetsProviders, 
+        ...userAssetsProviders,
         ...obligationsProviders,
         ...tokenClaimsProviders,
         ...tokenIdentitiesProviders,
