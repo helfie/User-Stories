@@ -2,8 +2,7 @@ import { useReadContract } from "wagmi"
 import { CTR_ABI } from "../../../abis/ctr.abi"
 import { CTR } from "../../../addresses"
 import { getTokenClaimTopicName } from "../../../functions"
-
-const CLAIM_TOPICS = [1, 2]
+import { TOKEN_CLAIM_TOPICS } from "../../../constants"
 
 export const useBcGetTokenClaimTopics = () => {
     const result = useReadContract({
@@ -12,7 +11,7 @@ export const useBcGetTokenClaimTopics = () => {
         functionName: 'getTokenClaimTopics',
     })
     const resultData: bigint[] = result?.data as bigint[]
-    const data = !resultData ? CLAIM_TOPICS : resultData.sort();
+    const data = !resultData ? TOKEN_CLAIM_TOPICS : resultData.sort();
     const parsedData = data.map(el => {
         const claimTopic = {
             value: el,

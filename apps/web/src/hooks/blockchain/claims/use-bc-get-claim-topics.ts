@@ -2,8 +2,7 @@ import { useReadContract } from "wagmi"
 import { CTR_ABI } from "../../../abis/ctr.abi"
 import { CTR } from "../../../addresses"
 import { getClaimTopicName } from "../../../functions"
-
-const CLAIM_TOPICS = [1, 2, 3, 4, 5, 6, 7]
+import { CLAIM_TOPICS } from "../../../constants"
 
 export const useBcGetClaimTopics = () => {
     const result = useReadContract({

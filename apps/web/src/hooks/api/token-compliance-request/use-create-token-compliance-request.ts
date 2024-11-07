@@ -20,14 +20,14 @@ export const useCreateTokenComplianceRequest = () => {
         throw new Error("No User")
       }
 
-      const claimSignature = await signMessageAsync({ message: verifyMessage(variables.senderAddress, 'createTokenComplianceRequest') })
-      const addClaim = await fetch(`${env.VITE_API_URL}/token-compliance-requests/add-token-compliance-request`, {
+      const tokenComplSignature = await signMessageAsync({ message: verifyMessage(variables.senderAddress, 'createTokenComplianceRequest') })
+      const tokenCompl = await fetch(`${env.VITE_API_URL}/token-compliance-requests/add-token-compliance-request`, {
         method: 'POST',
         body: JSON.stringify({
           tokenAddress: variables.tokenAddress,
           userAddress: variables.senderAddress,
           amount: parseUnits(variables.amount.toString(), variables.decimals),
-          signature: claimSignature
+          signature: tokenComplSignature
         },),
         headers: {
           'Content-Type': 'application/json'

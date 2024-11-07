@@ -19,7 +19,7 @@ export const useCreateTokenClaim = () => {
       }
 
       const claimSignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'createTokenClaim')})
-      const addClaim = await fetch(`${env.VITE_API_URL}/claims/add-claim`, { 
+      const addClaim = await fetch(`${env.VITE_API_URL}/token-claims/add-claim`, { 
         method: 'POST', 
         body: JSON.stringify({tokenAddress: variables.tokenAddress, claimTopic: Number(variables.claimTopic), signature: claimSignature},),
         headers: {
