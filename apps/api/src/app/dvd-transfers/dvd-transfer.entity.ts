@@ -1,7 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { BelongsTo, Column, DataType, ForeignKey, Model, PrimaryKey, Table } from "sequelize-typescript";
 import { Obligation } from "../obligations/obligation.entity";
-import { ExecuteStatus } from "../types";
 
 @Table
 export class DvdTransfer extends Model<DvdTransfer> {
@@ -35,8 +34,8 @@ export class DvdTransfer extends Model<DvdTransfer> {
     @ApiProperty({type: Number, example: 100})
     sellerAmount: number;
     @Column({type: DataType.SMALLINT, allowNull: false})
-    @ApiProperty({type: ExecuteStatus, example: false})
-    status: ExecuteStatus;
+    @ApiProperty({type: Number, example: 0})
+    status: number;
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({type: String, example: "0x2B6a3EDD4B1652CB9cc5aA6f5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
     transferId: string;

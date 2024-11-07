@@ -22,5 +22,5 @@ export class TokenClaim extends Model<TokenClaim> {
     @ApiProperty({type: Boolean, example: false})
     isClaimVerified: boolean;
     @BelongsTo(() => Asset)
-    asset: Asset    
+    asset: Asset;
 }

@@ -9,19 +9,19 @@ export class TokenComplianceRequest extends Model<TokenComplianceRequest> {
     @Column({type: DataType.INTEGER, autoIncrement: true, allowNull: false})
     @ApiProperty({type: Number, example: 0})
     id: number;
+    @ForeignKey(() => Asset)
+    @Column({type: DataType.STRING, allowNull: false})
+    @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
+    tokenAddress: string;
     @Column({type: DataType.INTEGER, allowNull: false})
     @ApiProperty({type: Number, example: 100})
     maxTransferAmount: number;
     @Column({type: DataType.STRING, allowNull: false})
     @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
     userAddress: string;
-    @ForeignKey(() => Asset)
-    @Column({type: DataType.STRING, allowNull: false})
-    @ApiProperty({type: String, example: "0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f"})
-    tokenAddress: string;
     @Column({type: DataType.SMALLINT, allowNull: false, defaultValue: 0})
-    @ApiProperty({type: ExecuteStatus, example: false})
-    status: ExecuteStatus;
+    @ApiProperty({type: Number, example: 0})
+    status: number;
     @BelongsTo(() => Asset)
     asset: Asset; 
 }

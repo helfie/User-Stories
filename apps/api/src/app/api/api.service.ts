@@ -548,12 +548,12 @@ export class ApiService {
     async findAllAssetsByUser({ userAddress, withObligations }: FindAllAssetsByUserWithObligations) {
         if (withObligations) {
             return await this.assetRepository.findAll({
-                where: { deployer: userAddress.toLowerCase() },
+                where: { userAddress: userAddress.toLowerCase() },
                 include: [Obligation],
                 order: [['id', 'ASC']]
             })
         } else {
-            return await this.assetRepository.findAll({ where: { deployer: userAddress.toLowerCase() }, order: [['id', 'ASC']] })
+            return await this.assetRepository.findAll({ where: { userAddress: userAddress.toLowerCase() }, order: [['id', 'ASC']] })
         }
     }
 
@@ -564,7 +564,7 @@ export class ApiService {
     async createAsset({ tokenAddress, userAddress, name, symbol, decimals }: CreateAssetParams) {
         return await this.assetRepository.create({
             tokenAddress: tokenAddress.toLowerCase(),
-            deployer: userAddress.toLowerCase(),
+            userAddress: userAddress.toLowerCase(),
             name: name,
             symbol: symbol,
             decimals: decimals,
@@ -582,7 +582,7 @@ export class ApiService {
 
     async updateUserAsset({ tokenAddress, userAddress }: UpdateAssetUserParams) {
         const [rows, entity] = await this.assetRepository.update(
-            { deployer: userAddress.toLowerCase() },
+            { userAddress: userAddress.toLowerCase() },
             { where: { tokenAddress: tokenAddress.toLowerCase(), }, returning: true }
         )
         return entity;

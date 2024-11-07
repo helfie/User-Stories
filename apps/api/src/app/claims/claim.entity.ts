@@ -22,5 +22,5 @@ export class Claim extends Model<Claim> {
     @ApiProperty({type: Boolean, example: false})
     isClaimVerified: boolean;
     @BelongsTo(() => User)
-    user: User    
+    user: User;
 }
