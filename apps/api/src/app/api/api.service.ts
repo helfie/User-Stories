@@ -55,13 +55,13 @@ interface FindClaimById {
 interface CreateClaimParams {
     userAddress: string;
     claimTopic: number;
-    docGen: string;
 }
 
 interface UpdateDocgenParams {
     userAddress: string;
     claimTopic: number;
     docGen: string;
+    data: string;
 }
 
 interface VerifyClaimParams {
@@ -88,13 +88,13 @@ interface FindTokenClaimById {
 interface CreateTokenClaimParams {
     tokenAddress: string;
     claimTopic: number;
-    docGen: string;
 }
 
 interface UpdateTokenDocgenParams {
     tokenAddress: string;
     claimTopic: number;
     docGen: string;
+    data: string;
 }
 
 interface VerifyTokenClaimParams {
@@ -387,19 +387,20 @@ export class ApiService {
         return (await this.claimRepository.findByPk(compositeKey(userAddress, claimTopic))).docGen
     }
 
-    async createClaim({ userAddress, claimTopic, docGen }: CreateClaimParams) {
+    async createClaim({ userAddress, claimTopic }: CreateClaimParams) {
         return await this.claimRepository.create({
             claimUserKey: compositeKey(userAddress, claimTopic),
             userAddress: userAddress.toLowerCase(),
             claimTopic: claimTopic,
-            docGen: docGen,
+            docGen: '',
+            data: '',
             isClaimVerified: false
         })
     }
 
-    async updateDocgen({ userAddress, claimTopic, docGen }: UpdateDocgenParams) {
+    async updateDocgen({ userAddress, claimTopic, docGen, data }: UpdateDocgenParams) {
         const [rows, entity] = await this.claimRepository.update(
-            { docGen: docGen },
+            { docGen: docGen, data: data },
             { where: { claimUserKey: compositeKey(userAddress, claimTopic), }, returning: true }
         )
         return entity;
@@ -450,19 +451,20 @@ export class ApiService {
         return (await this.tokenClaimRepository.findByPk(compositeKey(tokenAddress, claimTopic))).docGen
     }
 
-    async createTokenClaim({ tokenAddress, claimTopic, docGen }: CreateTokenClaimParams) {
+    async createTokenClaim({ tokenAddress, claimTopic }: CreateTokenClaimParams) {
         return await this.tokenClaimRepository.create({
             claimTokenKey: compositeKey(tokenAddress, claimTopic),
             tokenAddress: tokenAddress.toLowerCase(),
             claimTopic: claimTopic,
-            docGen: docGen,
+            docGen: '',
+            data: '',
             isClaimVerified: false
         })
     }
 
-    async updateTokenDocgen({ tokenAddress, claimTopic, docGen }: UpdateTokenDocgenParams) {
+    async updateTokenDocgen({ tokenAddress, claimTopic, docGen, data }: UpdateTokenDocgenParams) {
         const [rows, entity] = await this.tokenClaimRepository.update(
-            { docGen: docGen },
+            { docGen: docGen, data: data },
             { where: { claimTokenKey: compositeKey(tokenAddress, claimTopic), }, returning: true }
         )
         return entity;

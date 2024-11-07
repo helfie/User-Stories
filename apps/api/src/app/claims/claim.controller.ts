@@ -58,8 +58,7 @@ export class ClaimController {
         }
         return await this.apiService.createClaim({
             userAddress: dto.userAddress, 
-            claimTopic: dto.claimTopic, 
-            docGen: ''
+            claimTopic: dto.claimTopic,
         });
     }
 
@@ -106,11 +105,12 @@ export class ClaimController {
         } else if((await this.apiService.isClaimVerified({userAddress: userAddress, claimTopic: Number(claimTopic)}))) {
             throw new BadRequestException(`Claim [${userAddress}-${claimTopic}] is already verified`)
         }
-        const fileName = await this.fileService.saveFile(file, `${userAddress}-${claimTopic}`)
+        const keccakFile = await this.fileService.saveFile(file, `${userAddress}-${claimTopic}`)
         return await this.apiService.updateDocgen({
             userAddress: userAddress, 
             claimTopic: Number(claimTopic), 
-            docGen: fileName
+            docGen: keccakFile.filename,
+            data: keccakFile.data,
         });
     }
 

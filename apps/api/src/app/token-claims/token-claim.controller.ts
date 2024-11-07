@@ -58,8 +58,7 @@ export class TokenClaimController {
         }
         return await this.apiService.createTokenClaim({
             tokenAddress: dto.tokenAddress, 
-            claimTopic: dto.claimTopic, 
-            docGen: ''
+            claimTopic: dto.claimTopic,
         });
     }
 
@@ -106,11 +105,12 @@ export class TokenClaimController {
         } else if((await this.apiService.isTokenClaimVerified({tokenAddress: tokenAddress, claimTopic: Number(claimTopic)}))) {
             throw new BadRequestException(`Claim [${tokenAddress}-${claimTopic}] is already verified`)
         }
-        const fileName = await this.fileService.saveFile(file, `${tokenAddress}-${claimTopic}`)
+        const keccakFile = await this.fileService.saveFile(file, `${tokenAddress}-${claimTopic}`)
         return await this.apiService.updateTokenDocgen({
             tokenAddress: tokenAddress, 
             claimTopic: Number(claimTopic), 
-            docGen: fileName
+            docGen: keccakFile.filename,
+            data: keccakFile.data,
         });
     }
 

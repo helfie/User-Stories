@@ -64,20 +64,21 @@ export const AdminAssetClaimPage = () => {
                                                                         senderAddress: address?.toString(),
                                                                         address: element?.tokenAddress,
                                                                         identityAddress: element?.asset?.identityAddress,
-                                                                        claimTopic: BigInt(element?.claimTopic)
+                                                                        claimTopic: BigInt(element?.claimTopic),
+                                                                        data: element?.data,
                                                                     })
                                                                 } else {
                                                                     await removeClaim.mutateAsync({
                                                                         address: address?.toString(),
                                                                         identityAddress: element?.asset?.identityAddress,
-                                                                        claimTopic: BigInt(element?.claimTopic)
+                                                                        claimTopic: BigInt(element?.claimTopic),
                                                                     })
                                                                 }
                                                                 await verifyClaim.mutateAsync({
                                                                     senderAddress: address?.toString(),
                                                                     tokenAddress: element?.tokenAddress,
                                                                     claimTopic: Number(element?.claimTopic),
-                                                                    verify: !element?.isClaimVerified
+                                                                    verify: !element?.isClaimVerified,
                                                                 })
                                                             }
                                                         }}>

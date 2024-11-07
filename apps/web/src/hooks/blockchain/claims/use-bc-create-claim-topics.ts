@@ -11,6 +11,7 @@ export const useBcCreateClaim = (isToken?: boolean) => {
   const { writeContractAsync } = useWriteContract()
   const { signMessageAsync } = useSignMessage()
   const publicClient = usePublicClient()
+  const claimPath = isToken ? 'token-claims' : 'claims';
 
   const mutation = useMutation({
     mutationFn: async (
@@ -19,17 +20,16 @@ export const useBcCreateClaim = (isToken?: boolean) => {
         address: string | undefined,
         identityAddress: string | undefined,
         claimTopic: bigint,
+        data: string,
       }) => {
       if (!variables.senderAddress || !variables.address || !variables.identityAddress) {
         throw new Error("No Sender")
       }
 
       try {
-        const claimPath = isToken ? 'token-claims' : 'claims';
         const uri = `${env.VITE_API_URL}/${claimPath}/claim/docgen/${variables.senderAddress}/${variables.claimTopic}-${variables.address}`;
-        const docData = await (await fetch(uri)).json();
-        const data = keccak256(docData as Hex)
-        const message = claimSignature(variables.senderAddress as Address, variables.claimTopic, data)
+        const docData = variables.data as Hex;
+        const message = claimSignature(variables.senderAddress as Address, variables.claimTopic, docData)
         const signature = await signMessageAsync({ message: message })
         const wc = await writeContractAsync({
           abi: IDENTITY_ABI,
@@ -40,7 +40,7 @@ export const useBcCreateClaim = (isToken?: boolean) => {
             SCHEME,
             variables.identityAddress as Address,
             signature,
-            data,
+            docData,
             uri,
           ],
         })
@@ -50,7 +50,7 @@ export const useBcCreateClaim = (isToken?: boolean) => {
       }
     },
     onSuccess: () => {
-      const query = isToken ? 'token-claims' : 'claims'
+      const query = isToken ? 'tokenClaims' : 'claims'
       queryClient.invalidateQueries({ queryKey: [query] })
     },
   })

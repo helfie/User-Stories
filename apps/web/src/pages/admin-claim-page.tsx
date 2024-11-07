@@ -64,7 +64,8 @@ export const AdminClaimPage = () => {
                                                                         senderAddress: address?.toString(),
                                                                         address: element?.userAddress,
                                                                         identityAddress: element?.user?.identityAddress,
-                                                                        claimTopic: BigInt(element?.claimTopic)
+                                                                        claimTopic: BigInt(element?.claimTopic),
+                                                                        data: element?.data,
                                                                     })
                                                                 } else {
                                                                     await removeClaim.mutateAsync({
