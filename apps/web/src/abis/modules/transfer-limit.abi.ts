@@ -1,4 +1,4 @@
-export const TRANSFER_LIMIT = [
+export const TIME_TRANSFER_LIMIT_ABI = [
     {
         "inputs": [],
         "stateMutability": "nonpayable",
