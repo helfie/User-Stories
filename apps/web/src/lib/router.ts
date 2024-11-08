@@ -13,8 +13,8 @@ import { DvdTransferPage } from '../pages/dvd-transfer-page';
 
 export const routes = {
     home: '/',
-    adminClaim: '/admin-claim',
     adminUser: '/admin-user',
+    adminClaim: '/admin-claim/:userAddress',
     adminAsset: '/admin-asset',
     adminAssetClaim: '/admin-asset-claim/:tokenAddress',
     adminTokenCompliance: 'admin-token-compliance',

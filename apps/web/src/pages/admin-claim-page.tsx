@@ -9,11 +9,14 @@ import { HeaderComponent } from "../components/header-component"
 import { useBcCreateClaim } from "../hooks/blockchain/claims/use-bc-create-claim-topics"
 import { useBcRemoveClaim } from "../hooks/blockchain/claims/use-bc-remove-claim-topics"
 import { getClaimTopicName } from "../functions"
+import { useParams } from "react-router-dom"
+import { useGetUserClaims } from "../hooks/api/claims/use-get-user-claims"
 
 export const AdminClaimPage = () => {
     const { address } = useAccount()
+    const { userAddress } = useParams()
     const { isLoadingUser, userData } = useGetUser(address?.toString())
-    const { isPendingClaims, claimsData } = useGetClaims('true')
+    const { isPendingUserClaims, userClaimsData } = useGetUserClaims(userAddress)
 
     const verifyClaim = useVerifyUserClaim()
     const addClaim = useBcCreateClaim()
@@ -37,7 +40,7 @@ export const AdminClaimPage = () => {
                             </Tr>
                         </Thead>
                         <Tbody>
-                            {claimsData?.map((element: any) => {
+                            {userClaimsData?.map((element: any) => {
                                 return (
                                     <Tr key={`${element?.claimUserKey}`}>
                                         <Td>
@@ -47,7 +50,7 @@ export const AdminClaimPage = () => {
                                             </Stack>
                                         </Td>
                                         <Td>
-                                            <Text>{getClaimTopicName(element?.claimTopic)}</Text >
+                                            <Text>{getClaimTopicName(BigInt(element?.claimTopic))}</Text >
                                         </Td>
                                         <Td>
                                             <Image src={`${env.VITE_API_URL}/claims/claim/docgen/${address?.toString()}/${element?.userAddress}-${element?.claimTopic}`} alt='Doc' boxSize='75px' />

@@ -36,6 +36,14 @@ export class TokenClaimController {
         return await this.apiService.findAllTokenClaimsByToken({tokenAddress: tokenAddress});
     }
 
+    @Get('all-verified/:tokenAddress')
+    @ApiResponse({status: 200, description: 'token claims', type: [TokenClaim]})
+    @ApiOperation({summary: "retrieve all token claims"})
+    @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    async getAllTokenClaimsVerified(@Param('tokenAddress') tokenAddress: string) {
+        return await this.apiService.areAllTokenClaimsVerified({tokenAddress: tokenAddress});
+    }
+
     @Get('/claim/:tokenAddress-:claimTopic')
     @ApiResponse({status: 200, description: 'claim by claimTokenKey', type: TokenClaim})
     @ApiOperation({summary: "retrieve claim by claimTokenKey"})

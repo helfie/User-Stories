@@ -36,6 +36,14 @@ export class ClaimController {
         return await this.apiService.findAllClaimsByUser({userAddress: userAddress});
     }
 
+    @Get('all-verified/:userAddress')
+    @ApiResponse({status: 200, description: 'user claims', type: [Claim]})
+    @ApiOperation({summary: "retrieve all user claims"})
+    @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    async getAllUserClaimsVerified(@Param('userAddress') userAddress: string) {
+        return await this.apiService.areAllClaimsVerified({userAddress: userAddress});
+    }
+
     @Get('/claim/:userAddress-:claimTopic')
     @ApiResponse({status: 200, description: 'claim by claimUserKey', type: Claim})
     @ApiOperation({summary: "retrieve claim by claimUserKey"})

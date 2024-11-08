@@ -77,7 +77,7 @@ export const HomePage = () => {
                     {
                         claimTopicsData.map((element: any) => {
                             return (
-                                <option value={element.value}>
+                                <option value={element.value.toString()}>
                                     {element.name}
                                 </option>
                             )

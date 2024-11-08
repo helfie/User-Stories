@@ -8,6 +8,7 @@ import { useCreateTokenIdentity } from "../hooks/api/token-identities/use-create
 import { useBcIdentityAddKey } from "../hooks/blockchain/identities/use-bc-identity-add-key"
 import { zeroAddress } from "viem"
 import { VerifyAsset } from "../components/verify-asset"
+import { useNavigate } from "react-router-dom"
 
 export const AdminAssetPage = () => {
     const { address } = useAccount()
@@ -16,6 +17,7 @@ export const AdminAssetPage = () => {
 
     const addKey = useBcIdentityAddKey()
     const createIdentity = useCreateTokenIdentity()
+    const navigate = useNavigate();
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -30,6 +32,7 @@ export const AdminAssetPage = () => {
                             <Th>Token Address</Th>
                             <Th>Identity Address</Th>
                             <Th>Country</Th>
+                            <Th>Claims</Th>
                             <Th>Verified</Th>
                         </Tr>
                     </Thead>
@@ -67,6 +70,13 @@ export const AdminAssetPage = () => {
                                         <Stack direction={"row"}>
                                             <Text>{element?.country ? element?.country : "not verified"}</Text >
                                         </Stack>
+                                    </Td>
+                                    <Td>
+                                        <Button colorScheme='yellow' size='sm' onClick={() =>
+                                            navigate(`/admin-asset-claim/${element?.tokenAddress}`)
+                                        }>
+                                            Verify
+                                        </Button>
                                     </Td>
                                     <Td>
                                         <VerifyAsset country={element?.country ?? '0'}

@@ -2,18 +2,20 @@ import { Button, Checkbox, Text, Stack, Table, Image, TableCaption, TableContain
 import { UserComponent } from "../components/user-component"
 import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useAccount } from "wagmi"
-import { useGetAllTokenClaims } from "../hooks/api/token-claims/use-get-all-token-claims"
 import { env } from "../env"
 import { useVerifyTokenClaim } from "../hooks/api/token-claims/use-verify-token-claim"
 import { HeaderComponent } from "../components/header-component"
 import { useBcCreateClaim } from "../hooks/blockchain/claims/use-bc-create-claim-topics"
 import { useBcRemoveClaim } from "../hooks/blockchain/claims/use-bc-remove-claim-topics"
 import { getTokenClaimTopicName } from "../functions"
+import { useGetTokenClaims } from "../hooks/api/token-claims/use-get-token-claims"
+import { useParams } from "react-router-dom"
 
 export const AdminAssetClaimPage = () => {
     const { address } = useAccount()
+    const { tokenAddress } = useParams()
     const { isLoadingUser, userData } = useGetUser(address?.toString())
-    const { isPendingTokenClaims, tokenClaimsData } = useGetAllTokenClaims('true')
+    const { isPendingTokenClaims, tokenClaimsData } = useGetTokenClaims(tokenAddress)
 
     const verifyClaim = useVerifyTokenClaim()
     const addClaim = useBcCreateClaim(true)
@@ -47,7 +49,7 @@ export const AdminAssetClaimPage = () => {
                                             </Stack>
                                         </Td>
                                         <Td>
-                                            <Text>{getTokenClaimTopicName(element?.claimTopic)}</Text >
+                                            <Text>{getTokenClaimTopicName(BigInt(element?.claimTopic))}</Text >
                                         </Td>
                                         <Td>
                                             <Image src={`${env.VITE_API_URL}/token-claims/claim/docgen/${address?.toString()}/${element?.tokenAddress}-${element?.claimTopic}`} alt='Doc' boxSize='75px' />

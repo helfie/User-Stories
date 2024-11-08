@@ -5,10 +5,13 @@ import { useRegisterIdentity } from "../hooks/blockchain/identities/use-bc-regis
 import { useAddOperator } from "../hooks/blockchain/users/use-bc-add-operator";
 import { useRemoveOperator } from "../hooks/blockchain/users/use-bc-remove-operator";
 import { useVerifyUser } from "../hooks/api/users/use-verify-user";
+import { useAllUserClaimsVerified } from "../hooks/api/claims/use-get-all-user-claims-verified";
 
 export function VerifyUser({ country, isVerified, identityAddress, address, userAddress }:
     { country: string, isVerified: boolean, identityAddress: string, address: string, userAddress: string }) {
     const [inputCountry, setInputCountry] = useState(country);
+
+    const { isPendingVer, allUserClaimsVerified } = useAllUserClaimsVerified(userAddress);
 
     const verifyUser = useVerifyUser()
 
@@ -25,9 +28,9 @@ export function VerifyUser({ country, isVerified, identityAddress, address, user
                     ? <Input placeholder='Country' value={inputCountry} onChange={(e) => setInputCountry(e.target.value)} />
                     : <></>
             }
-            <Button isDisabled={!identityAddress} colorScheme={isVerified ? 'red' : 'green'} size='sm'
+            <Button isDisabled={!identityAddress || !allUserClaimsVerified} colorScheme={isVerified ? 'red' : 'green'} size='sm'
                 onClick={async () => {
-                    if (identityAddress) {
+                    if (identityAddress && allUserClaimsVerified) {
                         if (isVerified) {
                             await deleteIdentity.mutateAsync({ address: userAddress })
                             await useRemoveUser.mutateAsync({ userAddress: userAddress })
