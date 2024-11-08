@@ -10,4 +10,4 @@ export const TOKEN_COMPLIANCE_REQUEST_REPOSITORY = 'TOKEN_COMPLIANCE_REQUEST_REP
 export const DVD_TRANSFER_REPOSITORY = 'DVD_TRANSFER_REPOSITORY'
 
 export const MAX_FILE_SIZE = 2000_000
-export const FILE_TYPES = '.(png|jpeg|jpg|pdf)'
+export const FILE_TYPES = '.(png|jpeg|jpg|pdf|jfif)'
