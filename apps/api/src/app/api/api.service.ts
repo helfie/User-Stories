@@ -166,6 +166,14 @@ interface VerifyAssetParams {
 }
 ///
 
+
+/// User Asset Service
+interface CreateUserAssetParams {
+    tokenAddress: string;
+    userAddress: string;
+}
+///
+
 // Token Compliance Request Service
 interface FindTokenComplianceRequestsByUserAddress {
     userAddress: string;
@@ -378,7 +386,11 @@ export class ApiService {
     }
 
     async findAllClaimsByUser({ userAddress }: FindAllByUserParams) {
-        return await this.claimRepository.findAll({ where: { userAddress: userAddress.toLowerCase() }, order: [['claimTopic', 'ASC']] })
+        return await this.claimRepository.findAll({
+            where: { userAddress: userAddress.toLowerCase() },
+            include: [User],
+            order: [['claimTopic', 'ASC']]
+        })
     }
 
     async findClaimById({ userAddress, claimTopic }: FindClaimById) {
@@ -442,7 +454,11 @@ export class ApiService {
     }
 
     async findAllTokenClaimsByToken({ tokenAddress }: FindAllByTokenParams) {
-        return await this.tokenClaimRepository.findAll({ where: { tokenAddress: tokenAddress.toLowerCase() }, order: [['claimTopic', 'ASC']] })
+        return await this.tokenClaimRepository.findAll({
+            where: { tokenAddress: tokenAddress.toLowerCase() },
+            include: [Asset],
+            order: [['claimTopic', 'ASC']]
+        })
     }
 
     async findTokenClaimById({ tokenAddress, claimTopic }: FindTokenClaimById) {
@@ -552,12 +568,21 @@ export class ApiService {
     async findAllAssetsByUser({ userAddress, withObligations }: FindAllAssetsByUserWithObligations) {
         if (withObligations) {
             return await this.assetRepository.findAll({
-                where: { deployer: userAddress.toLowerCase() },
-                include: [Obligation],
-                order: [['id', 'ASC']]
+                include: [{
+                    model: UserAsset,
+                    where: { userAddress: userAddress.toLowerCase() },
+                    attributes: ['userAddress']
+                }, Obligation],
+                order: [['tokenAddress', 'ASC']]
             })
         } else {
-            return await this.assetRepository.findAll({ where: { deployer: userAddress.toLowerCase() }, order: [['id', 'ASC']] })
+            return await this.assetRepository.findAll({
+                include: [{
+                    model: UserAsset,
+                    where: { userAddress: userAddress.toLowerCase() },
+                    attributes: ['userAddress']
+                }], order: [['tokenAddress', 'ASC']]
+            })
         }
     }
 
@@ -619,6 +644,15 @@ export class ApiService {
             return asset.isVerified
         }
         return false
+    }
+    ///
+
+    /// UserAsset Service
+    async createUserAsset({ tokenAddress, userAddress }: CreateUserAssetParams) {
+        return await this.userAssetRepository.create({
+            tokenAddress: tokenAddress.toLowerCase(),
+            userAddress: userAddress.toLowerCase(),
+        })
     }
     ///
 
@@ -707,7 +741,7 @@ export class ApiService {
 
     /// ObligationService
     async findAllObligations({ withAssets, isExecuted }: FindAllObligationsWithAssets) {
-        if (status !== null && withAssets) {
+        if (isExecuted !== null && withAssets) {
             return await this.obligationRepository.findAll({
                 where: { isExecuted: isExecuted },
                 include: [Asset]

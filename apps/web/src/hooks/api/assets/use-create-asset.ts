@@ -23,7 +23,7 @@ export const useCreateAsset = () => {
           throw new Error("No User")
       }
 
-      const tokenSalt = await publicClient.readContract({
+      const tokenSalt = await publicClient?.readContract({
         abi: TOKEN_FACTORY_ABI,
         address: TOKEN_FACTORY,
         functionName: 'getTokenSalt',
@@ -31,7 +31,7 @@ export const useCreateAsset = () => {
           variables.userAddress as Address, variables.name, variables.symbol, variables.decimals
         ]
       })
-      const tokenAddress = await publicClient.readContract({
+      const tokenAddress = await publicClient?.readContract({
         abi: TOKEN_FACTORY_ABI,
         address: TOKEN_FACTORY,
         functionName: 'getToken',

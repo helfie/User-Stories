@@ -6,7 +6,6 @@ import { SignatureService } from "../signatures/signature.service";
 import { CreateAssetDto } from "./dto/create-asset.dto";
 import { UpdateAssetDto } from "./dto/update-asset.dto";
 import { ApiService } from "../api/api.service";
-import { UpdateAssetObligationDto } from "./dto/update-asset-obligation.dto";
 import { VerifyAssetDto } from "./dto/verify-asset.dto";
 import { SetTokenIdentityDto } from "./dto/set-token-identity.dto";
 
@@ -56,13 +55,18 @@ export class AssetController {
         } else if(dto.decimals <= 0 && dto.decimals > 18) {
             throw new BadRequestException(`Invalid decimals [${dto.decimals}]`)
         }
-        return await this.apiService.createAsset({
+        const asset = await this.apiService.createAsset({
             tokenAddress: dto.tokenAddress,
             userAddress: dto.userAddress, 
             name: dto.name, 
             symbol: dto.symbol,
             decimals: dto.decimals
         });
+        await this.apiService.createUserAsset({
+            tokenAddress: dto.tokenAddress,
+            userAddress: dto.userAddress, 
+        });
+        return asset;
     }
 
     @Patch('asset/update-user')

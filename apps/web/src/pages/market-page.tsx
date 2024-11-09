@@ -40,12 +40,12 @@ export const MarketPage = () => {
                     {obligationsData?.map((element: any) => {
                         return (
                             <Tr key={`${element?.id}`}>
-                                <Td>{element?.asset?.tokenAddress}</Td>
+                                <Td>{element?.tokenAddress}</Td>
                                 <Td>{element?.userAddress}</Td>
                                 <Td>{element?.asset?.name}</Td>
                                 <Td>{element?.asset?.symbol}</Td>
                                 <Td>{element?.amount}</Td>
-                                <BuyerPrice sellAmount={element?.amount} sellerToken={element?.asset?.tokenAddress}/>
+                                <BuyerPrice sellAmount={element?.amount} sellerToken={element?.tokenAddress}/>
                                 <Td>
                                     <Button colorScheme='yellow' size='sm' onClick={async () => {
                                         if(userData?.isVerified && element?.userAddress.toLowerCase() !== userData?.userAddress?.toLowerCase()) {

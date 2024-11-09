@@ -28,12 +28,15 @@ export class Asset extends Model<Asset> {
     symbol: string;
     @Column({type: DataType.SMALLINT, allowNull: false})
     @ApiProperty({type: Number, example: 18})
-    @Column({ type: DataType.SMALLINT, allowNull: true })
+    @Column({ type: DataType.SMALLINT, allowNull: false, defaultValue: 18 })
     @ApiProperty({ type: Number, example: 18 })
     decimals: number;
     @Column({ type: DataType.SMALLINT, allowNull: true })
     @ApiProperty({ type: Number, example: 0 })
     country: number;
+    // @Column({ type: DataType.BIGINT, allowNull: false, defaultValue: 0 })
+    // @ApiProperty({ type: BigInt, example: 0 })
+    // balance: bigint;
     @Column({ type: DataType.BOOLEAN, allowNull: false, defaultValue: false })
     @ApiProperty({ type: Boolean, example: false })
     isVerified: boolean;

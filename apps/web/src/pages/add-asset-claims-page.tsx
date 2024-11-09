@@ -80,7 +80,7 @@ export const AddAssetClaimsPage = () => {
                     {
                         tokenClaimTopicsData.map((element: any) => {
                             return (
-                                <option value={element.value}>
+                                <option value={element.value.toString()}>
                                     {element.name}
                                 </option>
                             )

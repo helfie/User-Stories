@@ -55,7 +55,7 @@ export class TokenComplianceController {
     }
 
     @Get('token-compliance-request-exists/:tokenAddress-:userAddress')
-    @ApiResponse({ status: 200, description: 'existance Processing request by user and token', type: [TokenComplianceRequest] })
+    @ApiResponse({ status: 200, description: 'existance Processing request by user and token', type: TokenComplianceRequest })
     @ApiOperation({ summary: "retrieve if exists Processing request by user and token" })
     @ApiParam({ name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f' })
     @ApiParam({ name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f' })

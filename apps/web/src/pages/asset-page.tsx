@@ -9,8 +9,6 @@ import { useCreateAsset } from "../hooks/api/assets/use-create-asset";
 import { HeaderComponent } from "../components/header-component";
 import { useDeleteObligation } from "../hooks/api/obligations/use-delete-obligation";
 import { zeroAddress } from "viem";
-import { useBcMintAsset } from "../hooks/blockchain/assets/use-bc-mint-asset";
-import { AddAssetClaimsPage } from "./add-asset-claims-page";
 import { useBcCreateAsset } from "../hooks/blockchain/assets/use-bc-create-asset";
 import { AVAILABLE_DECIMALS } from "../constants";
 import { MintAsset } from "../components/mint-asset";
@@ -62,12 +60,12 @@ export const AssetPage = () => {
                             return (
                                 <Tr key={`${element.tokenAddress}`}>
                                     <Td>{element?.tokenAddress}</Td>
-                                    <Td>{element?.userAddress}</Td>
+                                    <Td>{element?.userAssets[0]?.userAddress}</Td>
                                     <Td>{element?.name}</Td>
                                     <Td>{element?.symbol}</Td>
                                     <Td>{element?.decimals}</Td>
                                     <Td>
-                                        <Stack>
+                                        <Stack direction={'row'}>
                                             {
                                                 !element?.isVerfied
                                                     ? <Button colorScheme='yellow' size='sm' onClick={() =>
@@ -87,7 +85,7 @@ export const AssetPage = () => {
                                     </Td>
                                     <Td>
                                         <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                navigate(`/token-compliance-request/${element?.tokenAddress}-${element?.userAddress}`)
+                                                navigate(`/token-compliance-requests/${element?.tokenAddress}-${element?.userAddress}`)
                                         }>
                                             Request changing compliance
                                         </Button>
@@ -127,7 +125,7 @@ export const AssetPage = () => {
                     <Stack spacing={3} maxW={'2xl'}>
                         <Input placeholder='Name' value={inputName} onChange={(e) => setInputName(e.target.value)} />
                         <Input placeholder='Symbol' value={inputSymbol} onChange={(e) => setInputSymbol(e.target.value)} />
-                        <Select placeholder='Claim Topic' onChange={(e) => {
+                        <Select placeholder='Decimals' onChange={(e) => {
                             if (e.target.value !== '') {
                                 setInputDecimals(e.target.value)
                             }
