@@ -5,7 +5,7 @@ export const useGetIsProcessingTokenComplianceRequest = (tokenAddress: string | 
     const { isPending, error, data } = useQuery({
         queryKey: ['tokenComplianceRequests', tokenAddress, userAddress],
         queryFn: async () => {
-            const res = await fetch(`${env.VITE_API_URL}/token-compliance-request-exists/${tokenAddress}-${userAddress}`).then((res) => res.json())
+            const res = await fetch(`${env.VITE_API_URL}/token-compliance-requests/token-compliance-request-exists/${tokenAddress}-${userAddress}`).then((res) => res.json())
             return res;
         }
 

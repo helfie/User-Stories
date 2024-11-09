@@ -82,7 +82,9 @@ export class TokenComplianceController {
             throw new BadRequestException(`User [${dto.senderAddress}] does not exist`)
         } else if (!(await this.apiService.isUserVerified({ userAddress: dto.senderAddress }))) {
             throw new BadRequestException(`User [${dto.senderAddress}] is not verified`)
-        } else if (!(await this.apiService.isTokenComplianceStatusProcessing({ tokenAddress: dto.tokenAddress, userAddress: dto.senderAddress }))) {
+        } else if (!(await this.apiService.hasUserAsset({ tokenAddress: dto.tokenAddress, userAddress: dto.senderAddress }))) {
+            throw new BadRequestException(`User [${dto.senderAddress}] doesnt have an asset [${dto.tokenAddress}]`)
+        } else if ((await this.apiService.isTokenComplianceStatusProcessing({ tokenAddress: dto.tokenAddress, userAddress: dto.senderAddress }))) {
             throw new BadRequestException(`Token Compliance Request [${dto.senderAddress}-${dto.senderAddress}] is already viewed`)
         }
         return await this.apiService.createTokenComplianceRequest({
@@ -102,6 +104,8 @@ export class TokenComplianceController {
             throw new BadRequestException(`Sender [${dto.senderAddress}] not admin`)
         } else if (!(await this.apiService.isUserVerified({ userAddress: dto.userAddress }))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
+        } else if (!(await this.apiService.hasUserAsset({ tokenAddress: dto.tokenAddress, userAddress: dto.userAddress }))) {
+            throw new BadRequestException(`User [${dto.userAddress}] doesnt have an asset [${dto.tokenAddress}]`)
         } else if (!(await this.apiService.isTokenComplianceStatusProcessing({ tokenAddress: dto.tokenAddress, userAddress: dto.userAddress }))) {
             throw new BadRequestException(`Token Compliance Request [${dto.tokenAddress}-${dto.userAddress}] is already viewed`)
         }

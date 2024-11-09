@@ -20,9 +20,9 @@ export const routes = {
     adminTokenCompliance: 'admin-token-compliance',
     asset: '/asset',
     market: '/market',
-    assetClaim: 'asset-claim/:tokenAddress',
-    tokenComplainceRequest: 'token-compliance-request/:tokenAddress-:userAddress',
-    dvdTransfer: 'dvd-transfer/:tokenAddress-:userAddress'
+    assetClaim: '/asset-claim/:tokenAddress',
+    tokenComplianceRequest: '/token-compliance-request/:tokenAddress',
+    dvdTransfer: '/dvd-transfer/:tokenAddress-:userAddress'
 }
 
 export const router = createBrowserRouter([{
@@ -35,7 +35,7 @@ export const router = createBrowserRouter([{
         { path: routes.asset, Component: AssetPage },
         { path: routes.market, Component: MarketPage },
         { path: routes.assetClaim, Component: AddAssetClaimsPage },
-        { path: routes.tokenComplainceRequest, Component: AddTokenComplianceRequestPage },
+        { path: routes.tokenComplianceRequest, Component: AddTokenComplianceRequestPage },
         { path: routes.dvdTransfer, Component: DvdTransferPage },
     ]
 }])

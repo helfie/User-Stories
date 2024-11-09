@@ -2,7 +2,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { env } from '../../../env'
 import { useSignMessage } from 'wagmi'
 import { verifyMessage } from "../../../functions"
-import { parseUnits } from 'viem'
 
 export const useCreateTokenComplianceRequest = () => {
   const queryClient = useQueryClient()
@@ -14,9 +13,8 @@ export const useCreateTokenComplianceRequest = () => {
         senderAddress: string | undefined,
         tokenAddress: string | undefined,
         amount: number | undefined,
-        decimals: number | undefined
       }) => {
-      if (!variables.senderAddress || !variables.tokenAddress || !variables.decimals || !variables.amount) {
+      if (!variables.senderAddress || !variables.tokenAddress || !variables.amount) {
         throw new Error("No User")
       }
 
@@ -25,8 +23,8 @@ export const useCreateTokenComplianceRequest = () => {
         method: 'POST',
         body: JSON.stringify({
           tokenAddress: variables.tokenAddress,
-          userAddress: variables.senderAddress,
-          amount: parseUnits(variables.amount.toString(), variables.decimals),
+          senderAddress: variables.senderAddress,
+          amount: variables.amount,
           signature: tokenComplSignature
         },),
         headers: {

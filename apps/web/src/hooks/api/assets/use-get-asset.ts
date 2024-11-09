@@ -5,7 +5,7 @@ export const useGetAsset = (assetAddress: string | undefined) => {
     const { isPending, error, data } = useQuery({
         queryKey: ['asset', assetAddress],
         queryFn: () =>
-            fetch(`${env.VITE_API_URL}/assets?tokenAddress=${assetAddress}`).then((res) =>
+            fetch(`${env.VITE_API_URL}/assets/asset/${assetAddress}`).then((res) =>
             res.json(),
         ),
     })

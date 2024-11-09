@@ -14,6 +14,7 @@ import { AVAILABLE_DECIMALS } from "../constants";
 import { MintAsset } from "../components/mint-asset";
 import { useNavigate } from "react-router-dom";
 
+// TODO: obligation asset id -> tokenAddress
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();
 
@@ -24,7 +25,7 @@ export const AssetPage = () => {
     const [inputName, setInputName] = useState('');
     const [inputSymbol, setInputSymbol] = useState('');
     const [inputDecimals, setInputDecimals] = useState('18');
-    const [assetId, setAssetId] = useState(0)
+    const [assetId, setAssetId] = useState('')
 
     const createAssetMutation = useCreateAsset();
     const deleteObligationMutation = useDeleteObligation();
@@ -76,7 +77,7 @@ export const AssetPage = () => {
                                                     :
                                                     <MintAsset
                                                         tokenAddress={element?.tokenAddress ?? zeroAddress}
-                                                        userAddress={address?.toString() ?? zeroAddress}
+                                                        userAddress={element?.userAssets[0]?.userAddress ?? zeroAddress}
                                                         isVerified={element?.isVerified}
                                                     />
                                             }
@@ -85,7 +86,7 @@ export const AssetPage = () => {
                                     </Td>
                                     <Td>
                                         <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                navigate(`/token-compliance-requests/${element?.tokenAddress}-${element?.userAddress}`)
+                                                navigate(`/token-compliance-request/${element?.tokenAddress}`)
                                         }>
                                             Request changing compliance
                                         </Button>
@@ -94,7 +95,7 @@ export const AssetPage = () => {
                                         
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' onClick={() => {
-                                                setAssetId(element?.id)
+                                                setAssetId(element?.tokenAddress)
                                                 onOpen()
                                             }}>
                                                 {!element.obligationId ? 'Create obligation' : 'Edit obligation'}

@@ -34,7 +34,7 @@ export const generateClaimId = (
     return claimid;
 };
 
-export const getStatusName = (status: ExecuteStatus): string => {
+export const getStatusName = (status: number): string => {
     if (status === ExecuteStatus.PROCESSING) {
         return 'Processing';
     } else if (status === ExecuteStatus.CANCELED) {
