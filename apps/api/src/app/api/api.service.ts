@@ -211,8 +211,9 @@ interface FindAllObligationsWithAssets {
     isExecuted?: boolean;
 }
 
-interface FindObligationByAssetId {
+interface FindObligationByAssetAndSeller {
     tokenAddress: string;
+    seller: string;
 }
 
 interface FindObligationById {
@@ -763,8 +764,8 @@ export class ApiService {
         }
     }
 
-    async findObligationByAsset({ tokenAddress }: FindObligationByAssetId) {
-        return await this.obligationRepository.findOne({ where: { tokenAddress: tokenAddress.toLowerCase() } })
+    async findObligationByAssetAndSeller({ tokenAddress, seller }: FindObligationByAssetAndSeller) {
+        return await this.obligationRepository.findOne({ where: { tokenAddress: tokenAddress.toLowerCase(), seller: seller.toLowerCase(), isExecuted: false } })
     }
 
     async findObligationById({ obligationId }: FindObligationById) {
@@ -789,8 +790,18 @@ export class ApiService {
         return entity;
     }
 
+    async deleteObligation({obligationId}:DeleteObligationParams) {
+        const rows = await this.obligationRepository.destroy({where: {obligationId: obligationId}})
+        return obligationId;
+    }
+
     async isObligationExists({ obligationId }: FindObligationParams) {
         const obligation = await this.obligationRepository.findByPk(obligationId)
+        return obligation ? true : false
+    }
+
+    async isObligationExistsOnSeller({ tokenAddress, seller }: FindObligationByAssetAndSeller) {
+        const obligation = await this.obligationRepository.findOne({ where: { tokenAddress: tokenAddress.toLowerCase(), seller: seller.toLowerCase() } })
         return obligation ? true : false
     }
 

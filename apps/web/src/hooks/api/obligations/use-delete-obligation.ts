@@ -10,9 +10,13 @@ export const useDeleteObligation = () => {
   const mutation = useMutation({
     mutationFn: async (
       variables: {
-        assetId: number | undefined,
+        tokenAddress: string | undefined,
         userAddress: string | undefined, 
         obligationId: number | undefined } ) => {
+          console.log(variables.tokenAddress)
+          console.log(variables.userAddress)
+          console.log(variables.obligationId)
+    
       if(!variables.userAddress) {
         throw new Error("No User")
       }
@@ -21,7 +25,7 @@ export const useDeleteObligation = () => {
       const deleteObligation = await fetch(`${env.VITE_API_URL}/obligations/obligation/delete-obligation`, { 
         method: 'DELETE', 
         body: JSON.stringify({
-            assetId: variables.assetId, 
+            tokenAddress: variables.tokenAddress, 
             userAddress: variables.userAddress, 
             obligationId: variables.obligationId,
             signature: deleteObligationSignature,},),

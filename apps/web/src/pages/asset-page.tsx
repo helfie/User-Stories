@@ -14,7 +14,6 @@ import { AVAILABLE_DECIMALS } from "../constants";
 import { MintAsset } from "../components/mint-asset";
 import { useNavigate } from "react-router-dom";
 
-// TODO: obligation asset id -> tokenAddress
 export const AssetPage = () => {
     const { isOpen, onOpen, onClose, } = useDisclosure();
 
@@ -25,7 +24,8 @@ export const AssetPage = () => {
     const [inputName, setInputName] = useState('');
     const [inputSymbol, setInputSymbol] = useState('');
     const [inputDecimals, setInputDecimals] = useState('18');
-    const [assetId, setAssetId] = useState('')
+    const initTokenAddress = userAssetsData?.length > 0 ? userAssetsData[0].tokenAddress : zeroAddress
+    const [tokenAddress, setTokenAddress] = useState(initTokenAddress)
 
     const createAssetMutation = useCreateAsset();
     const deleteObligationMutation = useDeleteObligation();
@@ -55,13 +55,14 @@ export const AssetPage = () => {
                     <Tbody>
                         <ObligationModal
                             isOpen={isOpen} onClose={onClose}
-                            assetId={assetId} userAddress={address ?? zeroAddress} />
+                            tokenAddress={tokenAddress ?? zeroAddress} 
+                            userAddress={address?.toString() ?? zeroAddress} />
 
-                        {userAssetsData?.map((element: any) => {
+                        {userAssetsData?.map((element: any, index: number) => {
                             return (
                                 <Tr key={`${element.tokenAddress}`}>
                                     <Td>{element?.tokenAddress}</Td>
-                                    <Td>{element?.userAssets[0]?.userAddress}</Td>
+                                    <Td>{element?.userAssets[index]?.userAddress}</Td>
                                     <Td>{element?.name}</Td>
                                     <Td>{element?.symbol}</Td>
                                     <Td>{element?.decimals}</Td>
@@ -77,7 +78,7 @@ export const AssetPage = () => {
                                                     :
                                                     <MintAsset
                                                         tokenAddress={element?.tokenAddress ?? zeroAddress}
-                                                        userAddress={element?.userAssets[0]?.userAddress ?? zeroAddress}
+                                                        userAddress={element?.userAssets[index]?.userAddress ?? zeroAddress}
                                                         isVerified={element?.isVerified}
                                                     />
                                             }
@@ -95,19 +96,19 @@ export const AssetPage = () => {
                                         
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' onClick={() => {
-                                                setAssetId(element?.tokenAddress)
+                                                setTokenAddress(element?.tokenAddress)
                                                 onOpen()
                                             }}>
-                                                {!element.obligationId ? 'Create obligation' : 'Edit obligation'}
+                                                {!element?.obligations[index]?.obligationId ? 'Create obligation' : 'Edit obligation'}
                                             </Button>
                                             {
-                                                element.obligationId
+                                                element?.obligations[index]?.obligationId
                                                     ?
                                                     <Button colorScheme='red' size='sm' onClick={() => {
                                                         deleteObligationMutation.mutate({
-                                                            assetId: element?.id,
-                                                            userAddress: element?.userAddress,
-                                                            obligationId: element?.obligationId
+                                                            tokenAddress: element?.tokenAddress,
+                                                            userAddress: element?.userAssets[index]?.userAddress,
+                                                            obligationId: element?.obligations[index]?.obligationId,
                                                         })
                                                     }}>
                                                         Delete Obligation

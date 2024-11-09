@@ -10,39 +10,45 @@ export const useCreateObligation = () => {
   const mutation = useMutation({
     mutationFn: async (
       variables: {
-        assetId: number | undefined,
+        tokenAddress: string | undefined,
         userAddress: string | undefined, 
         amount: number | undefined, 
-        txCount: number | undefined} ) => {
+        txCount: number | undefined,
+        obligationId: number | undefined} ) => {
       if(!variables.userAddress) {
         throw new Error("No User")
       }
 
-      const addObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'addObligation')})
-      const addObligation = await fetch(`${env.VITE_API_URL}/obligations/add-obligation`, { 
-        method: 'POST', 
-        body: JSON.stringify({
-            assetId: variables.assetId, 
-            userAddress: variables.userAddress, 
-            amount: variables.amount, 
-            txCount: variables.txCount,
-            signature: addObligationSignature,},),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((res) => res.json())
-      const updateObligationAssetSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'updateAssetObligation')})
-      const updateObligationAsset = await fetch(`${env.VITE_API_URL}/assets/asset/add-obligation`, { 
-        method: 'PATCH', 
-        body: JSON.stringify({
-            assetId: variables.assetId, 
-            userAddress: variables.userAddress, 
-            obligationId: addObligation.id,
-            signature: updateObligationAssetSignature,},),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      if(variables.obligationId === null) { 
+        const addObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'addObligation')})
+        const addObligation = await fetch(`${env.VITE_API_URL}/obligations/add-obligation`, { 
+          method: 'POST', 
+          body: JSON.stringify({
+              tokenAddress: variables.tokenAddress, 
+              userAddress: variables.userAddress, 
+              amount: variables.amount, 
+              txCount: variables.txCount,
+              signature: addObligationSignature,},),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((res) => res.json())
+      } else {
+        const updateObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'updateObligation')})
+        const updateObligation = await fetch(`${env.VITE_API_URL}/obligations/obligation/update-obligation`, { 
+          method: 'PATCH', 
+          body: JSON.stringify({
+              tokenAddress: variables.tokenAddress, 
+              userAddress: variables.userAddress, 
+              obligationId: variables.obligationId,
+              amount: variables.amount, 
+              txCount: variables.txCount,
+              signature: updateObligationSignature,},),
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        }).then((res) => res.json())
+      }
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['obligation'] })

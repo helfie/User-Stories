@@ -46,11 +46,9 @@ export class Asset extends Model<Asset> {
         through: { model: () => UserAsset },
     })
     users: User[];
-    @HasMany(() => UserAsset, {
-        onDelete: "CASCADE",
-    })
+    @HasMany(() => UserAsset, { onDelete: 'CASCADE' })
     userAssets: UserAsset[];
-    @HasMany(() => Obligation)
+    @HasMany(() => Obligation, { onDelete: 'CASCADE' })
     obligations: Obligation[];
     @HasMany(() => TokenClaim)
     claims: TokenClaim[];

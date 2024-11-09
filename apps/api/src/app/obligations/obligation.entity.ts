@@ -30,9 +30,9 @@ export class Obligation extends Model<Obligation> {
     @Column({type: DataType.BOOLEAN, allowNull: false})
     @ApiProperty({type: Boolean, example: false})
     isExecuted: boolean;
-    @BelongsTo(() => Asset)
+    @BelongsTo(() => Asset, { onDelete: 'CASCADE' })
     asset: Asset;
-    @BelongsTo(() => User)
+    @BelongsTo(() => User, { onDelete: 'CASCADE' })
     user: User;
     @HasMany(() => DvdTransfer)
     dvdTransfers: DvdTransfer[];

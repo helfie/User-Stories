@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { env } from "../../../env"
 
-export const useGetObligationByAsset = (assetId: number) => {
+export const useGetObligationByAssetAndSeller = (tokenAddress: string, seller: string) => {
     const { isLoading, error, data, } = useQuery({
-        queryKey: ['obligation', assetId],
+        queryKey: ['obligation', tokenAddress, seller],
         queryFn: async () => {
             try {
-                return await fetch(`${env.VITE_API_URL}/obligations/${assetId}`).then((res) => res.json())
+                return await fetch(`${env.VITE_API_URL}/obligations/${tokenAddress}-${seller}`).then((res) => res.json())
             } catch (error) {
                 return null
             }

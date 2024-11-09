@@ -27,15 +27,13 @@ export class User extends Model<User> {
     isAdmin: boolean;
     @HasMany(() => Claim)
     claims: Claim[];
-    @HasMany(() => Obligation)
+    @HasMany(() => Obligation, { onDelete: 'CASCADE' })
     obligations: Obligation[];
     @BelongsToMany(() => Asset, {
         through: { model: () => UserAsset },
     })
     assets: Asset[];
-    @HasMany(() => UserAsset, {
-        onDelete: "CASCADE",
-    })
+    @HasMany(() => UserAsset, { onDelete: 'CASCADE' })
     userAssets: UserAsset[];
     @BelongsTo(() => Identity)
     identity: Identity;

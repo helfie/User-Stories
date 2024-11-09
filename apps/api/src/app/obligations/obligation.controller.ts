@@ -6,6 +6,7 @@ import { ApiService } from "../api/api.service";
 import { Obligation } from "./obligation.entity";
 import { CreateObligationDto } from "./dto/create-obligation.dto";
 import { UpdateObligationDto } from "./dto/update-obligation.dto";
+import { DeleteObligationDto } from "./dto/delete-obligation.dto";
 
 @ApiTags('Obligations')
 @Controller('/obligations')
@@ -25,12 +26,13 @@ export class ObligationController {
         return await this.apiService.findAllObligations({withAssets: withAssets === 'true', isExecuted: isNotExec});
     }
 
-    @Get('/:tokenAddress')
+    @Get('/:tokenAddress-:userAddress')
     @ApiResponse({status: 200, description: 'asset obligations', type: Obligation})
     @ApiOperation({summary: "retrieve all asset obligations"})
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
-    async getObligationByAsset(@Param('tokenAddress') tokenAddress: string) {
-        return await this.apiService.findObligationByAsset({tokenAddress: tokenAddress});
+    @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
+    async getObligationByAsset(@Param('tokenAddress') tokenAddress: string, @Param('userAddress') userAddress: string) {
+        return await this.apiService.findObligationByAssetAndSeller({tokenAddress: tokenAddress, seller: userAddress});
     }
 
     @Get('obligation/:obligationId')
@@ -51,6 +53,12 @@ export class ObligationController {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
+        } else if(!(await this.apiService.hasUserAsset({tokenAddress: dto.tokenAddress, userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] does not have an asset [${dto.tokenAddress}]`)
+        } else if((await this.apiService.isObligationExistsOnSeller({tokenAddress: dto.tokenAddress, seller: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] has already an obligation on the asset [${dto.tokenAddress}]`)
+        } else if((await this.apiService.isAssetVerified({tokenAddress: dto.tokenAddress}))) {
+            throw new BadRequestException(`Asset [${dto.tokenAddress}] is not verified`)
         }
         return await this.apiService.createObligation({
             tokenAddress: dto.tokenAddress, 
@@ -80,6 +88,31 @@ export class ObligationController {
         return await this.apiService.updateObligation({
             obligationId: dto.obligationId,
             userAddress: dto.userAddress
+        });
+    }
+
+    @Delete('obligation/delete-obligation')
+    @ApiResponse({status: 200, description: 'delete obligation', type: Obligation})
+    @ApiOperation({summary: "delete obligation by obligationId"})
+    async deleteObligation(@Body() dto: DeleteObligationDto) {
+        if(!(await this.signatureService.verifySignature('deleteObligation', dto.signature, dto.userAddress))) {
+            throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
+        } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
+        } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.tokenAddress}))) {
+            throw new BadRequestException(`Asset [${dto.tokenAddress}] does not exist`)
+        } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
+        } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
+            throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
+        } 
+        if(!(await this.apiService.isObligationExecuted({obligationId: dto.obligationId}))) {
+            if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
+                throw new BadRequestException(`Not Asset Obligation [${dto.obligationId}] owner [${dto.userAddress}]`)
+            }
+        }
+        return await this.apiService.deleteObligation({
+            obligationId: dto.obligationId,
         });
     }
 }

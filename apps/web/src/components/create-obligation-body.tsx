@@ -2,9 +2,9 @@ import { Button, Stack, Input, ModalBody, FormControl, FormLabel } from "@chakra
 import { useState } from "react";
 import { useCreateObligation } from "../hooks/api/obligations/use-create-obligation";
 
-export const CreateObligationBody = ({ assetId, userAddress, modalBody }: { assetId: number, userAddress: string, modalBody: any }) => {
-  const [inputAmount, setInputAmount] = useState(modalBody?.minPurchaseAmount ?? 0);
-  const [inputTxCount, setInputLockup] = useState(modalBody?.lockupPeriod ?? 0);
+export const CreateObligationBody = ({ tokenAddress, userAddress, modalBody }: { tokenAddress: string, userAddress: string, modalBody: any }) => {
+  const [inputAmount, setInputAmount] = useState(modalBody?.amount ?? 0);
+  const [inputTxCount, setInputLockup] = useState(modalBody?.txCount ?? 0);
 
   const createObligationMutation = useCreateObligation()
 
@@ -21,13 +21,14 @@ export const CreateObligationBody = ({ assetId, userAddress, modalBody }: { asse
         </FormControl>
         <Button colorScheme='blue' onClick={() => {
           createObligationMutation.mutate({
-            assetId: assetId,
+            tokenAddress: tokenAddress,
             userAddress: userAddress,
             amount: inputAmount,
-            txCount: inputTxCount
+            txCount: inputTxCount,
+            obligationId: !modalBody?.id ? null : modalBody?.id 
           })
         }}>
-          Create Obligation for Asset[{assetId}]
+          {!modalBody?.id ? 'Create' : 'Edit'} for Asset[{tokenAddress.slice(0, 7)}]
         </Button>
       </Stack>
     </ModalBody>
