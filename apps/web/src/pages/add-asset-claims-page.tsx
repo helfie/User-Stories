@@ -4,7 +4,6 @@ import { useGetAsset } from "../hooks/api/assets/use-get-asset"
 import { UserComponent } from "../components/user-component"
 import { useState } from "react"
 import { HeaderComponent } from "../components/header-component"
-import { HeaderImage } from "../components/image-component"
 import { zeroAddress } from "viem"
 import { EditDocComponent } from "../components/edit-doc-component"
 import { useGetTokenClaims } from "../hooks/api/token-claims/use-get-token-claims"
@@ -12,6 +11,7 @@ import { useCreateTokenClaim } from "../hooks/api/token-claims/use-create-token-
 import { useGetUser } from "../hooks/api/users/use-get-user"
 import { useParams } from "react-router-dom"
 import { useBcGetTokenClaimTopics } from "../hooks/blockchain/claims/use-bc-get-token-claim-topics"
+import { TokenHeaderImage } from "../components/token-image-component"
 
 export const AddAssetClaimsPage = () => {
     const { address } = useAccount()
@@ -38,7 +38,6 @@ export const AddAssetClaimsPage = () => {
                         <Th isNumeric>Claim Topic</Th>
                         <Th>Document</Th>
                         <Th>Verified</Th>
-                        <Th></Th>
                     </Tr>
                 </Thead>
                 <Tbody>
@@ -48,7 +47,7 @@ export const AddAssetClaimsPage = () => {
                                 <Td>{element?.tokenAddress}</Td>
                                 <Td isNumeric>{element?.claimTopic}</Td>
                                 <Td w={'25%'} justifyContent={'center'} justifyItems={'center'}>
-                                    <HeaderImage claimTopic={element?.claimTopic} randomStr={element?.randomStr} />
+                                    <TokenHeaderImage claimTopic={element?.claimTopic} randomStr={element?.randomStr} />
                                 </Td>
                                 <Td>
                                     <Checkbox isChecked={element?.isClaimVerified} disabled></Checkbox>
@@ -92,7 +91,7 @@ export const AddAssetClaimsPage = () => {
                     if (!assetData?.isVerified && inputClaimTopic !== '') {
                         mutation.mutate({
                             senderAddress: address?.toString(),
-                            tokenAddress: assetData.tokenAddress?.toString(),
+                            tokenAddress: tokenAddress?.toString(),
                             claimTopic: inputClaimTopic,
                             docgen: inputDoc,
                         })

@@ -70,7 +70,7 @@ export class TokenClaimController {
         });
     }
 
-    @Patch('claim/update-docgen/:tokenAddress-:claimTopic')
+    @Patch('claim/update-docgen/:senderAddress-:tokenAddress-:claimTopic')
     @ApiConsumes('multipart/form-data')
     @ApiBody({
         schema: {
@@ -89,11 +89,13 @@ export class TokenClaimController {
         name: 'signature',        
         description: 'user signature',
     })
+    @ApiParam({name: 'senderAddress', required: true, description: 'eth sender address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     @ApiParam({name: 'claimTopic', required: true, description: 'claim topic', type: Number, example: 0})
     @UseInterceptors(FileInterceptor('file'))
     async updateTokenDocgen(
             @Headers() headers,
+            @Param('senderAddress') senderAddress: string, 
             @Param('tokenAddress') tokenAddress: string, 
             @Param('claimTopic') claimTopic: string, 
             @UploadedFile('file',   
@@ -104,7 +106,7 @@ export class TokenClaimController {
                 ]
               }),) file: Express.Multer.File) {
         const signature = headers['signature']
-        if(!(await this.signatureService.verifySignature('updateTokenDocgen', signature, tokenAddress))) {
+        if(!(await this.signatureService.verifySignature('updateTokenDocgen', signature, senderAddress))) {
             throw new UnauthorizedException(`User [${tokenAddress}] not authorized`)
         } else if(!(await this.apiService.isAssetExists({tokenAddress: tokenAddress}))) {
             throw new BadRequestException(`Asset [${tokenAddress}] does not exist`)

@@ -559,9 +559,9 @@ export class ApiService {
     /// AssetService
     async findAllAssets({ withObligations }: FindAllAssetsWithObligations) {
         if (withObligations) {
-            return await this.assetRepository.findAll({ include: [User, Obligation] })
+            return await this.assetRepository.findAll({ include: [Obligation] })
         } else {
-            return await this.assetRepository.findAll({ include: [User] })
+            return await this.assetRepository.findAll()
         }
     }
 

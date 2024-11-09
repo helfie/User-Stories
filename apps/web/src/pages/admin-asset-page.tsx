@@ -24,7 +24,7 @@ export const AdminAssetPage = () => {
         <UserComponent userData={userData} />
 
         {
-            assetsData?.isAdmin && <TableContainer>
+            userData?.isAdmin && <TableContainer>
                 <Table variant='simple'>
                     <TableCaption placement="top">Users</TableCaption>
                     <Thead>
@@ -72,8 +72,12 @@ export const AdminAssetPage = () => {
                                         </Stack>
                                     </Td>
                                     <Td>
-                                        <Button colorScheme='yellow' size='sm' onClick={() =>
-                                            navigate(`/admin-asset-claim/${element?.tokenAddress}`)
+                                        <Button colorScheme='yellow' size='sm' isDisabled={!element?.identityAddress} onClick={() => {
+                                            if (element?.identityAddress) {
+                                                navigate(`/admin-asset-claim/${element?.tokenAddress}`)
+                                            }
+                                        }
+
                                         }>
                                             Verify
                                         </Button>
@@ -85,7 +89,6 @@ export const AdminAssetPage = () => {
                                             address={address?.toString() ?? zeroAddress}
                                             tokenAddress={element?.tokenAddress?.toString() ?? zeroAddress} />
                                     </Td>
-                                    <Td><Checkbox size="lg" isChecked={element?.isAdmin} disabled /></Td>
                                 </Tr>
                             )
                         })}

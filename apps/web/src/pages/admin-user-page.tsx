@@ -79,8 +79,11 @@ export const AdminUserPage = () => {
                                         </Stack>
                                     </Td>
                                     <Td>
-                                        <Button colorScheme='yellow' size='sm' onClick={() =>
-                                            navigate(`/admin-claim/${element?.userAddress}`)
+                                        <Button colorScheme='yellow' size='sm' isDisabled={!element?.identityAddress} onClick={() => {
+                                            if (element?.identityAddress) {
+                                                navigate(`/admin-claim/${element?.userAddress}`)
+                                            }
+                                        }
                                         }>
                                             Verify
                                         </Button>

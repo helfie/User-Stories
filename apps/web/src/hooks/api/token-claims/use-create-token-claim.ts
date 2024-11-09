@@ -21,7 +21,12 @@ export const useCreateTokenClaim = () => {
       const claimSignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'createTokenClaim')})
       const addClaim = await fetch(`${env.VITE_API_URL}/token-claims/add-claim`, { 
         method: 'POST', 
-        body: JSON.stringify({tokenAddress: variables.tokenAddress, claimTopic: Number(variables.claimTopic), signature: claimSignature},),
+        body: JSON.stringify({
+          senderAddress: variables.senderAddress,
+          tokenAddress: variables.tokenAddress, 
+          claimTopic: Number(variables.claimTopic), 
+          signature: claimSignature
+        },),
         headers: {
           'Content-Type': 'application/json'
         }
@@ -33,7 +38,7 @@ export const useCreateTokenClaim = () => {
       formData.append('file', variables.docgen)
       
       const updateDocgenSignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'updateTokenDocgen')})
-      const putFile = fetch(`${env.VITE_API_URL}/token-claims/claim/update-docgen/${variables.tokenAddress}-${variables.claimTopic}`, { 
+      const putFile = fetch(`${env.VITE_API_URL}/token-claims/claim/update-docgen/${variables.senderAddress}-${variables.tokenAddress}-${variables.claimTopic}`, { 
         method: 'PATCH', 
         body: formData,
         headers: {
