@@ -12,18 +12,19 @@ import { useGetDvdTransfersByUserAndSellerToken } from "../hooks/api/dvd-transfe
 import { useBcApprove } from "../hooks/blockchain/obligations/use-bc-approve"
 import { useBcCancelDvdTransfer } from "../hooks/blockchain/dvd-transfers/use-bc-cancel-dvd-transfer"
 import { useBcTakeDvdTransfer } from "../hooks/blockchain/dvd-transfers/use-bc-take-dvd-transfer"
+import { useCreateUserAsset } from "../hooks/api/user-assets/use-create-user-asset"
  
 export const DvdTransferPage = () => {
     const { address } = useAccount()
     const { tokenAddress } = useParams()
     const { isLoadingUser, userData } = useGetUser(address?.toString() ?? zeroAddress)
-    const { isPendingAsset, assetData } = useGetAsset(tokenAddress?.toString() ?? zeroAddress)
     const { isPendingTransfers, transfersData } = useGetDvdTransfersByUserAndSellerToken(address?.toString() ?? zeroAddress, tokenAddress?.toString() ?? zeroAddress)
     
     const approve = useBcApprove()
     const takeDvdTransfer = useBcTakeDvdTransfer()
     const cancelDvdTransfer = useBcCancelDvdTransfer()
-    const updateDvdTransfer = useUpdateDvdTransfer();
+    const createUserAsset = useCreateUserAsset()
+    const updateDvdTransfer = useUpdateDvdTransfer()
 
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
@@ -75,6 +76,12 @@ export const DvdTransferPage = () => {
                                                 // })
                                                 await takeDvdTransfer.mutateAsync({
                                                     transferId: element?.transferId
+                                                })
+                                                await createUserAsset.mutateAsync({
+                                                    tokenAddress: element?.sellerToken,
+                                                    userAddress: element?.buyer,
+                                                    senderAddress: address?.toString(),
+                                                    obligationId: element?.obligationId,
                                                 })
                                                 await updateDvdTransfer.mutateAsync({
                                                     dvdTransferId: element?.id,

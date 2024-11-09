@@ -7,7 +7,7 @@ export const useGetObligations = (withAssets: string, isNotExecuted: string | nu
         queryFn: () => {
             const str = isNotExecuted === null 
                 ? `${env.VITE_API_URL}/obligations?withAssets=${withAssets}`
-                : `${env.VITE_API_URL}/obligations?withAssets=${withAssets}?isNotExecuted=${isNotExecuted}`
+                : `${env.VITE_API_URL}/obligations?withAssets=${withAssets}&isNotExecuted=${isNotExecuted}`
             return fetch(str).then((res) =>res.json())
         }   
     })

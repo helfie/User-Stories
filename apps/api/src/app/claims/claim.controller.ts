@@ -37,7 +37,7 @@ export class ClaimController {
     }
 
     @Get('all-verified/:userAddress')
-    @ApiResponse({status: 200, description: 'user claims', type: [Claim]})
+    @ApiResponse({status: 200, description: 'user claims', type: Boolean})
     @ApiOperation({summary: "retrieve all user claims"})
     @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     async getAllUserClaimsVerified(@Param('userAddress') userAddress: string) {

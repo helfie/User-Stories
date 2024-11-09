@@ -37,7 +37,7 @@ export class TokenClaimController {
     }
 
     @Get('all-verified/:tokenAddress')
-    @ApiResponse({status: 200, description: 'token claims', type: [TokenClaim]})
+    @ApiResponse({status: 200, description: 'token claims', type: Boolean})
     @ApiOperation({summary: "retrieve all token claims"})
     @ApiParam({name: 'tokenAddress', required: true, description: 'eth token address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
     async getAllTokenClaimsVerified(@Param('tokenAddress') tokenAddress: string) {

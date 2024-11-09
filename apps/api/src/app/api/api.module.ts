@@ -21,6 +21,7 @@ import { TokenClaimController } from "../token-claims/token-claim.controller";
 import { TokenIdentityController } from "../token-identities/token-identity.controller";
 import { TokenComplianceController } from "../token-compliance/token-compliance-request.controller";
 import { DvdTransferController } from "../dvd-transfers/dvd-transfer.controller";
+import { UserAssetController } from "../user-assets/user-asset.controller";
 
 @Module({
     providers: [
@@ -43,6 +44,7 @@ import { DvdTransferController } from "../dvd-transfers/dvd-transfer.controller"
         ClaimController, 
         IdentityController, 
         AssetController,
+        UserAssetController,
         ObligationController,
         TokenClaimController,
         TokenIdentityController,

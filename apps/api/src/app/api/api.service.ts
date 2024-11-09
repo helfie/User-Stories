@@ -649,6 +649,18 @@ export class ApiService {
     ///
 
     /// UserAsset Service
+
+    async findUserAssets() {
+        return await this.userAssetRepository.findAll();
+    }
+
+    async findUserAssetById({ tokenAddress, userAddress }: CreateUserAssetParams) {
+        return await this.userAssetRepository.findOne({where: {
+            tokenAddress: tokenAddress.toLowerCase(),
+            userAddress: userAddress.toLowerCase(),
+        }});
+    }
+
     async createUserAsset({ tokenAddress, userAddress }: CreateUserAssetParams) {
         return await this.userAssetRepository.create({
             tokenAddress: tokenAddress.toLowerCase(),
@@ -668,28 +680,28 @@ export class ApiService {
     /// TokenComplianceRequest Service
     async findAllTokenComplianceRequests() {
         return await this.tokenComplianceRequestRepository.findAll({
-            order: [['tokenAddress', 'ASC']]
+            order: [['id', 'DESC']]
         })
     }
 
     async findAllTokenComplianceRequestsForAdmin() {
         return await this.tokenComplianceRequestRepository.findAll({
             where: { status: ExecuteStatus.PROCESSING },
-            order: [['tokenAddress', 'ASC']]
+            order: [['id', 'DESC']]
         })
     }
 
     async findTokenComplianceRequestsByToken({ tokenAddress }: FindTokenComplianceRequestsByTokenAddress) {
         return await this.tokenComplianceRequestRepository.findAll({
             where: { tokenAddress: tokenAddress.toLowerCase() },
-            order: [['tokenAddress', 'ASC']]
+            order: [['id', 'DESC']]
         })
     }
 
     async findTokenComplianceRequestsByUser({ userAddress }: FindTokenComplianceRequestsByUserAddress) {
         return await this.tokenComplianceRequestRepository.findAll({
             where: { userAddress: userAddress.toLowerCase() },
-            order: [['tokenAddress', 'ASC']]
+            order: [['id', 'DESC']]
         })
     }
 
@@ -752,7 +764,7 @@ export class ApiService {
     async findAllObligations({ withAssets, isExecuted }: FindAllObligationsWithAssets) {
         if (isExecuted !== null && withAssets) {
             return await this.obligationRepository.findAll({
-                where: { isExecuted: isExecuted },
+                where: { isExecuted: !isExecuted },
                 include: [Asset]
             })
         } else if (withAssets) {

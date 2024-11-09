@@ -37,18 +37,18 @@ export const MarketPage = () => {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {obligationsData?.map((element: any) => {
+                    {obligationsData?.map((element: any) => {console.log(element)
                         return (
                             <Tr key={`${element?.id}`}>
                                 <Td>{element?.tokenAddress}</Td>
-                                <Td>{element?.userAddress}</Td>
+                                <Td>{element?.seller}</Td>
                                 <Td>{element?.asset?.name}</Td>
                                 <Td>{element?.asset?.symbol}</Td>
                                 <Td>{element?.amount}</Td>
                                 <BuyerPrice sellAmount={element?.amount} sellerToken={element?.tokenAddress}/>
                                 <Td>
                                     <Button colorScheme='yellow' size='sm' onClick={async () => {
-                                        if(userData?.isVerified && element?.userAddress.toLowerCase() !== userData?.userAddress?.toLowerCase()) {
+                                        if(userData?.isVerified && element?.seller.toLowerCase() !== userData?.userAddress?.toLowerCase()) {
                                             await buyerApprove.mutateAsync({
                                                 userAddress: userData?.userAddress, 
                                                 buyerToken: USDT,
@@ -68,7 +68,7 @@ export const MarketPage = () => {
                                                 txCount: element?.txCount,
                                             })   
                                         }
-                                        }} isDisabled={!userData?.isVerified || element?.userAddress.toLowerCase() === userData?.userAddress?.toLowerCase()}>
+                                        }} isDisabled={!userData?.isVerified || element?.seller.toLowerCase() === userData?.userAddress?.toLowerCase()}>
                                             Buy
                                     </Button>
                                 </Td>
