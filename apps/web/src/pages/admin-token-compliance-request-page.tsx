@@ -6,6 +6,7 @@ import { HeaderComponent } from "../components/header-component"
 import { useGetTokenComplianceRequestsAdmin } from "../hooks/api/token-compliance-request/use-get-token-compliance-requests-admin"
 import { useVerifyTokenComplianceRequest } from "../hooks/api/token-compliance-request/use-verify-token-compliance-request"
 import { ExecuteStatus } from "../types"
+import { useBcCreateTimeCompliance } from "../hooks/blockchain/token-compliance-request/use-bc-create-time-compliance"
 
 export const AdminTokenCompliancePage = () => {
     const { address } = useAccount()
@@ -13,7 +14,8 @@ export const AdminTokenCompliancePage = () => {
     const { isPendingRequest, requestsData } = useGetTokenComplianceRequestsAdmin()
 
     const verifyTokenComplianceRequest = useVerifyTokenComplianceRequest()
-
+    const executeComplianceRequest = useBcCreateTimeCompliance()
+    
     return <Container maxW={'8xl'} w={'100%'}>
         <HeaderComponent userData={userData} />
         <UserComponent userData={userData} />
@@ -22,12 +24,12 @@ export const AdminTokenCompliancePage = () => {
             userData?.isAdmin ?
                 <TableContainer>
                     <Table variant='simple'>
-                        <TableCaption placement="top">Claim Topics</TableCaption>
+                        <TableCaption placement="top">Compliance Requests</TableCaption>
                         <Thead>
                             <Tr>
                                 <Th>Token</Th>
                                 <Th>User</Th>
-                                <Th>Limit Transfer Amount</Th>
+                                <Th>Limit Amount</Th>
                                 <Th>Verify</Th>
                             </Tr>
                         </Thead>
@@ -47,6 +49,11 @@ export const AdminTokenCompliancePage = () => {
                                                             tokenAddress: element?.tokenAddress,
                                                             userAddress: element?.userAddress,
                                                             verify: true
+                                                        })
+                                                        await executeComplianceRequest.mutateAsync({
+                                                            userAddress: address?.toString(),
+                                                            tokenAddress: element?.tokenAddress,
+                                                            amount: element?.maxTransferAmount,
                                                         })
                                                     }
                                                 }}>

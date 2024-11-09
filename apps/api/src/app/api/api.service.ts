@@ -654,6 +654,14 @@ export class ApiService {
             userAddress: userAddress.toLowerCase(),
         })
     }
+
+    async hasUserAsset({ tokenAddress, userAddress }: CreateUserAssetParams) {
+        const userAsset = await this.userAssetRepository.findOne({where: {
+            tokenAddress: tokenAddress.toLowerCase(),
+            userAddress: userAddress.toLowerCase(),
+        }});
+        return userAsset ? true : false;
+    }
     ///
 
     /// TokenComplianceRequest Service

@@ -14,11 +14,11 @@ export const useVerifyTokenComplianceRequest = () => {
         tokenAddress: string | undefined,
         userAddress: string | undefined,
         verify: boolean} ) => {
-      if(!variables.senderAddress || !variables.tokenAddress || !variables.userAddress || !variables.verify) {
+      if(!variables.senderAddress || !variables.tokenAddress || !variables.userAddress) {
         throw new Error("No User")
       }
       
-      const verifySignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'verifyClaim')})
+      const verifySignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'verifyTokenComplianceRequest')})
       const putFile = fetch(`${env.VITE_API_URL}/token-compliance-requests/verify-token-compliance-request`, { 
         method: 'PATCH', 
         body: JSON.stringify({
