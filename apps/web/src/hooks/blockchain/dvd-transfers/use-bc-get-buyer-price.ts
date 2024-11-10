@@ -24,8 +24,9 @@ export const useBcGetBuyerPrice = (
         ]
     })
     const resultData: bigint = result?.data as bigint
+    console.log(result?.data)
     if (!resultData) {
-        return { buyerPriceData: BigInt(0) }
+        return { buyerPriceData: BigInt(100) }
     } else {
         return { buyerPriceData: result.data }
     }

@@ -29,9 +29,10 @@ export const useCreateTokenIdentity = () => {
       })
 
       const addIdentitySignature = await signMessageAsync({ message: verifyMessage(variables.senderAddress, 'createTokenIdentity') })
-      const addIdentity = await fetch(`${env.VITE_API_URL}/token-identities/add-identity`, {
+      const addIdentity = await fetch(`${env.VITE_API_URL}/token-identities/add-token-identity`, {
         method: 'POST',
         body: JSON.stringify({
+          tokenAddress: variables.tokenAddress,
           identityAddress: identityAddress,
           senderAddress: variables.senderAddress,
           signature: addIdentitySignature,
@@ -42,7 +43,7 @@ export const useCreateTokenIdentity = () => {
       }).then((res) => res.json())
 
       const updateIdentitySignature = await signMessageAsync({ message: verifyMessage(variables.senderAddress, 'userSetTokenIdentity') })
-      const updateIdentity = await fetch(`${env.VITE_API_URL}/asset/set-identity`, {
+      const updateIdentity = await fetch(`${env.VITE_API_URL}/assets/set-asset-identity`, {
         method: 'PATCH',
         body: JSON.stringify({
           senderAddress: variables.senderAddress,

@@ -43,10 +43,9 @@ export const AssetPage = () => {
                     <Thead>
                         <Tr>
                             <Th>Token</Th>
-                            <Th>User</Th>
                             <Th>Name</Th>
                             <Th>Symbol</Th>
-                            <Th>Decimals</Th>
+                            <Th>Dec</Th>
                             <Th>Verified</Th>
                             <Th>Compliance</Th>
                             <Th>Sell</Th>
@@ -62,14 +61,13 @@ export const AssetPage = () => {
                             return (
                                 <Tr key={`${element.tokenAddress}`}>
                                     <Td>{element?.tokenAddress}</Td>
-                                    <Td>{element?.userAssets[index]?.userAddress}</Td>
                                     <Td>{element?.name}</Td>
                                     <Td>{element?.symbol}</Td>
                                     <Td>{element?.decimals}</Td>
                                     <Td>
-                                        <Stack direction={'row'}>
+                                        <Stack w={'100%'} direction={'row'}>
                                             {
-                                                !element?.isVerfied
+                                                !element?.isVerified
                                                     ? <Button colorScheme='yellow' size='sm' onClick={() =>
                                                          navigate(`/asset-claim/${element?.tokenAddress}`)
                                                     }>
@@ -89,13 +87,13 @@ export const AssetPage = () => {
                                         <Button colorScheme='yellow' size='sm' onClick={() =>
                                                 navigate(`/token-compliance-request/${element?.tokenAddress}`)
                                         }>
-                                            Request changing compliance
+                                            Change
                                         </Button>
                                     </Td>
                                     <Td>
                                         
                                         <Stack direction={"row"}>
-                                            <Button colorScheme='yellow' size='sm' onClick={() => {
+                                            <Button colorScheme='yellow' size='sm' isDisabled={!element?.isVerified} onClick={() => {
                                                 setTokenAddress(element?.tokenAddress)
                                                 onOpen()
                                             }}>

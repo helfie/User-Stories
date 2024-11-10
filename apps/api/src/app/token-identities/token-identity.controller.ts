@@ -32,7 +32,7 @@ export class TokenIdentityController {
     @ApiResponse({status: 201, description: 'add identity', type: TokenIdentity})
     @ApiOperation({summary: "add identity"})
     async createTokenIdentity(@Body() dto: CreateTokenIdentityDto) {
-        if(!(await this.signatureService.verifySignature('createIdentity', dto.signature, dto.senderAddress))) {
+        if(!(await this.signatureService.verifySignature('createTokenIdentity', dto.signature, dto.senderAddress))) {
             throw new UnauthorizedException(`User [${dto.senderAddress}] not authorized`)
         } else if((await this.apiService.isTokenIdentityExist({identityAddress: dto.identityAddress}))) {
             throw new BadRequestException(`Token identity [${dto.identityAddress}] already exists`)

@@ -18,8 +18,8 @@ export const useVerifyTokenClaim = () => {
         throw new Error("No User")
       }
       
-      const verifySignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'verifyClaim')})
-      const putFile = fetch(`${env.VITE_API_URL}/claims/verify-user-claim`, { 
+      const verifySignature = await signMessageAsync({message: verifyMessage(variables.senderAddress, 'verifyTokenClaim')})
+      const putFile = fetch(`${env.VITE_API_URL}/token-claims/verify-token-claim`, { 
         method: 'PATCH', 
         body: JSON.stringify({
             senderAddress: variables.senderAddress, 
@@ -33,7 +33,7 @@ export const useVerifyTokenClaim = () => {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['allTokenClaims'] })
+      queryClient.invalidateQueries({ queryKey: ['tokenClaims'] })
     },
   })
 

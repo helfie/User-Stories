@@ -11,7 +11,7 @@ export function MintAsset({ isVerified, tokenAddress, userAddress }:
     return (
         <Stack direction={"column"}>
             {
-                !isVerified
+                isVerified
                     ? <Input placeholder='Amount' value={inputAmount} onChange={(e) => setInputAmount(e.target.value)} />
                     : <></>
             }
@@ -26,7 +26,7 @@ export function MintAsset({ isVerified, tokenAddress, userAddress }:
                         }
                     }
                 }>
-                'Mint'
+                Mint
             </Button>
         </Stack>
     )

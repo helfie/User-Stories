@@ -10,6 +10,7 @@ import { AdminTokenCompliancePage } from '../pages/admin-token-compliance-reques
 import { AddAssetClaimsPage } from '../pages/add-asset-claims-page';
 import { AddTokenComplianceRequestPage } from '../pages/add-token-compliance-request-page';
 import { DvdTransferPage } from '../pages/dvd-transfer-page';
+import { AdminAssetClaimPage } from '../pages/admin-asset-claim-page';
 
 export const routes = {
     home: '/',
@@ -31,6 +32,7 @@ export const router = createBrowserRouter([{
         { path: routes.adminClaim, Component: AdminClaimPage },
         { path: routes.adminUser, Component: AdminUserPage },
         { path: routes.adminAsset, Component: AdminAssetPage },
+        { path: routes.adminAssetClaim, Component: AdminAssetClaimPage },
         { path: routes.adminTokenCompliance, Component: AdminTokenCompliancePage },
         { path: routes.asset, Component: AssetPage },
         { path: routes.market, Component: MarketPage },

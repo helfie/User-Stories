@@ -1,7 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { TOKEN_ABI } from '../../../abis/token.abi'
 import { parseUnits, Address } from 'viem'
-import { TOKEN } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { MINT_AMOUNT } from '../../../constants'
 
@@ -29,7 +28,7 @@ export const useBcMintAsset = () => {
           args: [],
         })
 
-        const parsedAmount = parseUnits(variables.amount?.toString() ?? MINT_AMOUNT, tokenDecimals);
+        const parsedAmount = parseUnits(variables.amount?.toString() ?? MINT_AMOUNT, tokenDecimals ?? 18);
 
         const wc = await writeContractAsync({
           abi: TOKEN_ABI,
