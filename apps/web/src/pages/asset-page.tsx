@@ -49,12 +49,13 @@ export const AssetPage = () => {
                             <Th>Verified</Th>
                             <Th>Compliance</Th>
                             <Th>Sell</Th>
+                            <Th>DVD</Th>
                         </Tr>
                     </Thead>
                     <Tbody>
                         <ObligationModal
                             isOpen={isOpen} onClose={onClose}
-                            tokenAddress={tokenAddress ?? zeroAddress} 
+                            tokenAddress={tokenAddress ?? zeroAddress}
                             userAddress={address?.toString() ?? zeroAddress} />
 
                         {userAssetsData?.map((element: any, index: number) => {
@@ -69,7 +70,7 @@ export const AssetPage = () => {
                                             {
                                                 !element?.isVerified
                                                     ? <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                         navigate(`/asset-claim/${element?.tokenAddress}`)
+                                                        navigate(`/asset-claim/${element?.tokenAddress}`)
                                                     }>
                                                         Add Claim
                                                     </Button>
@@ -85,13 +86,13 @@ export const AssetPage = () => {
                                     </Td>
                                     <Td>
                                         <Button colorScheme='yellow' size='sm' onClick={() =>
-                                                navigate(`/token-compliance-request/${element?.tokenAddress}`)
+                                            navigate(`/token-compliance-request/${element?.tokenAddress}`)
                                         }>
                                             Change
                                         </Button>
                                     </Td>
                                     <Td>
-                                        
+
                                         <Stack direction={"row"}>
                                             <Button colorScheme='yellow' size='sm' isDisabled={!element?.isVerified} onClick={() => {
                                                 setTokenAddress(element?.tokenAddress)
@@ -114,6 +115,13 @@ export const AssetPage = () => {
                                                     : <></>
                                             }
                                         </Stack>
+                                    </Td>
+                                    <Td>
+                                        <Button colorScheme='yellow' size='sm' onClick={() =>
+                                            navigate(`/dvd-transfer/${element?.tokenAddress}`)
+                                        }>
+                                            Orders
+                                        </Button>
                                     </Td>
                                 </Tr>
                             )

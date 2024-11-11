@@ -49,8 +49,8 @@ export class UserAssetController {
             throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
-        } else if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
-            throw new BadRequestException(`Not obligation [${dto.obligationId}] seller [${dto.userAddress}]`)
+        } else if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.senderAddress}))) {
+            throw new BadRequestException(`Not obligation [${dto.obligationId}] seller [${dto.senderAddress}]`)
         }
         const userAsset = await this.apiService.findUserAssetById({tokenAddress: dto.tokenAddress, userAddress: dto.userAddress});
         if(userAsset !== null) {

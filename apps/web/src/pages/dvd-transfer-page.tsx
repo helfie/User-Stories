@@ -90,7 +90,7 @@ export const DvdTransferPage = () => {
                                                 })
                                             }
                                         }}>
-                                            Verify
+                                            Take
                                         </Button>
                                         <Button colorScheme={"red"} size='sm' isDisabled={element?.status !== ExecuteStatus.PROCESSING} onClick={async () => {
                                             if (element?.status === ExecuteStatus.PROCESSING) {
@@ -104,7 +104,7 @@ export const DvdTransferPage = () => {
                                                 })
                                             }
                                         }}>
-                                            Unverify
+                                            Cancel
                                         </Button>
                                     </Stack>
                                 </Td>

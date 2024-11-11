@@ -23,7 +23,7 @@ export const routes = {
     market: '/market',
     assetClaim: '/asset-claim/:tokenAddress',
     tokenComplianceRequest: '/token-compliance-request/:tokenAddress',
-    dvdTransfer: '/dvd-transfer/:tokenAddress-:userAddress'
+    dvdTransfer: '/dvd-transfer/:tokenAddress'
 }
 
 export const router = createBrowserRouter([{
