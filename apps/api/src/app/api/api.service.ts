@@ -227,6 +227,12 @@ interface CreateObligationParams {
     txCount: number;
 }
 
+interface EditObligationParams {
+    obligationId: number;
+    amount: number;
+    txCount: number;
+}
+
 interface UpdateObligationParams {
     obligationId: number;
     userAddress: string;
@@ -794,10 +800,18 @@ export class ApiService {
         })
     }
 
+    async editObligation({ obligationId, amount, txCount }: EditObligationParams) {
+        const [rows, entity] = await this.obligationRepository.update(
+            { amount: amount, txCount: txCount},
+            { where: { obligationId: obligationId, }, returning: true }
+        )
+        return entity;
+    }
+
     async updateObligation({ obligationId, userAddress }: UpdateObligationParams) {
         const [rows, entity] = await this.obligationRepository.update(
             { buyer: userAddress.toLowerCase(), isExecuted: true },
-            { where: { id: obligationId, }, returning: true }
+            { where: { obligationId: obligationId, }, returning: true }
         )
         return entity;
     }

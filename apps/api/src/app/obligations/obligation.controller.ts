@@ -7,6 +7,7 @@ import { Obligation } from "./obligation.entity";
 import { CreateObligationDto } from "./dto/create-obligation.dto";
 import { UpdateObligationDto } from "./dto/update-obligation.dto";
 import { DeleteObligationDto } from "./dto/delete-obligation.dto";
+import { EditObligationDto } from "./dto/edit-obligation.dto";
 
 @ApiTags('Obligations')
 @Controller('/obligations')
@@ -68,6 +69,30 @@ export class ObligationController {
         });
     }
 
+    @Patch('obligation/edit-obligation')
+    @ApiResponse({status: 200, description: 'edit obligation', type: Obligation})
+    @ApiOperation({summary: "edit obligation by obligationId"})
+    async editObligation(@Body() dto: EditObligationDto) {
+        if(!(await this.signatureService.verifySignature('editObligation', dto.signature, dto.userAddress))) {
+            throw new UnauthorizedException(`User [${dto.userAddress}] not authorized`)
+        } else if(!(await this.apiService.isUserExists({userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] does not exist`)
+        } else if(!(await this.apiService.isUserVerified({userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
+        } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
+            throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
+        } else if((await this.apiService.isObligationExecuted({obligationId: dto.obligationId}))) {
+            throw new BadRequestException(`Obligation [${dto.obligationId}] is already executed`)
+        } else if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
+            throw new BadRequestException(`Obligation [${dto.obligationId}] is self bought`)
+        }
+        return await this.apiService.editObligation({
+            obligationId: dto.obligationId,
+            amount: dto.amount,
+            txCount: dto.txCount,
+        });
+    }
+
     @Patch('obligation/update-obligation')
     @ApiResponse({status: 200, description: 'update obligation', type: Obligation})
     @ApiOperation({summary: "update obligation by obligationId"})
@@ -80,7 +105,7 @@ export class ObligationController {
             throw new BadRequestException(`User [${dto.userAddress}] is not verified`)
         } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
             throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
-        } else if(!(await this.apiService.isObligationExecuted({obligationId: dto.obligationId}))) {
+        } else if((await this.apiService.isObligationExecuted({obligationId: dto.obligationId}))) {
             throw new BadRequestException(`Obligation [${dto.obligationId}] is already executed`)
         } else if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
             throw new BadRequestException(`Obligation [${dto.obligationId}] is self bought`)

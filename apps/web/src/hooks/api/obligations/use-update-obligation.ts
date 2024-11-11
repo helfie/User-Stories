@@ -11,11 +11,10 @@ export const useUpdateObligation = () => {
     mutationFn: async (
       variables: {
         userAddress: string | undefined,
-        obligationId: number | undefined } ) => {
+        obligationId: number | undefined } ) => { 
       if(!variables.userAddress) {
         throw new Error("No User")
       }
-
       const updateObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'updateObligation')})
       const updateObligation = await fetch(`${env.VITE_API_URL}/obligations/obligation/update-obligation`, { 
         method: 'PATCH', 

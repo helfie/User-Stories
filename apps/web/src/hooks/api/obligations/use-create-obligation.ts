@@ -34,11 +34,10 @@ export const useCreateObligation = () => {
           }
         }).then((res) => res.json())
       } else {
-        const updateObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'updateObligation')})
-        const updateObligation = await fetch(`${env.VITE_API_URL}/obligations/obligation/update-obligation`, { 
+        const updateObligationSignature = await signMessageAsync({message: verifyMessage(variables.userAddress, 'editObligation')})
+        const updateObligation = await fetch(`${env.VITE_API_URL}/obligations/obligation/edit-obligation`, { 
           method: 'PATCH', 
           body: JSON.stringify({
-              tokenAddress: variables.tokenAddress, 
               userAddress: variables.userAddress, 
               obligationId: variables.obligationId,
               amount: variables.amount, 

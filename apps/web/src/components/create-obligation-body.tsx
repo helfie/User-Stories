@@ -25,10 +25,10 @@ export const CreateObligationBody = ({ tokenAddress, userAddress, modalBody }: {
             userAddress: userAddress,
             amount: inputAmount,
             txCount: inputTxCount,
-            obligationId: !modalBody?.id ? null : modalBody?.id 
+            obligationId: !modalBody?.obligationId ? null : modalBody?.obligationId 
           })
         }}>
-          {!modalBody?.id ? 'Create' : 'Edit'} for Asset[{tokenAddress.slice(0, 7)}]
+          {!modalBody?.obligationId ? 'Create' : 'Edit'} for Asset[{tokenAddress.slice(0, 7)}]
         </Button>
       </Stack>
     </ModalBody>
