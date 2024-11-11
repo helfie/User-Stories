@@ -275,6 +275,7 @@ interface FindDvdTransfersById {
 }
 
 interface CreateDvdTransferParams {
+    obligationId: number;
     nonce: bigint;
     buyer: string;
     buyerToken: string;
@@ -883,8 +884,9 @@ export class ApiService {
         return await this.dvdTransferRepository.findByPk(dvdTransferId)
     }
 
-    async createDvdTransfer({ nonce, buyer, buyerToken, buyerAmount, seller, sellerToken, sellerAmount, transferId }: CreateDvdTransferParams) {
+    async createDvdTransfer({ obligationId, nonce, buyer, buyerToken, buyerAmount, seller, sellerToken, sellerAmount, transferId }: CreateDvdTransferParams) {
         return await this.dvdTransferRepository.create({
+            obligationId: obligationId,
             nonce: nonce,
             buyer: buyer.toLowerCase(),
             buyerToken: buyerToken.toLowerCase(),
@@ -893,6 +895,7 @@ export class ApiService {
             sellerToken: sellerToken.toLowerCase(),
             sellerAmount: sellerAmount,
             transferId: transferId,
+            status: ExecuteStatus.PROCESSING,
         })
     }
 

@@ -37,9 +37,9 @@ export const MarketPage = () => {
                     </Tr>
                 </Thead>
                 <Tbody>
-                    {obligationsData?.map((element: any) => {console.log(element)
+                    {obligationsData?.map((element: any) => {
                         return (
-                            <Tr key={`${element?.id}`}>
+                            <Tr key={`${element?.obligationId}`}>
                                 <Td>{element?.tokenAddress}</Td>
                                 <Td>{element?.seller}</Td>
                                 <Td>{element?.asset?.name}</Td>
@@ -53,18 +53,19 @@ export const MarketPage = () => {
                                                 userAddress: userData?.userAddress, 
                                                 buyerToken: USDT,
                                                 sellerAmount: element?.amount,
-                                                sellerToken: element?.asset.address,
+                                                sellerToken: element?.tokenAddress,
                                             })
                                             await updateObligation.mutateAsync({
                                                 userAddress: userData?.userAddress,
-                                                obligationId: element?.id
+                                                obligationId: element?.obligationId
                                             })
                                             await initDvdTransfers.mutateAsync({
+                                                obligationId: element?.obligationId,
                                                 buyer: userData?.userAddress,
                                                 buyerToken: USDT,
                                                 seller: element?.seller,
                                                 sellerAmount: element?.amount,
-                                                sellerToken: element?.asset.address,
+                                                sellerToken: element?.tokenAddress,
                                                 txCount: element?.txCount,
                                             })   
                                         }

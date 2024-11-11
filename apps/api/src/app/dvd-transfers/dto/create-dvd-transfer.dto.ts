@@ -4,6 +4,9 @@ import { IsEthereumAddress, IsNumber, IsString } from "class-validator";
 export class CreateDvdTransferDto {
     @IsNumber()
     @ApiProperty({type: BigInt, example: 0})
+    obligationId: number;
+    @IsNumber()
+    @ApiProperty({type: BigInt, example: 0})
     nonce: bigint;
     @IsString()
     @IsEthereumAddress()

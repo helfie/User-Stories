@@ -67,14 +67,17 @@ export class DvdTransferController {
             throw new BadRequestException(`User [${dto.buyer}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.buyer}))) {
             throw new BadRequestException(`User [${dto.buyer}] is not verified`)
-        } else if(!(await this.apiService.isUserExists({userAddress: dto.seller}))) {
-            throw new BadRequestException(`Seller [${dto.seller}] does not exist`)
         } else if(!(await this.apiService.isUserVerified({userAddress: dto.seller}))) {
             throw new BadRequestException(`Seller [${dto.seller}] is not verified`)
         } else if(!(await this.apiService.isAssetExists({tokenAddress: dto.sellerToken}))) {
-            throw new BadRequestException(`Seller [${dto.seller}] is not verified`)
+            throw new BadRequestException(`Seller token [${dto.seller}] is not verified`)
+        } else if(!(await this.apiService.isObligationExistsOnSeller({seller: dto.seller, tokenAddress: dto.sellerToken}))) {
+            throw new BadRequestException(`Seller [${dto.seller}] does not exist`)
+        } else if(!(await this.apiService.isObligationExists({obligationId: dto.obligationId}))) {
+            throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
         }
         return await this.apiService.createDvdTransfer({
+            obligationId: dto.obligationId,
             nonce: dto.nonce,
             buyer: dto.buyer,
             buyerToken: dto.buyerToken,

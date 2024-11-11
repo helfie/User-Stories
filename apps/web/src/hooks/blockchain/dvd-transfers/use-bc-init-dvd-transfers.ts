@@ -1,5 +1,5 @@
 import { usePublicClient, useSignMessage, useWriteContract } from 'wagmi'
-import { parseUnits, Address } from 'viem'
+import { parseUnits, Address, formatUnits } from 'viem'
 import { DVD } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DVD_ABI } from '../../../abis/dvd.abi'
@@ -16,6 +16,7 @@ export const useBcInitDvdTransfers = () => {
   const mutation = useMutation({
     mutationFn: async (
       variables: {
+        obligationId: number,
         buyer: string | undefined,
         buyerToken: string | undefined,
         seller: string | undefined,
@@ -57,7 +58,7 @@ export const useBcInitDvdTransfers = () => {
           let buyerTxAmount = buyerAmount / BigInt(variables.txCount)
           if (i === variables.txCount - 1) {
             sellerTxAmount = sellerAmount - currentSellerAmount;
-            sellerTxAmount = buyerAmount - currentBuyerAmount;
+            buyerTxAmount = buyerAmount - currentBuyerAmount;
           }
 
           const nonce = await publicClient?.readContract({
@@ -66,7 +67,7 @@ export const useBcInitDvdTransfers = () => {
             functionName: 'getTxNonce',
             args: [],
           })
-          if (!nonce) {
+          if (nonce === undefined) {
             throw new Error("No Nonce")
           }
           const transferId = generateTransferId(
@@ -78,17 +79,22 @@ export const useBcInitDvdTransfers = () => {
             variables.sellerToken as Address,
             sellerTxAmount
           )
-          const addDVDTransferSignature = await signMessageAsync({ message: verifyMessage(variables.buyer, 'addDVDTransfer') })
+          
+          console.warn(transferId)
+          console.warn(formatUnits(buyerTxAmount, 6))
+          console.warn(formatUnits(sellerTxAmount, sellerTokenDecimals))
+          const addDVDTransferSignature = await signMessageAsync({ message: verifyMessage(variables.buyer, 'addDvdTransfer') })
           const addDVDTransfer = await fetch(`${env.VITE_API_URL}/dvd-transfers/add-dvd-transfer`, {
             method: 'POST',
             body: JSON.stringify({
-              nonce: nonce,
+              obligationId: variables.obligationId,
+              nonce: Number(nonce),
               buyer: variables.buyer,
               buyerToken: variables.buyerToken,
-              buyerAmount: buyerTxAmount,
-              seller: variables.buyerToken,
+              buyerAmount: Number(formatUnits(buyerTxAmount, 6)),
+              seller: variables.seller,
               sellerToken: variables.sellerToken,
-              sellerAmount: sellerTxAmount,
+              sellerAmount: Number(formatUnits(sellerTxAmount, sellerTokenDecimals)),
               transferId: transferId,
               signature: addDVDTransferSignature,
             },),
@@ -111,8 +117,8 @@ export const useBcInitDvdTransfers = () => {
           })
           await publicClient?.waitForTransactionReceipt({ hash: wc })
 
-          currentSellerAmount += buyerTxAmount;
-          currentBuyerAmount += sellerTxAmount;
+          currentSellerAmount += sellerTxAmount;
+          currentBuyerAmount += buyerTxAmount;
         }
       } catch (error) {
         console.error(error)

@@ -107,7 +107,7 @@ export class ObligationController {
             throw new BadRequestException(`Obligation [${dto.obligationId}] does not exist`)
         } else if((await this.apiService.isObligationExecuted({obligationId: dto.obligationId}))) {
             throw new BadRequestException(`Obligation [${dto.obligationId}] is already executed`)
-        } else if(!(await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
+        } else if((await this.apiService.isObligationSeller({obligationId: dto.obligationId, userAddress: dto.userAddress}))) {
             throw new BadRequestException(`Obligation [${dto.obligationId}] is self bought`)
         }
         return await this.apiService.updateObligation({
