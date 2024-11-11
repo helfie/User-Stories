@@ -57,7 +57,7 @@ export class ObligationController {
             throw new BadRequestException(`User [${dto.userAddress}] does not have an asset [${dto.tokenAddress}]`)
         } else if((await this.apiService.isObligationExistsOnSeller({tokenAddress: dto.tokenAddress, seller: dto.userAddress}))) {
             throw new BadRequestException(`User [${dto.userAddress}] has already an obligation on the asset [${dto.tokenAddress}]`)
-        } else if((await this.apiService.isAssetVerified({tokenAddress: dto.tokenAddress}))) {
+        } else if(!(await this.apiService.isAssetVerified({tokenAddress: dto.tokenAddress}))) {
             throw new BadRequestException(`Asset [${dto.tokenAddress}] is not verified`)
         }
         return await this.apiService.createObligation({

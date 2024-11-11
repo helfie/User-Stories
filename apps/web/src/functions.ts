@@ -1,20 +1,20 @@
-import { keccak256, encodeAbiParameters, parseAbiParameters, Address, SignableMessage, encodePacked } from 'viem'
+import { keccak256, encodeAbiParameters, parseAbiParameters, Address, Hex, encodePacked } from 'viem'
 import { ClaimTopics, ExecuteStatus, TokenClaimTopics } from './types';
 
-export const verifyMessage = (address: string, methodStr: string) => {
+export const verifyMessage = (address: string, methodStr: string): string => {
     return `You [${address}] are going to sign this message for method [${methodStr}]`
 }
 
 export const claimSignature = (
-    identityHolder: Address,
+    identityAddress: Address,
     claimTopic: bigint,
-    data: `0x${string}`,
-): SignableMessage => {
+    data: Hex,
+): string => {
     const sign =
         keccak256(
             encodeAbiParameters(
-                parseAbiParameters('address, uint256, bytes'),
-                [identityHolder, claimTopic, data],
+                parseAbiParameters(["address", "uint256", "bytes"]),
+                [identityAddress, claimTopic, data],
             ),
         );
     return sign;

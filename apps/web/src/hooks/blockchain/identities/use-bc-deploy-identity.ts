@@ -27,7 +27,7 @@ export const useDeployIdentity = () => {
                         address: IDENTITY_FACTORY,
                         functionName: 'createIdentityWithManagementKeys',
                         args: [
-                            variables.senderAddress as Address,
+                            variables.address as Address,
                             variables.address as Address,
                             [keccak256(pad(variables.senderAddress as Hex))]
                         ],

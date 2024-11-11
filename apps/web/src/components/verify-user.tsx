@@ -24,7 +24,7 @@ export function VerifyUser({ country, isVerified, identityAddress, address, user
     return (
         <Stack direction={"column"}>
             {
-                !country || !isVerified
+                !isVerified
                     ? <Input placeholder='Country' value={inputCountry} onChange={(e) => setInputCountry(e.target.value)} />
                     : <></>
             }

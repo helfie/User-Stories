@@ -13,10 +13,6 @@ export const useDeleteObligation = () => {
         tokenAddress: string | undefined,
         userAddress: string | undefined, 
         obligationId: number | undefined } ) => {
-          console.log(variables.tokenAddress)
-          console.log(variables.userAddress)
-          console.log(variables.obligationId)
-    
       if(!variables.userAddress) {
         throw new Error("No User")
       }

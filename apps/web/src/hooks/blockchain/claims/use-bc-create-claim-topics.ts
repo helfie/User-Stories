@@ -1,4 +1,4 @@
-import { usePublicClient, useSignMessage, useWriteContract } from 'wagmi'
+import { useAccount, usePublicClient, useSignMessage, useWriteContract } from 'wagmi'
 import { Address, Hex, keccak256, parseUnits, zeroAddress } from 'viem'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { IDENTITY_ABI } from '../../../abis/identity.abi'
@@ -7,6 +7,7 @@ import { CLAIM_DATA, SCHEME } from '../../../constants'
 import { env } from '../../../env';
 
 export const useBcCreateClaim = (isToken?: boolean) => {
+  const { address } = useAccount()
   const queryClient = useQueryClient()
   const { writeContractAsync } = useWriteContract()
   const { signMessageAsync } = useSignMessage()
@@ -29,8 +30,9 @@ export const useBcCreateClaim = (isToken?: boolean) => {
       try {
         const uri = `${env.VITE_API_URL}/${claimPath}/claim/docgen/${variables.senderAddress}/${variables.claimTopic}-${variables.address}`;
         const docData = variables.data as Hex;
-        const message = claimSignature(variables.senderAddress as Address, variables.claimTopic, docData)
-        const signature = await signMessageAsync({ message: message })
+        const message = claimSignature(variables.identityAddress as Address, variables.claimTopic, docData)
+        const signature = await signMessageAsync({ message: message, account: address })
+        console.warn(signature)
         const wc = await writeContractAsync({
           abi: IDENTITY_ABI,
           address: variables.identityAddress as Address,

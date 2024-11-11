@@ -22,7 +22,6 @@ export const useBcRemoveClaim = (isToken?: boolean) => {
 
       try {
         const claimId = generateClaimId(variables.identityAddress as Address, variables.claimTopic)
-        console.warn(claimId)
         const wc = await writeContractAsync({
           abi: IDENTITY_ABI,
           address: variables.identityAddress as Address,
