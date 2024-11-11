@@ -20,10 +20,13 @@ export const useCreateUserAsset = () => {
           throw new Error("No User")
       }
       
-      console.log()
-
       const hasUserAsset = await fetch(`${env.VITE_API_URL}/user-assets/has-user-asset/${variables.userAddress}-${variables.tokenAddress}`).then(res => res.json());
-      if(hasUserAsset) {
+      console.log(hasUserAsset)
+      console.log(variables.senderAddress)
+      console.log(variables.userAddress)
+      console.log(variables.tokenAddress)
+      console.log(variables.obligationId)
+      if(!hasUserAsset) {
         const addUserAssetSignature = await signMessageAsync({ message: verifyMessage(variables.senderAddress, 'addUserAsset') })
         const addAsset = await fetch(`${env.VITE_API_URL}/user-assets/add-user-asset`, {
           method: 'POST',

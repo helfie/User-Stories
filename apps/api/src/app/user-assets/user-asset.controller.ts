@@ -21,7 +21,7 @@ export class UserAssetController {
         return await this.apiService.findUserAssets();
     }
 
-    @Get('user-asset/:userAddress-:tokenAddres')
+    @Get('user-asset/:userAddress-:tokenAddress')
     @ApiResponse({status: 200, description: 'user assets', type: UserAsset})
     @ApiOperation({summary: "retrieve all user assets"})
     @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
@@ -30,7 +30,7 @@ export class UserAssetController {
         return await this.apiService.findUserAssetById({userAddress: userAddress, tokenAddress: tokenAddress});
     }
 
-    @Get('has-user-asset/:userAddress-:tokenAddres')
+    @Get('has-user-asset/:userAddress-:tokenAddress')
     @ApiResponse({status: 200, description: 'user has assets', type: Boolean})
     @ApiOperation({summary: "retrieve has user assets"})
     @ApiParam({name: 'userAddress', required: true, description: 'eth user address', type: String, example: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f'})
@@ -53,7 +53,7 @@ export class UserAssetController {
             throw new BadRequestException(`Not obligation [${dto.obligationId}] seller [${dto.senderAddress}]`)
         }
         const userAsset = await this.apiService.findUserAssetById({tokenAddress: dto.tokenAddress, userAddress: dto.userAddress});
-        if(userAsset !== null) {
+        if(userAsset === null) {
             return await this.apiService.createUserAsset({
                 tokenAddress: dto.tokenAddress,
                 userAddress: dto.userAddress, 
