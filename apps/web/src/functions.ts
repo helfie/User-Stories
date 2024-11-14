@@ -1,4 +1,4 @@
-import { keccak256, encodeAbiParameters, parseAbiParameters, Address, Hex, encodePacked } from 'viem'
+import { keccak256, encodeAbiParameters, parseAbiParameters, Address, Hex, encodePacked, toBytes } from 'viem'
 import { ClaimTopics, ExecuteStatus, TokenClaimTopics } from './types';
 
 export const verifyMessage = (address: string, methodStr: string): string => {
@@ -9,14 +9,15 @@ export const claimSignature = (
     identityAddress: Address,
     claimTopic: bigint,
     data: Hex,
-): string => {
-    const sign =
+): Uint8Array => {
+    const sign = toBytes(
         keccak256(
             encodeAbiParameters(
                 parseAbiParameters(["address", "uint256", "bytes"]),
                 [identityAddress, claimTopic, data],
-            ),
-        );
+            )
+        )
+    );
     return sign;
 };
 
