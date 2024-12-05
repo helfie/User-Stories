@@ -2,7 +2,7 @@ import { usePublicClient, useWriteContract } from 'wagmi'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { IDENTITY_ABI } from '../../../abis/identity.abi'
 import { ID_FACTORY_ABI } from '../../../abis/identity-factory.abi'
-import { IDENTITY_FACTORY } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { Address, keccak256, pad } from 'viem'
 import { KeysTypes } from '../../../types'
 
@@ -24,7 +24,7 @@ export const useBcIdentityAddKey = (isToken?: boolean) => {
             try {
                 const identityAddress = await publicClient.readContract({
                     abi: ID_FACTORY_ABI,
-                    address: IDENTITY_FACTORY,
+                    address: DIAMOND,
                     functionName: 'getIdentity',
                     args: [variables.address as Address],
                 })

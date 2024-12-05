@@ -3,7 +3,7 @@ import { env } from '../../../env'
 import { usePublicClient, useSignMessage } from 'wagmi'
 import { verifyMessage } from "../../../functions"
 import { ID_FACTORY_ABI } from '../../../abis/identity-factory.abi'
-import { IDENTITY_FACTORY } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { Address } from 'viem'
 
 export const useCreateTokenIdentity = () => {
@@ -23,7 +23,7 @@ export const useCreateTokenIdentity = () => {
 
       const identityAddress = await publicClient.readContract({
         abi: ID_FACTORY_ABI,
-        address: IDENTITY_FACTORY,
+        address: DIAMOND,
         functionName: 'getIdentity',
         args: [variables.tokenAddress as Address],
       })

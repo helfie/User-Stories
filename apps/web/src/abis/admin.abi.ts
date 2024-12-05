@@ -1,20 +1,4 @@
-export const CTR_ABI = [
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "i",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "topic",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClaimTopicAlreadyExists",
-    "type": "error"
-  },
+export const ADMIN_ABI = [
   {
     "inputs": [],
     "name": "IsNotFalse",
@@ -23,39 +7,12 @@ export const CTR_ABI = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "length",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "limit",
-        "type": "uint256"
-      }
-    ],
-    "name": "MaxClaimTopic",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
-        "name": "caller",
+        "name": "sender",
         "type": "address"
       }
     ],
-    "name": "NotOperator",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "caller",
-        "type": "address"
-      }
-    ],
-    "name": "NotTrustedIssuer",
+    "name": "NotOwner",
     "type": "error"
   },
   {
@@ -74,25 +31,18 @@ export const CTR_ABI = [
     "inputs": [
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "claimTopic",
-        "type": "uint256"
-      }
-    ],
-    "name": "ClaimTopicAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
+        "internalType": "address",
+        "name": "previousOwner",
+        "type": "address"
+      },
       {
         "indexed": true,
-        "internalType": "uint256",
-        "name": "claimTopic",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
-    "name": "ClaimTopicRemoved",
+    "name": "OwnershipTransferred",
     "type": "event"
   },
   {
@@ -118,31 +68,24 @@ export const CTR_ABI = [
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "claimTopic",
-        "type": "uint256"
-      }
-    ],
-    "name": "TokenClaimTopicAdded",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
+        "indexed": false,
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      },
       {
-        "indexed": true,
-        "internalType": "uint256",
-        "name": "claimTopic",
-        "type": "uint256"
+        "indexed": false,
+        "internalType": "address",
+        "name": "feeReceiver",
+        "type": "address"
       }
     ],
-    "name": "TokenClaimTopicRemoved",
+    "name": "SetFeeReceiver",
     "type": "event"
   },
   {
     "inputs": [],
-    "name": "CTR_VERSION",
+    "name": "ADMIN_VERSION",
     "outputs": [
       {
         "internalType": "string",
@@ -156,32 +99,24 @@ export const CTR_ABI = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_claimTopic",
-        "type": "uint256"
-      }
-    ],
-    "name": "addClaimTopic",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
+        "internalType": "contract IClaimIssuer",
+        "name": "_trustedIssuer",
+        "type": "address"
+      },
       {
-        "internalType": "uint256",
-        "name": "_claimTopic",
-        "type": "uint256"
+        "internalType": "uint256[]",
+        "name": "_claimTopics",
+        "type": "uint256[]"
       }
     ],
-    "name": "addTokenClaimTopic",
+    "name": "adminAddTrustedIssuer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "ctrDiamond",
+    "name": "adminGetDiamond",
     "outputs": [
       {
         "internalType": "address",
@@ -196,11 +131,54 @@ export const CTR_ABI = [
     "inputs": [
       {
         "internalType": "address",
+        "name": "_owner",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
         "name": "diamond",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "feeReceiver",
         "type": "address"
       }
     ],
-    "name": "ctrInitialize",
+    "name": "adminInitialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "adminOwner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IClaimIssuer",
+        "name": "_trustedIssuer",
+        "type": "address"
+      }
+    ],
+    "name": "adminRemoveTrustedIssuer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "adminRenounceOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -213,32 +191,50 @@ export const CTR_ABI = [
         "type": "address"
       }
     ],
-    "name": "ctrSetDiamond",
+    "name": "adminSetDiamond",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "adminTransferOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "contract IClaimIssuer",
+        "name": "_trustedIssuer",
+        "type": "address"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "_claimTopics",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "adminUpdateIssuerClaimTopics",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [],
-    "name": "getClaimTopics",
+    "name": "getFeeReceiver",
     "outputs": [
       {
-        "internalType": "uint256[]",
+        "internalType": "address",
         "name": "",
-        "type": "uint256[]"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getTokenClaimTopics",
-    "outputs": [
-      {
-        "internalType": "uint256[]",
-        "name": "",
-        "type": "uint256[]"
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -247,25 +243,12 @@ export const CTR_ABI = [
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "_claimTopic",
-        "type": "uint256"
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
       }
     ],
-    "name": "removeClaimTopic",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "_claimTopic",
-        "type": "uint256"
-      }
-    ],
-    "name": "removeTokenClaimTopic",
+    "name": "setFeeReceiver",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { Hex } from 'viem'
-import { DVD } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DVD_ABI } from '../../../abis/dvd.abi'
 
@@ -53,7 +53,7 @@ export const useBcTakeDvdTransfer = () => {
 
             const wc = await writeContractAsync({
                 abi: DVD_ABI,
-                address: DVD,
+                address: DIAMOND,
                 functionName: 'takeDVDTransfer',
                 args: [
                   variables.transferId as Hex,

@@ -1,6 +1,6 @@
 import { usePublicClient, useSignMessage, useWriteContract } from 'wagmi'
 import { parseUnits, Address, formatUnits } from 'viem'
-import { DVD } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { DVD_ABI } from '../../../abis/dvd.abi'
 import { TOKEN_ABI } from '../../../abis/token.abi'
@@ -40,7 +40,7 @@ export const useBcInitDvdTransfers = () => {
         const sellerAmount = parseUnits(variables.sellerAmount.toString(), sellerTokenDecimals)
         const buyerAmount = await publicClient?.readContract({
           abi: DVD_ABI,
-          address: DVD,
+          address: DIAMOND,
           functionName: 'evaluateBuyerPrice',
           args: [
             variables.sellerToken as Address,

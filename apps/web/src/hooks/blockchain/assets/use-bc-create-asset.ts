@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { Address, zeroAddress, encodeFunctionData, Hex, parseUnits } from 'viem'
-import { COUNTRY_ALLOW_MODULE, TIME_MODULE, TOKEN_FACTORY } from '../../../addresses'
+import { COUNTRY_ALLOW_MODULE, TIME_MODULE, DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_FACTORY_ABI } from '../../../abis/token-factory.abi'
 import { COUNTRY_ALLOW_ABI } from '../../../abis/modules/country-allow.abi'
@@ -49,7 +49,7 @@ export const useBcCreateAsset = () => {
       try {
         const wc = await writeContractAsync({
           abi: TOKEN_FACTORY_ABI,
-          address: TOKEN_FACTORY,
+          address: DIAMOND,
           functionName: 'deployToken',
           args: [tokenDetails],
         })

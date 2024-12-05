@@ -1,13 +1,39 @@
-export const ID_FACTORY_ABI = [
+export const IRS_ABI = [
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "factory",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "identity",
         "type": "address"
       }
     ],
-    "name": "AlreadyTokenFactory",
+    "name": "IdentityAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "user",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "identity",
+        "type": "address"
+      }
+    ],
+    "name": "IdentityNotExist",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "IsNotFalse",
     "type": "error"
   },
   {
@@ -18,41 +44,30 @@ export const ID_FACTORY_ABI = [
         "type": "uint256"
       },
       {
-        "internalType": "uint8",
+        "internalType": "uint256",
         "name": "limit",
-        "type": "uint8"
+        "type": "uint256"
       }
     ],
-    "name": "MaxLinkedWallets",
+    "name": "MaxIdentityRegistries",
     "type": "error"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "sender",
+        "name": "caller",
         "type": "address"
       }
     ],
-    "name": "NotLinkedWallet",
+    "name": "NotOperator",
     "type": "error"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "factory",
-        "type": "address"
-      }
-    ],
-    "name": "NotTokenFactory",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "sender",
+        "name": "caller",
         "type": "address"
       }
     ],
@@ -63,33 +78,11 @@ export const ID_FACTORY_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "sender",
+        "name": "_address",
         "type": "address"
       }
     ],
-    "name": "OnlyFactoryOrOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "salt",
-        "type": "string"
-      }
-    ],
-    "name": "SaltTaken",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "wallet",
-        "type": "address"
-      }
-    ],
-    "name": "WalletAlreadyListed",
+    "name": "ZeroAddress",
     "type": "error"
   },
   {
@@ -98,11 +91,100 @@ export const ID_FACTORY_ABI = [
       {
         "indexed": true,
         "internalType": "address",
-        "name": "_addr",
+        "name": "investorAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint16",
+        "name": "country",
+        "type": "uint16"
+      }
+    ],
+    "name": "CountryModified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "contract IIdentity",
+        "name": "oldIdentity",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IIdentity",
+        "name": "newIdentity",
         "type": "address"
       }
     ],
-    "name": "Deployed",
+    "name": "IdentityModified",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "identityRegistry",
+        "type": "address"
+      }
+    ],
+    "name": "IdentityRegistryBound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "identityRegistry",
+        "type": "address"
+      }
+    ],
+    "name": "IdentityRegistryUnbound",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "investorAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IIdentity",
+        "name": "identity",
+        "type": "address"
+      }
+    ],
+    "name": "IdentityStored",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "investorAddress",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "contract IIdentity",
+        "name": "identity",
+        "type": "address"
+      }
+    ],
+    "name": "IdentityUnstored",
     "type": "event"
   },
   {
@@ -125,97 +207,37 @@ export const ID_FACTORY_ABI = [
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
+    "inputs": [],
+    "name": "IRS_VERSION",
+    "outputs": [
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "factory",
-        "type": "address"
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
-    "name": "TokenFactoryAdded",
-    "type": "event"
+    "stateMutability": "view",
+    "type": "function"
   },
   {
-    "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
         "internalType": "address",
-        "name": "factory",
-        "type": "address"
-      }
-    ],
-    "name": "TokenFactoryRemoved",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "token",
+        "name": "_userAddress",
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "identity",
-        "type": "address"
-      }
-    ],
-    "name": "TokenLinked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "wallet",
+        "internalType": "contract IIdentity",
+        "name": "_identity",
         "type": "address"
       },
       {
-        "indexed": true,
-        "internalType": "address",
-        "name": "identity",
-        "type": "address"
+        "internalType": "uint16",
+        "name": "_country",
+        "type": "uint16"
       }
     ],
-    "name": "WalletLinked",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "wallet",
-        "type": "address"
-      },
-      {
-        "indexed": true,
-        "internalType": "address",
-        "name": "identity",
-        "type": "address"
-      }
-    ],
-    "name": "WalletUnlinked",
-    "type": "event"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_factory",
-        "type": "address"
-      }
-    ],
-    "name": "addTokenFactory",
+    "name": "addIdentityToStorage",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -224,23 +246,12 @@ export const ID_FACTORY_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_wallet",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "_salt",
-        "type": "string"
-      }
-    ],
-    "name": "createIdentity",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
+        "name": "_identityRegistry",
         "type": "address"
       }
     ],
+    "name": "bindIdentityRegistry",
+    "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
@@ -248,64 +259,24 @@ export const ID_FACTORY_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_wallet",
+        "name": "_userAddress",
         "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "_salt",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes32[]",
-        "name": "_managementKeys",
-        "type": "bytes32[]"
       }
     ],
-    "name": "createIdentityWithManagementKeys",
+    "name": "getUserClaimTopics",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "uint256[]",
         "name": "",
-        "type": "address"
+        "type": "uint256[]"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "view",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_token",
-        "type": "address"
-      },
-      {
-        "internalType": "string",
-        "name": "_salt",
-        "type": "string"
-      }
-    ],
-    "name": "createTokenIdentity",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_wallet",
-        "type": "address"
-      }
-    ],
-    "name": "getIdentity",
+    "inputs": [],
+    "name": "irsDiamond",
     "outputs": [
       {
         "internalType": "address",
@@ -320,30 +291,31 @@ export const ID_FACTORY_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_identity",
+        "name": "diamond",
         "type": "address"
       }
     ],
-    "name": "getToken",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "irsInitialize",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
         "internalType": "address",
-        "name": "_identity",
+        "name": "_address",
         "type": "address"
       }
     ],
-    "name": "getWallets",
+    "name": "irsSetDiamond",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "linkedIdentityRegistries",
     "outputs": [
       {
         "internalType": "address[]",
@@ -355,37 +327,66 @@ export const ID_FACTORY_ABI = [
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "idfDiamond",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "address",
-        "name": "_address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IIdentity",
+        "name": "_identity",
         "type": "address"
       }
     ],
-    "name": "idfSetDiamond",
+    "name": "modifyStoredIdentity",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "implementationAuthority",
-    "outputs": [
+    "inputs": [
       {
         "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      },
+      {
+        "internalType": "uint16",
+        "name": "_country",
+        "type": "uint16"
+      }
+    ],
+    "name": "modifyStoredInvestorCountry",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "removeIdentityFromStorage",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
+      }
+    ],
+    "name": "storedIdentity",
+    "outputs": [
+      {
+        "internalType": "contract IIdentity",
         "name": "",
         "type": "address"
       }
@@ -396,12 +397,31 @@ export const ID_FACTORY_ABI = [
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "_salt",
-        "type": "string"
+        "internalType": "address",
+        "name": "_userAddress",
+        "type": "address"
       }
     ],
-    "name": "isSaltTaken",
+    "name": "storedInvestorCountry",
+    "outputs": [
+      {
+        "internalType": "uint16",
+        "name": "",
+        "type": "uint16"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
     "outputs": [
       {
         "internalType": "bool",
@@ -416,56 +436,11 @@ export const ID_FACTORY_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "_factory",
+        "name": "_identityRegistry",
         "type": "address"
       }
     ],
-    "name": "isTokenFactory",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_newWallet",
-        "type": "address"
-      }
-    ],
-    "name": "linkWallet",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_factory",
-        "type": "address"
-      }
-    ],
-    "name": "removeTokenFactory",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "_oldWallet",
-        "type": "address"
-      }
-    ],
-    "name": "unlinkWallet",
+    "name": "unbindIdentityRegistry",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

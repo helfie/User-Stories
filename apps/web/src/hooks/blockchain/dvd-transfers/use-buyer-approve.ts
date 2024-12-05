@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { parseUnits, Address } from 'viem'
-import { DVD } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_ABI } from '../../../abis/token.abi'
 import { MAX_AMOUNT } from '../../../constants'
@@ -33,7 +33,7 @@ export const useBcBuyerApprove = () => {
             }
             const buyerAmount = await publicClient?.readContract({
                 abi: DVD_ABI,
-                address: DVD,
+                address: DIAMOND,
                 functionName: 'evaluateBuyerPrice',
                 args: [
                     variables.sellerToken as Address,

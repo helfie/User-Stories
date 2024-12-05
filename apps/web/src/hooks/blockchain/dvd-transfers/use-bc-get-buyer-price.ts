@@ -1,5 +1,5 @@
 import { usePublicClient, useReadContract } from "wagmi"
-import { DVD } from "../../../addresses"
+import { DIAMOND } from "../../../addresses"
 import { DVD_ABI } from "../../../abis/dvd.abi"
 import { Address, parseUnits } from "viem"
 import { TOKEN_ABI } from "../../../abis/token.abi"
@@ -16,7 +16,7 @@ export const useBcGetBuyerPrice = (
     const decimalsData: number = sellerTokenDecimals?.data as number ?? 6
     const result = useReadContract({
         abi: DVD_ABI,
-        address: DVD,
+        address: DIAMOND,
         functionName: 'evaluateBuyerPrice',
         args: [
             sellerToken as Address,

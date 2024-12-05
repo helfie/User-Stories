@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { parseUnits, Address } from 'viem'
-import { DVD } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { TOKEN_ABI } from '../../../abis/token.abi'
 import { MAX_AMOUNT } from '../../../constants'
@@ -35,7 +35,7 @@ export const useBcApprove = () => {
                 address: variables.tokenAddress as Address,
                 functionName: 'approve',
                 args: [
-                    DVD,
+                    DIAMOND,
                     parseUnits(variables.amount.toString(), tokenDecimals),
                 ],
             })

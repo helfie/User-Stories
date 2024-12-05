@@ -1,5 +1,5 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
-import { IR } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { IR_ABI } from '../../../abis/ir.abi'
 import { Address } from 'viem'
@@ -25,7 +25,7 @@ export const useRegisterIdentity = (isToken?: boolean) => {
             try {
                 const wc = await writeContractAsync({
                     abi: IR_ABI,
-                    address: IR,
+                    address: DIAMOND,
                     functionName: 'registerIdentity',
                     args: [
                         variables.address as Address,

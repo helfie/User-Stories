@@ -3,7 +3,7 @@ import { env } from '../../../env'
 import { usePublicClient, useSignMessage } from 'wagmi'
 import { verifyMessage } from "../../../functions"
 import { TOKEN_FACTORY_ABI } from '../../../abis/token-factory.abi'
-import { TOKEN_FACTORY } from '../../../addresses'
+import { DIAMOND, } from '../../../addresses'
 import { Address, Hex } from 'viem'
 
 export const useCreateAsset = () => {
@@ -25,7 +25,7 @@ export const useCreateAsset = () => {
 
       const tokenSalt = await publicClient?.readContract({
         abi: TOKEN_FACTORY_ABI,
-        address: TOKEN_FACTORY,
+        address: DIAMOND,
         functionName: 'getTokenSalt',
         args: [
           variables.userAddress as Address, variables.name, variables.symbol, variables.decimals
@@ -33,7 +33,7 @@ export const useCreateAsset = () => {
       })
       const tokenAddress = await publicClient?.readContract({
         abi: TOKEN_FACTORY_ABI,
-        address: TOKEN_FACTORY,
+        address: DIAMOND,
         functionName: 'getToken',
         args: [tokenSalt as Hex]
       })

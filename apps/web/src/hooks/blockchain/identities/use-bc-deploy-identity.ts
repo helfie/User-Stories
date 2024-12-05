@@ -1,5 +1,5 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
-import { IDENTITY_FACTORY } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { ID_FACTORY_ABI } from '../../../abis/identity-factory.abi'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { pad, Address, Hex, keccak256 } from 'viem'
@@ -24,7 +24,7 @@ export const useDeployIdentity = () => {
                 if(variables.address.toLowerCase() !== variables.senderAddress.toLowerCase()) {
                     wc = await writeContractAsync({
                         abi: ID_FACTORY_ABI,
-                        address: IDENTITY_FACTORY,
+                        address: DIAMOND,
                         functionName: 'createIdentityWithManagementKeys',
                         args: [
                             variables.address as Address,
@@ -35,7 +35,7 @@ export const useDeployIdentity = () => {
                 } else {
                     wc = await writeContractAsync({
                         abi: ID_FACTORY_ABI,
-                        address: IDENTITY_FACTORY,
+                        address: DIAMOND,
                         functionName: 'createIdentity',
                         args: [
                             variables.senderAddress as Address,

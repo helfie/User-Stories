@@ -1,6 +1,6 @@
 import { usePublicClient, useWriteContract } from 'wagmi'
 import { TIR_ABI } from '../../../abis/tir.abi'
-import { TIR } from '../../../addresses'
+import { DIAMOND } from '../../../addresses'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { Address } from 'viem'
 
@@ -21,8 +21,8 @@ export const useRemoveOperator = () => {
             try {
                 const wc = await writeContractAsync({
                     abi: TIR_ABI,
-                    address: TIR,
-                    functionName: 'removeOperator',
+                    address: DIAMOND,
+                    functionName: 'tirRemoveOperator',
                     args: [
                         variables.userAddress as Address,
                     ],

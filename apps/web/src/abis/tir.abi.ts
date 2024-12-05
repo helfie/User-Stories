@@ -1,12 +1,12 @@
 export const TIR_ABI = [
   {
     "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
+    "name": "EmptyArray",
+    "type": "error"
   },
   {
     "inputs": [],
-    "name": "EmptyArray",
+    "name": "IsNotFalse",
     "type": "error"
   },
   {
@@ -39,6 +39,17 @@ export const TIR_ABI = [
       }
     ],
     "name": "MaxTrustedIssuers",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "caller",
+        "type": "address"
+      }
+    ],
+    "name": "NotDiamond",
     "type": "error"
   },
   {
@@ -98,31 +109,18 @@ export const TIR_ABI = [
     "inputs": [
       {
         "indexed": false,
-        "internalType": "uint8",
-        "name": "version",
-        "type": "uint8"
-      }
-    ],
-    "name": "Initialized",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
         "internalType": "address",
-        "name": "previousOwner",
+        "name": "caller",
         "type": "address"
       },
       {
-        "indexed": true,
+        "indexed": false,
         "internalType": "address",
-        "name": "newOwner",
+        "name": "diamond",
         "type": "address"
       }
     ],
-    "name": "OwnershipTransferred",
+    "name": "SetDiamond",
     "type": "event"
   },
   {
@@ -159,97 +157,6 @@ export const TIR_ABI = [
   },
   {
     "inputs": [],
-    "name": "MAX_CLAIM_TOPICS",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_COUNTRY_REGISTRIES",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_IDENTITY_REGISTRIES",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_LINKED_WALLETS",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_MODULE_COMPLIANCE",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "MAX_TRUSTED_ISSUERS",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "PERCENT_DECIMALS",
-    "outputs": [
-      {
-        "internalType": "uint8",
-        "name": "",
-        "type": "uint8"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "TIR_VERSION",
     "outputs": [
       {
@@ -259,19 +166,6 @@ export const TIR_ABI = [
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "operator",
-        "type": "address"
-      }
-    ],
-    "name": "addOperator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -290,19 +184,6 @@ export const TIR_ABI = [
     "name": "addTrustedIssuer",
     "outputs": [],
     "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "getOperatorManagement",
-    "outputs": [
-      {
-        "internalType": "contract IOperatorManagement",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -383,19 +264,6 @@ export const TIR_ABI = [
   {
     "inputs": [
       {
-        "internalType": "contract IAdminContractUpgradeable",
-        "name": "admin",
-        "type": "address"
-      }
-    ],
-    "name": "initialize",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "address",
         "name": "_issuer",
         "type": "address"
@@ -426,8 +294,53 @@ export const TIR_ABI = [
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "contract IClaimIssuer",
+        "name": "_trustedIssuer",
+        "type": "address"
+      }
+    ],
+    "name": "removeTrustedIssuer",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes4",
+        "name": "interfaceId",
+        "type": "bytes4"
+      }
+    ],
+    "name": "supportsInterface",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "operator",
+        "type": "address"
+      }
+    ],
+    "name": "tirAddOperator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "owner",
+    "name": "tirDiamond",
     "outputs": [
       {
         "internalType": "address",
@@ -442,44 +355,11 @@ export const TIR_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "operator",
+        "name": "diamond",
         "type": "address"
       }
     ],
-    "name": "removeOperator",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IClaimIssuer",
-        "name": "_trustedIssuer",
-        "type": "address"
-      }
-    ],
-    "name": "removeTrustedIssuer",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "contract IOperatorManagement",
-        "name": "operatorManagement",
-        "type": "address"
-      }
-    ],
-    "name": "setOperatorManagement",
+    "name": "tirInitialize",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -488,11 +368,24 @@ export const TIR_ABI = [
     "inputs": [
       {
         "internalType": "address",
-        "name": "newOwner",
+        "name": "operator",
         "type": "address"
       }
     ],
-    "name": "transferOwnership",
+    "name": "tirRemoveOperator",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }
+    ],
+    "name": "tirSetDiamond",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -515,4 +408,4 @@ export const TIR_ABI = [
     "stateMutability": "nonpayable",
     "type": "function"
   }
-] as const
+] as const;
