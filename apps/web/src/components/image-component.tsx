@@ -4,12 +4,16 @@ import { env } from "../env";
 import { verifyMessage } from "../functions";
 import { useAccount, useSignMessage } from "wagmi";
 
-export const HeaderImage = ({ claimTopic, randomStr }: { claimTopic: number, randomStr: string }) => {
+export const HeaderImage = ({ claimTopic, data }: { claimTopic: number, data: string }) => {
     const { address } = useAccount()
     const { signMessageAsync } = useSignMessage()
 
     const [imageUrl, setImageUrl] = useState('');
     const [error, setError] = useState('');
+
+    if(!address) {
+        throw new Error("No User"); 
+    }
 
     useEffect(() => {
         let isMounted = true;
@@ -17,11 +21,8 @@ export const HeaderImage = ({ claimTopic, randomStr }: { claimTopic: number, ran
 
         const fetchImage = async () => {
             try {
-                if(!address) {
-                    throw new Error("No User"); 
-                }
                 const getDocgenSignature = await signMessageAsync({ message: verifyMessage(address, 'getDocgen'), account: address })
-                const response = await fetch(`${env.VITE_API_URL}/claims/claim/docgen/${address}/${address}-${claimTopic}?random=${randomStr}`, {
+                const response = await fetch(`${env.VITE_API_URL}/claims/claim/docgen/${address}/${address}-${claimTopic}?data=${data}`, {
                     headers: {
                         'signature': getDocgenSignature
                     },
@@ -54,7 +55,7 @@ export const HeaderImage = ({ claimTopic, randomStr }: { claimTopic: number, ran
                 URL.revokeObjectURL(objectUrl);
             }
         };
-    }, [address, claimTopic, randomStr]);
+    }, [address, claimTopic, data]);
 
     if (error) {
         return <Stack>Error loading image: {error}</Stack>;

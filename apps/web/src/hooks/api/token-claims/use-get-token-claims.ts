@@ -6,7 +6,7 @@ export const useGetTokenClaims = (tokenAddress: string | undefined) => {
         queryKey: ['tokenClaims', tokenAddress],
         queryFn: async () => {
             const res = await fetch(`${env.VITE_API_URL}/token-claims/${tokenAddress}`).then((res) => res.json())
-            return res.map((el:any) => ({...el, randomStr: window.crypto.randomUUID()}))
+            return res
         }
     })
     return { isPendingTokenClaims: isPending, tokenClaimsData: data }

@@ -46,7 +46,7 @@ export const HomePage = () => {
                                 <Td>{element?.userAddress}</Td>
                                 <Td>{getClaimTopicName(BigInt(element?.claimTopic))}</Td>
                                 <Td w={'25%'} justifyContent={'center'} justifyItems={'center'}>
-                                    <HeaderImage claimTopic={element?.claimTopic} randomStr={element?.randomStr} />
+                                    <HeaderImage claimTopic={element?.claimTopic} data={element?.data} />
                                 </Td>
                                 <Td>
                                     <Checkbox isChecked={element?.isClaimVerified} disabled></Checkbox>

@@ -33,7 +33,7 @@ export const useEditUserClaim = () => {
       })
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['userClaims'] })
+      queryClient.invalidateQueries({ queryKey: ['userClaims',] })
     },
   })
 

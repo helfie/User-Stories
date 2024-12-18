@@ -5,7 +5,7 @@ import { verifyMessage } from "../functions";
 import { useAccount, useSignMessage } from "wagmi";
 import { useParams } from "react-router-dom";
 
-export const TokenHeaderImage = ({ claimTopic, randomStr }: { claimTopic: number, randomStr: string }) => {
+export const TokenHeaderImage = ({ claimTopic, data }: { claimTopic: number, data: string }) => {
     const { address } = useAccount()
     const { tokenAddress } = useParams()
     const { signMessageAsync } = useSignMessage()
@@ -23,7 +23,7 @@ export const TokenHeaderImage = ({ claimTopic, randomStr }: { claimTopic: number
                     throw new Error("No User"); 
                 }
                 const getDocgenSignature = await signMessageAsync({ message: verifyMessage(address, 'getDocgen'), account: address })
-                const response = await fetch(`${env.VITE_API_URL}/token-claims/claim/docgen/${address}/${tokenAddress}-${claimTopic}?random=${randomStr}`, {
+                const response = await fetch(`${env.VITE_API_URL}/token-claims/claim/docgen/${address}/${tokenAddress}-${claimTopic}?data=${data}`, {
                     headers: {
                         'signature': getDocgenSignature
                     },
@@ -56,7 +56,7 @@ export const TokenHeaderImage = ({ claimTopic, randomStr }: { claimTopic: number
                 URL.revokeObjectURL(objectUrl);
             }
         };
-    }, [address, claimTopic, randomStr]);
+    }, [address, claimTopic, data]);
 
     if (error) {
         return <Stack>Error loading image: {error}</Stack>;

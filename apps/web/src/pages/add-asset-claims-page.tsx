@@ -48,7 +48,7 @@ export const AddAssetClaimsPage = () => {
                                 <Td>{element?.tokenAddress}</Td>
                                 <Td>{getTokenClaimTopicName(BigInt(element?.claimTopic))}</Td>
                                 <Td w={'25%'} justifyContent={'center'} justifyItems={'center'}>
-                                    <TokenHeaderImage claimTopic={element?.claimTopic} randomStr={element?.randomStr} />
+                                    <TokenHeaderImage claimTopic={element?.claimTopic} data={element?.data} />
                                 </Td>
                                 <Td>
                                     <Checkbox isChecked={element?.isClaimVerified} disabled></Checkbox>

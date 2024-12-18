@@ -6,7 +6,7 @@ export const useGetUserClaims = (userAddress: string | undefined) => {
         queryKey: ['userClaims', userAddress],
         queryFn: async () => {
             const res = await fetch(`${env.VITE_API_URL}/claims/${userAddress}`).then((res) => res.json())
-            return res.map((el:any) => ({...el, randomStr: window.crypto.randomUUID()}))
+            return res
         }
 
     })
